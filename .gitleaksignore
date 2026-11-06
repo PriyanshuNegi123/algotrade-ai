@@ -1,0 +1,8 @@
+# Exact reviewed finding fingerprints only; see docs/GITLEAKS_REVIEW.md.
+# No whole-file, whole-commit or rule-wide exclusions. New commits remain scanned.
+
+# False positive: ordinary slash-separated negative test-case prose.
+37d8cd90fe616f9a2f1117c5c182b67fee8085fc:docs/CAPTURE_PREFLIGHT.md:generic-api-key:90
+
+# False positive: public mPulse browser application identifier in archived NSE evidence.
+37d8cd90fe616f9a2f1117c5c182b67fee8085fc:backend/app/market_data/calendar_data/market-timings.html:generic-api-key:118

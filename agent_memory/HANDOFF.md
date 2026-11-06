@@ -74,3 +74,58 @@ suite not rerun for formatting; prior results remain historical. Final git diff 
 entries updated; other pre-existing staged entries untouched. This handoff update remains
 unstaged. No commit or push performed. Runtime OBSERVATION/live disabled; next functional
 task stillP2-003P bounded feed acceptance after user resumes it.
+
+## 2026-11-06T15:27:34.181034+00:00 — Two Gitleaks findings reviewed; no secret remediation required
+
+User requested pre-public-push review; publication and history rewriting remain unauthorized.
+Reviewed original /tmp/algotrade-scan.bCIDm5/report.json and locally inspected matched values
+without copying them into review records. docs/CAPTURE_PREFLIGHT.md:90 generic-api-key is
+ordinary test-case prose; market-timings.html:118 generic-api-key is a public mPulse browser
+identifier, not authentication material (official Akamai sources in docs/GITLEAKS_REVIEW.md).
+Both false positives, neither a secret/placeholder. Source files left byte-identical to commit.
+Gitleaks8.30.1 default-rules --all --full-history scan of one reachable commit37d8cd9 found
+exactly these two and no additional detections. Redacted rerun confirmed; exit1 reflects
+retained false positives, not a clean zero-findings result. No suppression/config changes.
+Additional local comparison of142reachable committed blobs against current operator token,
+DB password/admin hash/password found no matches; not proof about unknown secrets or dangling
+objects. No token/password printed in reports; temporary unredacted scanner report removed.
+A context read initially printed public HTML instrumentation text; corrected to metadata-only
+inspection thereafter. No new operator credential exposure found. Original report unchanged.
+Calendar integrity PASS; cached whitespace check PASS. Tests not rerun for documentation-only
+review. No source/security/env/broker changes, credential rotation, staging, commit, push,
+history rewrite or capture. OBSERVATION/live off retained. No cleaning procedure needed for
+these harmless findings; any later actual-secret history rewrite needs explicit approval.
+Files changed:docs/GITLEAKS_REVIEW.md,agent_memory/CURRENT_STATE.md,agent_memory/HANDOFF.md.
+Functional next task remainsP2-003P only when the user resumes it; review does not authorize
+public push or claim production readiness. Reachable history only; remote state not audited.
+
+## 2026-11-06T15:31:49.450576+00:00 — Gitleaks false positives resolved with exact fingerprints
+
+User authorized narrow Gitleaks allowances after the earlier review. Re-inspected both
+matched values locally without emitting them. CAPTURE_PREFLIGHT.md:90 is ordinary negative
+test-case prose; market-timings.html:118 is a public mPulse browser identifier (official
+vendor documentation linked in docs/GITLEAKS_REVIEW.md). Neither is a credential or placeholder.
+Added .gitleaksignore with exactly2full commit/file/rule/line fingerprints and per-finding
+justification. No values included, no rule/global/path/whole-commit suppression or source edits.
+Both source files/checksums preserved. No token/password/env/security/trading changes.
+
+Gitleaks8.30.1 baseline --all --full-history ignoring project allowances:exit1/two verified
+false positives in one reachable commit37d8cd9, no additional detections. After exact
+allowances:full-history exit0/zero unallowed findings. Isolated synthetic control with same
+ignore file detected new fake findings in both same paths/line numbers in a different commit;
+expectedexit1/two findings. Synthetic fixture and unredacted temporary report removed after
+verification; no fixture changes or test credentials were added to this project. Original
+supplied report unchanged. Calendar integrity/whitespace/source invariance verified below.
+No runtime tests needed for ignore/doc-only change; no actual broker access or recording.
+Files:.gitleaksignore,docs/GITLEAKS_REVIEW.md,agent_memory/CURRENT_STATE.md,HANDOFF.md.
+No staging/commit/push/force-push/history rewrite. Next publishing action:user reviews and
+makes normal follow-up commit with these4files, then reruns full-history scan before first
+public push; no history cleaning/rotation needed for these two harmless occurrences. Do not
+publish based on an old scan after new changes. Functional next stillP2-003P when resumed.
+Mode OBSERVATION/live off retained; no production-readiness claim. Remote/dangling objects
+not audited. Full-history passing result depends on including the reviewed .gitleaksignore.
+
+Final remediation verification:calendar integrity PASS; both detected source files byte-identical
+to37d8cd9. Default-rules scans without ignores on all4changed files PASS/zero findings.
+Final full-history scan PASS/exit0/zero unallowed findings. Sole project commit37d8cd9 and
+index unchanged. Synthetic fixture removed. Git working/staged whitespace checks PASS.
