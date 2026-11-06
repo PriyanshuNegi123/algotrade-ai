@@ -1,8 +1,27 @@
 # Current state
 
-Updated:2026-11-06T18:07:20.891567+00:00 (UTC). Local PostgreSQL results verified; GitHub Actions resolution unconfirmed.
+Updated:2026-11-06T18:12:23.626375+00:00 (UTC). Latest Actions failure predates local remediation; hosted resolution unconfirmed.
 
-## Latest verification status — 2026-11-06T18:07:20.891567+00:00
+## Latest Actions investigation — 2026-11-06T18:12:23.626375+00:00
+
+- Retrieved latest available failed-job logs through authenticated GitHub CLI (read only).
+- [Run42259885809](https://github.com/PriyanshuNegi123/algotrade-ai/actions/runs/42259885809)
+  tested `a7a8301`; `verify` failed at `uv run pytest`: **347 passed, 1 failed**, one warning.
+  Logs contain the old self-REVOKE test and the empty-blocker assertion failure.
+- The failed commit precedes local remediation `e108f1e`; local HEAD includes the fix.
+  The failed workflow YAML matches local YAML. No new runtime/CI changes are justified by
+  these logs. **GitHub Actions resolution remains unconfirmed** until a run containing the
+  fix passes. No newer run was returned by the current Actions API query.
+- Fresh full local pytest with disposable PostgreSQL17.11: **348 passed, 0 failed, 0 skipped**,
+  including the privilege test; **one Starlette TestClient deprecation warning remains**.
+  Locked uv sync, Ruff lint/format and mypy passed. Temporary native cluster removed.
+- Next: obtain approval to push the existing verified commits, then inspect the new hosted
+  `verify` result before closing the CI issue. No push/workflow dispatch/history rewrite.
+- No source, tests, credentials, env, production DB or live trading changes this iteration.
+  OBSERVATION/live disabled retained. Functional backlog remains P2-003Q.
+
+
+## Prior verification status — 2026-11-06T18:07:20.891567+00:00
 
 - Full local pytest suite with disposable PostgreSQL: **348 passed, 0 failed, 0 skipped**.
 - PostgreSQL privilege integration test: **passed** with PostgreSQL connected.

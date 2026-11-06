@@ -656,3 +656,34 @@ uv run python -m scripts.verify_postgres --bin-dir .local/verification/postgres/
 Use that command only when the local native binaries exist. CI already sets TEST_POSTGRES_URL
 for its fresh PostgreSQL service. Never point this variable at the operator/production DB.
 No new skip,assertion weakening or production permission change was introduced.
+
+## Latest Actions investigation — 2026-11-06T18:12:23.626375+00:00
+
+- Retrieved latest available failed-job logs through authenticated GitHub CLI (read only).
+- [Run42259885809](https://github.com/PriyanshuNegi123/algotrade-ai/actions/runs/42259885809)
+  tested `a7a8301`; `verify` failed at `uv run pytest`: **347 passed, 1 failed**, one warning.
+  Logs contain the old self-REVOKE test and the empty-blocker assertion failure.
+- The failed commit precedes local remediation `e108f1e`; local HEAD includes the fix.
+  The failed workflow YAML matches local YAML. No new runtime/CI changes are justified by
+  these logs. **GitHub Actions resolution remains unconfirmed** until a run containing the
+  fix passes. No newer run was returned by the current Actions API query.
+- Fresh full local pytest with disposable PostgreSQL17.11: **348 passed, 0 failed, 0 skipped**,
+  including the privilege test; **one Starlette TestClient deprecation warning remains**.
+  Locked uv sync, Ruff lint/format and mypy passed. Temporary native cluster removed.
+- Next: obtain approval to push the existing verified commits, then inspect the new hosted
+  `verify` result before closing the CI issue. No push/workflow dispatch/history rewrite.
+- No source, tests, credentials, env, production DB or live trading changes this iteration.
+  OBSERVATION/live disabled retained. Functional backlog remains P2-003Q.
+
+
+Environment comparison:GitHub service uses postgres17.6-bookworm with bootstrap superuser
+as setup/migration owner;the earlier original test revoked from itself,which cannot remove
+superuser effective INSERT. Existing local remediation creates a distinct NOLOGIN/NOSUPERUSER/
+non-owner execution role and verifies permissions plus actual denial42501 before checking
+preflight. Native17.11 setup is non-superuser with CREATEROLE for temporary role fixtures.
+Prior isolated Compose17.6 CI-like verification also passed348tests;this turn reran native
+PostgreSQL and inspected actual hosted logs. The workflow's TEST_POSTGRES_URL is configured
+correctly;missing local variable explains default skips but is not the hosted failure.
+No hosted successful workflow containing e108f1e has been verified. Never label CI resolved
+based on local success or rerunning the old commit. No new test assertions were weakened or
+skipped;no production permission changes. Runtime source and CI YAML unchanged this turn.

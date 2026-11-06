@@ -696,3 +696,19 @@ only unique test Compose project/legacy archive/test credentials. Operator DB,Up
 untouched;OBSERVATION/live off. Changes:TEST_PLAN/VERIFICATION and all8handoff records only.
 Next:review local documentation verification commit alongside code commit e108f1e,approve
 push before hosted CI rerun. No push/force-push/history rewrite. Functional nextP2-003Q.
+
+## 2026-11-06T18:12:23.626375+00:00 — Latest hosted logs compared with local fix
+
+Retrieved latest Actions run42259885809/verify failed-step logs; tested commita7a8301,347pass/
+1fail/onewarning,old self-REVOKE and DATABASE_PRIVILEGES_MISSING-in-empty-list failure verified.
+API returned no newer run. Git ancestry proves failed commit predates local e108f1e fix;
+workflow YAML matches local. Local restricted-role fixture verifies effective INSERT denial
+42501 and precise blocker;application preflight unchanged. Cause:CI bootstrap superuser bypass,
+not ownership alone. No new code/CI changes needed based on available logs;hosted CI resolution
+still unconfirmed. Fresh native disposable PostgreSQL17.11 full348pass/0fail/0skip;privilege test
+included;oneStarlette TestClient warning. uv locked sync/Ruff/format/mypy pass. Cluster removed;
+production DB/Upstox/env untouched,OBSERVATION/live off,no broker request. Safe aggregate logs
+review saved only to ignored reports;raw local log removed after verification. Changes only
+agent_memory8records and docs/VERIFICATION.md. Local evidence commit authorized;no push,
+force-push,dispatch or history rewrite. Next:approved push of existing fix and verified docs,
+then check new hosted verify run before closing CI issue. Functional nextP2-003Q unchanged.
