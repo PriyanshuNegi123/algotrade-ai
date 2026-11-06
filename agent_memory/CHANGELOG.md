@@ -418,3 +418,18 @@ assertions. Native disposable harness permits fixture role creation;runtime chec
 Target1pass;full348pass on Docker17.6/native17.11;uv lint/format/mypy pass. Temporary grants/
 roles/databases cleaned;no operator credentials/data or trading changes. Local commit
 requested;no push. See docs/VERIFICATION.md and TEST_PLAN.md.
+
+## 2026-11-06T18:00:37.861532+00:00 — PostgreSQL CI fix recheck; passed vs skipped clarified
+
+Existing code fix e108f1e retained;no extra application/test edits needed. Root cause is CI
+superuser bypass of self-REVOKE;non-owner/non-superuser fixture and actual denial42501 already
+correct it. Skip condition is absent TEST_POSTGRES_URL,not test success. Rechecked CI/config/
+migrations/preflight and reproduced old failure from isolated pre-fix archive without changing
+working code/history. Fresh disposable Compose17.6:target1pass,PGtests22pass,full348pass;all
+0skips. Default without PG:326pass/22skip. Original legacy target1expected failure reproduced.
+Locked sync/Ruff lint/format/mypy pass;one upstream TestClient warning per run. No weakened
+assertion,skip addition or runtime/security change. Cleanup queried0roles/0schemas,then removed
+only unique test Compose project/legacy archive/test credentials. Operator DB,Upstox and.env
+untouched;OBSERVATION/live off. Changes:TEST_PLAN/VERIFICATION and all8handoff records only.
+Next:review local documentation verification commit alongside code commit e108f1e,approve
+push before hosted CI rerun. No push/force-push/history rewrite. Functional nextP2-003Q.

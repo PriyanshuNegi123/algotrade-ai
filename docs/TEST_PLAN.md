@@ -160,3 +160,13 @@ actual INSERT fails42501 before asserting preflight's DATABASE_PRIVILEGES_MISSIN
 CI17.6superuser setup and native17.11non-superuser setup both pass348tests;target1pass after
 reproduced failure. uv Ruff/format/mypy pass. One upstream warning. Fixture cleanup verified
 zero roles/schemas remain. See VERIFICATION.md for exact root cause/security boundaries.
+
+## 2026-11-06T18:00:37.861532+00:00 — Running the PostgreSQL tests instead of skipping them
+
+Default pytest without TEST_POSTGRES_URL:326passed/22skipped;the privilege test is not run.
+Use the supported disposable harness when native binaries are available:
+`uv run python -m scripts.verify_postgres --bin-dir .local/verification/postgres/17/bin`.
+Fresh Compose PostgreSQL17.6 verification:fixed target1pass,PGintegration22pass,full348pass,
+all0skips;old-code archive reproduces1expected failure. Runtime fix is in e108f1e. Ruff/mypy
+pass. Fixture roles/grants/schemas and disposable project cleanup verified. Operator DB must
+never be supplied as TEST_POSTGRES_URL. Full evidence:VERIFICATION.md latest entry.

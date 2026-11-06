@@ -612,3 +612,47 @@ pending approved push; local success does not claim hosted verify job has rerun/
 Remaining:one upstream warning,external disposable setup roles now require CREATEROLE; later
 CI stages not rerun because unchanged by this test-only fix. Functional backlog stillP2-003Q.
 Exact next:review local commit,obtain user approval before push,and rerun GitHub verify.
+
+## 2026-11-06T18:00:37.861532+00:00 — CI-PG-PERM reverified with PostgreSQL connected
+
+The implementation fix is already in local commit e108f1e on main;no duplicate runtime/test
+code changes were needed. Default326passed/22skipped occurs because postgres_config skips
+when TEST_POSTGRES_URL is absent. That default run does not exercise the privilege test.
+Inspected fixtures,migration ownership,CI TEST_POSTGRES_URL and preflight permission SQL.
+Root cause remains CI bootstrap superuser bypass,not ownership alone or broken preflight.
+Ordinary owners can revoke their own DML;superusers retain effective INSERT after REVOKE.
+
+Fresh isolated Docker Compose PostgreSQL17.6 service (unique project,generated test-only
+password,loopback ephemeral port,tmpfs DB,no operator.env/volumes) verified this turn:
+
+| Run | Passed | Failed | Skipped |
+|---|---:|---:|---:|
+| Original target from pre-fix Git archive |0|1(expected reproduction)|0|
+| Current fixed privilege target |1|0|0|
+| All PostgreSQL integration tests |22|0|0|
+| Full suite with disposable TEST_POSTGRES_URL |348|0|0|
+| Default suite without TEST_POSTGRES_URL |326|0|22|
+
+One upstream TestClient deprecation warning in each run. Locked uv sync,Ruff lint/format
+(83files),mypy(36backendfiles) PASS. Current test proves non-owner/non-superuser execution,
+only capture_runs INSERT missing,actual INSERT denied42501,then precise preflight blocker.
+Existing fixture finally removes scoped grants/role/memberships;queried0roles/0test schemas
+before teardown. Disposed Compose project removed,legacy Git archive and generated credentials
+removed. No production DB,Upstox configuration or trading changes. LIVE remains disabled.
+
+Code carried by e108f1e:tests/conftest.py isolated restricted-role fixture;
+tests/integration/test_postgres.py genuine permission-denial/unchanged-strengthened blocker;
+scripts/verify_postgres.py CREATEROLE only for fresh disposable non-superuser setup.
+This follow-up changes only verification/test-plan/handoff documentation and records actual
+pass-vs-skip results. Local documentation commit requested;no push without approval. Hosted
+verify rerun still awaits approved push;functional backlogP2-003Q unchanged.
+
+Repeat all tests with native disposable PostgreSQL through the existing supported harness:
+
+```sh
+uv run python -m scripts.verify_postgres --bin-dir .local/verification/postgres/17/bin
+```
+
+Use that command only when the local native binaries exist. CI already sets TEST_POSTGRES_URL
+for its fresh PostgreSQL service. Never point this variable at the operator/production DB.
+No new skip,assertion weakening or production permission change was introduced.
