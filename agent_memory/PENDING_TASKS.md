@@ -3,7 +3,7 @@
 Immediate status:the two Gitleaks false positives are resolved by exact fingerprints;
 HEAD92a941b has2reachable commits and the latest full-history scan passed. Public push is
 still not authorized. See [project progress and next actions](../docs/PROJECT_STATUS.md).
-Functional next remainsP2-003P; publishing checks must be repeated after the final commit.
+Functional next is nowP2-003Q; publishing checks must be repeated after the final commit.
 
 | ID | Priority | Dependencies | Scope | Acceptance criteria | Complexity | Status |
 |---|---|---|---|---|---|---|
@@ -27,7 +27,8 @@ Functional next remainsP2-003P; publishing checks must be repeated after the fin
 | P2-003M | P1 | P2-003L | Small real historical candle import acceptance | One prior day/catalog-bound index; archive integrity and private reads verified; no observation clock | Medium | COMPLETE2026-11-06:75 Nifty50 five-minute candles for November5 |
 | P2-003N | P1 | P2-003M | Rotate exposed local administrator credential and revoke old sessions | Protected replacement, old credential/session rejection, new login, broker/catalog/history preserved | Medium | COMPLETE2026-11-06:old password/session rejected;4sessions revoked;new login/data preservation verified |
 | P2-003O | P1 | P2-003N; valid Analytics token/current catalog | Bounded real option-chain acceptance | One explicit catalog expiry; validate source/legs/archive/private read; no freshness guarantees/orders/stream capture | Medium | COMPLETE2026-11-06:135strikes/270legs;72flagged;canonical/catalog/pagination verified |
-| P2-003P | P1 NEXT | P2-003O; valid Analytics/current catalog | Bounded actual streaming authorization and decoder acceptance | Finite index-only subscription, safe outcome/diagnostics, no invented tick/day or trading permission | Medium | Pending |
+| P2-003P | P1 | P2-003O; valid Analytics/current catalog | Bounded actual streaming authorization and decoder acceptance | Finite index-only subscription, safe outcome/diagnostics, no invented tick/day or trading permission | Medium | COMPLETE2026-11-06:20sec/one attempt,2frames,closed-market stale snapshot,9pongs;no durable record |
+| P2-003Q | P1 NEXT | P2-003P; current private runtime | Reproducible bounded durable capture through private Compose runtime | Deploy reviewed manifests; explicit quota-bound recorder; persisted event/health/stop verification; no invented days or secrets in argv/output | Medium | Pending |
 | P2-003 | P1 | P2-003A; P2-002A; optional operator credential for actual data | Candles, chain, approved feed and observation | Real UTC data; freshness/duplicates/gaps/reconnect/session checks; reports only from captured sessions | High | Partial: metadata/history/chain/auth-decoder implemented; bounded socket lifecycle implemented; durable research archive implemented; reviewed calendar/sampled coverage implemented; bounded multi-session supervisor implemented; safe preflight implemented; persistent local bootstrap verified; real acceptance/completed-day certification pending |
 | P3-001 | P2 | P2-003 | Knowledge provenance, indicators, controlled research | Licensed sources, completed candles, research cannot alter permissions | High | Not started |
 | P4-001 | P2 | P3-001 | Deterministic strategy and affordability interfaces | Whole-lot, spread, stale-data and insufficient-budget tests | High | Not started |
@@ -226,3 +227,51 @@ security/broker changes or requests, staging, commit, runtime restart or push th
 Files:docs/PROJECT_STATUS.md and all8agent_memory Markdown records. Existing prior review
 notes retained in HANDOFF/SESSION_LOG; source requirement phase order retained. Next pending
 functional task unchanged; strategy/backtest/paper/execution and production gates remain later.
+
+## 2026-11-06T15:52:35.233597+00:00 — P2-003P bounded real streaming acceptance COMPLETE
+
+Explicitly authorized live-broker acceptance outside pytest. One Nifty50 index-only LTPC
+subscription, duration20s,max_attempts1,max_frames10,poll2s. Local preflight passed without
+blockers inside running private Compose app; token/schema/current catalog/calendar/grants
+checked. Ran2026-11-06T15:50:39.131804+00:00 to2026-11-06T15:50:59.188955+00:00; runner elapsed20051ms,
+reasonDURATION_LIMIT,stateSTOPPED,retry_pendingfalse. One authorization GET; one validated
+single-use grant; secure WebSocket connection/binary subscription succeeded. No grant/URL/
+token/raw-frame logging, no permission-policy bypass or decoder changes.
+
+Actual events:PLAN1,MARKET_INFO1,SNAPSHOT1,IDLE9. Two binary Protobuf frames decoded in required
+order. Nine explicit ping/pong round trips verified, connection State.CLOSED at exit. Broker
+NSE_INDEX=CLOSING_END,NSE_FO=NORMAL_CLOSE; MCX/other segment status is not an index trading
+permission. One normalized index observation,last_trade_at2026-11-06T10:30:00Z,correctly
+STALE_TRADE. No UPDATE events/recent-trade/live-session completeness claimed. Idle health
+progressed to DELAYED_FRAME; pong transport health never refreshed quote freshness.
+
+Acceptance sink retained aggregates only in memory; no durable recorder was invoked.
+DB counts unchanged:1catalog/6504instruments,1history batch/75candles,1chain snapshot/270legs,
+0observation sessions/events/capture runs. Global observation_started_at null, qualifying days0.
+Mode OBSERVATION; entries/live/signals/execution false. No orders, scheduler, auto restart,
+strategy/paper promotion or certified day. Safe ignored report:reports/local_stream_acceptance.json.
+Temporary one-time harness removed; no backend/source/dependency/schema/UI change.
+
+Running image uses pre-formatting calendar evidence identity1cf89790c47a376a72e714e0e405e46173ae67e7a101b6312d855e23ac98dc58.
+Host normalized-evidence identityee64ddfb593679cca9396b8646c61d458ce07147ea0c7f27c03b940eee3ed053.
+Both loaders validate; all parsed policy fields excluding evidence hashes compared identical.
+This provenance-only difference reflects approved whitespace cleanup; no market hours changed.
+Before durable deployment verification rebuild via existing protected bootstrap so the current
+reviewed manifests are deployed. Never relax integrity checks or alter calendar times to pass.
+
+Checks:offline locked uv sync PASS; default326passed/22PGskipped; full disposable PG17.11
+suite348passed/zero skips,temporary cluster stopped/removed. One upstream TestClient warning.
+Ruff lint/format PASS83files;strict mypy PASS36backendfiles. Tests used synthetic transports;
+actual broker acceptance ran separately. No settings,broker credential or admin password change.
+Official V3 auth/feed sequence docs rechecked. Files:README.md,MASTER_PLAN.md,docs/PROJECT_STATUS.md,
+WEBSOCKET_FEED.md,FEED_LIFECYCLE.md,CONNECTION_READINESS.md,VERIFICATION.md and all8agent_memory
+records. Existing Git state preserved; no staging,commit,push,force-push or history rewrite.
+Next:P2-003Q reproducible bounded durable capture workflow inside private Compose runtime,
+rebuild reviewed image,verify persisted events/stop status/quotas without fabricating days.
+Fresh market-hours observations and longer coverage still need explicit reviewed runs.
+
+Final P2-003P verification:all15changed Markdown files scanned with default Gitleaks
+and no ignores:zero findings;all-ref history scan exit0/zero unallowed findings with the2exact
+reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by agent.
+Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
+real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.

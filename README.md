@@ -49,7 +49,7 @@ broker configuration into a protected .env, preserving other settings. Configure
 access using the bootstrap above, rerun it after broker configuration, sign in and use **Check read-only connection**.
 No broker token is accepted through the dashboard or returned to frontend JavaScript.
 See [secure setup](docs/UPSTOX_SETUP.md) and [verified API sources](docs/BROKER_COMPLIANCE.md).
-A real one-day Nifty50 historical import has now succeeded; one real option-chain snapshot also succeeded; streaming acceptance remains unverified.
+A real one-day Nifty50 historical import has now succeeded; one real option-chain snapshot also succeeded; basic closed-market streaming acceptance now verified; durable/fresh-session coverage remains pending.
 
 ## Public instrument metadata
 
@@ -153,7 +153,8 @@ for expiry2026-11-09 verified135strikes/270legs;72legs flagged, freshness UNKNOW
 Server-only authorization grants and catalog-bound LTPC decoding are implemented. The bounded server connector is now implemented; it starts only through the explicit host CLI
 and records research sessions/events in the configured database. For offline captured frames:
 `uv run python -m scripts.decode_feed --help`. See [scope and timestamp limitations](docs/WEBSOCKET_FEED.md).
-Actual broker feed acceptance remains unverified; all trading flags stay disabled.
+One20second closed-market Nifty50 grant/subscription/Protobuf/heartbeat check passed;
+one stale snapshot, no durable recording or certified day. All trading flags stay disabled.
 
 ## Bounded streaming research
 

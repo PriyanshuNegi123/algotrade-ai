@@ -1,5 +1,9 @@
 # Bounded V3 WebSocket lifecycle
 
+Latest actual acceptance2026-11-06:one20second closed-market Nifty50 connection verified
+authorization/subscription/Protobuf/ping-pong/cleanup. One stale snapshot; no durable capture
+or certified day. Older unverified-acceptance statements below describe prior iterations.
+
 P2-003F update:the host CLI now persists research sessions/events by default; see
 [OBSERVATION_STORAGE.md](OBSERVATION_STORAGE.md). The lifecycle scope below originated in P2-003E.
 
@@ -125,3 +129,45 @@ here. No frontend changes or new browser run. See VERIFICATION.md for Docker and
 P2-003F now implements durable research observation sessions/events with lineage, disconnect/gap markers,
 rollback/restart behavior and private bounded reads. Calendar/session completeness and genuine
 seven-day reporting follow separately. No observation clock or real seven-day result is claimed.
+
+## 2026-11-06T15:52:35.233597+00:00 — P2-003P bounded real streaming acceptance COMPLETE
+
+Explicitly authorized live-broker acceptance outside pytest. One Nifty50 index-only LTPC
+subscription, duration20s,max_attempts1,max_frames10,poll2s. Local preflight passed without
+blockers inside running private Compose app; token/schema/current catalog/calendar/grants
+checked. Ran2026-11-06T15:50:39.131804+00:00 to2026-11-06T15:50:59.188955+00:00; runner elapsed20051ms,
+reasonDURATION_LIMIT,stateSTOPPED,retry_pendingfalse. One authorization GET; one validated
+single-use grant; secure WebSocket connection/binary subscription succeeded. No grant/URL/
+token/raw-frame logging, no permission-policy bypass or decoder changes.
+
+Actual events:PLAN1,MARKET_INFO1,SNAPSHOT1,IDLE9. Two binary Protobuf frames decoded in required
+order. Nine explicit ping/pong round trips verified, connection State.CLOSED at exit. Broker
+NSE_INDEX=CLOSING_END,NSE_FO=NORMAL_CLOSE; MCX/other segment status is not an index trading
+permission. One normalized index observation,last_trade_at2026-11-06T10:30:00Z,correctly
+STALE_TRADE. No UPDATE events/recent-trade/live-session completeness claimed. Idle health
+progressed to DELAYED_FRAME; pong transport health never refreshed quote freshness.
+
+Acceptance sink retained aggregates only in memory; no durable recorder was invoked.
+DB counts unchanged:1catalog/6504instruments,1history batch/75candles,1chain snapshot/270legs,
+0observation sessions/events/capture runs. Global observation_started_at null, qualifying days0.
+Mode OBSERVATION; entries/live/signals/execution false. No orders, scheduler, auto restart,
+strategy/paper promotion or certified day. Safe ignored report:reports/local_stream_acceptance.json.
+Temporary one-time harness removed; no backend/source/dependency/schema/UI change.
+
+Running image uses pre-formatting calendar evidence identity1cf89790c47a376a72e714e0e405e46173ae67e7a101b6312d855e23ac98dc58.
+Host normalized-evidence identityee64ddfb593679cca9396b8646c61d458ce07147ea0c7f27c03b940eee3ed053.
+Both loaders validate; all parsed policy fields excluding evidence hashes compared identical.
+This provenance-only difference reflects approved whitespace cleanup; no market hours changed.
+Before durable deployment verification rebuild via existing protected bootstrap so the current
+reviewed manifests are deployed. Never relax integrity checks or alter calendar times to pass.
+
+Checks:offline locked uv sync PASS; default326passed/22PGskipped; full disposable PG17.11
+suite348passed/zero skips,temporary cluster stopped/removed. One upstream TestClient warning.
+Ruff lint/format PASS83files;strict mypy PASS36backendfiles. Tests used synthetic transports;
+actual broker acceptance ran separately. No settings,broker credential or admin password change.
+Official V3 auth/feed sequence docs rechecked. Files:README.md,MASTER_PLAN.md,docs/PROJECT_STATUS.md,
+WEBSOCKET_FEED.md,FEED_LIFECYCLE.md,CONNECTION_READINESS.md,VERIFICATION.md and all8agent_memory
+records. Existing Git state preserved; no staging,commit,push,force-push or history rewrite.
+Next:P2-003Q reproducible bounded durable capture workflow inside private Compose runtime,
+rebuild reviewed image,verify persisted events/stop status/quotas without fabricating days.
+Fresh market-hours observations and longer coverage still need explicit reviewed runs.
