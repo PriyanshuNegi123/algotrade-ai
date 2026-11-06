@@ -1,0 +1,35 @@
+name: foundation
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.6-bookworm
+        env:
+          POSTGRES_USER: algotrade_test
+          POSTGRES_PASSWORD: ephemeral-ci-only
+          POSTGRES_DB: algotrade_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U algotrade_test -d algotrade_test"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.19"
+      - run: uv sync --locked
+      - run: uv run ruff check backend tests scripts
+      - run: uv run ruff format --check backend tests scripts
+      - run: uv run mypy
+      - run: uv run pytest
+        env:
+          TEST_POSTGRES_URL: postgresql+psycopg://algotrade_test:ephemeral-ci-only@localhost:5432/algotrade_test
+      - run: uv run python -m scripts.verify_supervision
+      - run: uv run pip-audit --progress-spinner off
+      - run: uv run python -m scripts.verify_compose --config-only
+      - run: uv run python -m scripts.verify_compose
+        timeout-minutes: 10

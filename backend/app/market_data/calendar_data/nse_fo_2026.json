@@ -1,0 +1,46 @@
+{
+  "evidence_sha256": {
+    "FAOP71777.pdf": "5a2079cd78b2e6b536ef0d28300e63b645721bed22cc82a91facf5945f3296ea",
+    "FAOP72262.pdf": "f98ae37cf6a6f8c18b1064b0551599d084c4b4a27804842c487f0da43fea8f0f",
+    "FAOP76940.pdf": "78d97b9c3632d78272a59dd38349ec1124fa6c34b40efe5a77061992cd7478ff",
+    "market-timings.html": "8b3871c58ec585fcee6e5eed02de24cff3dc732eabf8960a4f4a496ed03cb7a1",
+    "sources.json": "02ef7da56a048538bd8a366c70641c833879c5e759dbf2238b906b8675b1ad40"
+  },
+  "holidays": {
+    "2026-01-15": "FAOP72262.pdf",
+    "2026-01-26": "FAOP71777.pdf",
+    "2026-02-15": "FAOP71777.pdf",
+    "2026-03-03": "FAOP71777.pdf",
+    "2026-03-21": "FAOP71777.pdf",
+    "2026-03-26": "FAOP71777.pdf",
+    "2026-03-31": "FAOP71777.pdf",
+    "2026-04-03": "FAOP71777.pdf",
+    "2026-04-14": "FAOP71777.pdf",
+    "2026-05-01": "FAOP71777.pdf",
+    "2026-05-28": "FAOP71777.pdf",
+    "2026-06-26": "FAOP71777.pdf",
+    "2026-08-15": "FAOP71777.pdf",
+    "2026-09-14": "FAOP71777.pdf",
+    "2026-10-02": "FAOP71777.pdf",
+    "2026-10-20": "FAOP71777.pdf",
+    "2026-11-08": "FAOP71777.pdf",
+    "2026-11-10": "FAOP71777.pdf",
+    "2026-11-24": "FAOP71777.pdf",
+    "2026-12-25": "FAOP71777.pdf"
+  },
+  "kind": "OFFICIAL_BASELINE",
+  "regular_close": "15:40",
+  "regular_from": "2026-11-06",
+  "regular_open": "09:15",
+  "reviewed_at": "2026-11-06T13:26:16+00:00",
+  "segment": "NSE_FO",
+  "special": {
+    "2026-11-08": {
+      "closes": "15:40",
+      "opens": "14:20",
+      "source": "FAOP76940.pdf"
+    }
+  },
+  "valid_from": "2026-01-01",
+  "valid_through": "2026-12-31"
+}

@@ -1,0 +1,11 @@
+.git
+.env
+.env.*
+.venv
+.cache
+.local
+**/__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.algotrade-secret-*

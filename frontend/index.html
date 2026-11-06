@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AlgoTrade AI private observation and risk monitoring console.">
+  <meta name="robots" content="noindex,nofollow">
+  <title>AlgoTrade AI · Operations</title>
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<aside class="sidebar" aria-label="Application navigation">
+  <a class="brand" href="/" aria-label="AlgoTrade AI home"><span class="brand-mark" aria-hidden="true">A</span><span>AlgoTrade <b>AI</b><small>TRADING OPERATIONS</small></span></a>
+  <p class="nav-label">WORKSPACE</p>
+  <nav aria-label="Workspace"><a class="nav-item active" href="#main" aria-current="page"><span aria-hidden="true">◫</span> Overview</a><a class="nav-item" href="#readiness"><span aria-hidden="true">◎</span> System readiness</a><a class="nav-item" href="#risk"><span aria-hidden="true">◇</span> Risk management</a><a class="nav-item" href="#connection"><span aria-hidden="true">⇄</span> Broker connection</a></nav>
+  <div class="nav-divider"></div><p class="nav-label">PLANNED MODULES</p>
+  <ul class="planned"><li>Live market & option chain</li><li>Strategy monitor & AI research</li><li>Backtesting & paper trading</li><li>Live trading, positions & orders</li><li>P&L analytics & trade history</li><li>Alerts & reports</li><li>Security settings</li></ul>
+  <div class="sidebar-footer"><span class="status-dot" aria-hidden="true"></span> Foundation release <small>Execution unavailable</small></div>
+</aside>
+<div class="workspace">
+  <header class="topbar"><span>Workspace <span class="breadcrumb">/ Overview</span></span><div class="top-actions"><span class="mode">OBSERVATION</span><button id="theme" class="icon-button" aria-label="Toggle dark theme" aria-pressed="false">◐</button><span class="avatar" aria-label="Administrator">AD</span></div></header>
+  <main id="main" tabindex="-1">
+    <div class="page-heading"><div><p class="eyebrow">YOUR TRADING CONTROL ROOM</p><h1>A clear view. A measured start.</h1><p class="muted">Observe the market. Validate the process. Keep risk in focus.</p></div><span class="date" id="date">Asia/Kolkata</span></div>
+    <section class="notice" aria-label="Execution status"><span class="notice-icon" aria-hidden="true">i</span><div><strong>Observation first. Every trade must earn its place.</strong><p>Trading is disabled. The seven-day observation window begins only after genuine market data is connected.</p></div><span class="tag">PHASE 02</span></section>
+    <section id="signin" class="panel signin" aria-labelledby="signin-title"><div><p class="eyebrow">PRIVATE WORKSPACE</p><h2 id="signin-title">Administrator access</h2><p class="muted">Sign in to read account and system status.</p></div><form id="login-form"><label for="password">Administrator password</label><div class="form-row"><input id="password" name="password" type="password" autocomplete="current-password" minlength="12" maxlength="256" required><button class="primary" type="submit">Sign in</button></div></form></section>
+    <p id="feedback" role="status" aria-live="polite">Account data is private. Sign in to load the workspace.</p>
+    <div id="account" hidden>
+      <div class="section-heading"><h2>Account overview</h2><button id="logout" class="text-button">Sign out</button></div>
+      <section class="metrics" aria-label="Account metrics">
+        <article class="panel metric"><h3>Available capital</h3><p id="available_capital" class="metric-value">—</p><small>Broker funds not connected</small></article>
+        <article class="panel metric"><h3>Realized P&L</h3><p id="realized_pnl" class="metric-value">—</p><small>No verified trading history</small></article>
+        <article class="panel metric"><h3>Unrealized P&L</h3><p id="unrealized_pnl" class="metric-value">—</p><small>No verified open exposure</small></article>
+        <article class="panel metric"><h3>Maximum drawdown</h3><p id="max_drawdown" class="metric-value">—</p><small>Waiting for reference equity</small></article>
+      </section>
+      <section class="panel ledger" aria-label="Additional account measures"><dl><div><dt>Balance</dt><dd id="balance">—</dd></div><div><dt>Starting equity</dt><dd id="starting_equity">—</dd></div><div><dt>Trading costs</dt><dd id="trading_costs">—</dd></div><div><dt>Daily P&L</dt><dd id="daily_pnl">—</dd></div><div><dt>Monthly P&L</dt><dd id="monthly_pnl">—</dd></div></dl></section>
+    </div>
+    <div class="content-grid">
+      <section class="panel observation" id="readiness" aria-labelledby="observation-title"><div class="section-heading"><h2 id="observation-title">Observation workspace</h2><span class="pill">Awaiting data</span></div><div class="empty-chart"><div class="chart-grid" aria-hidden="true"></div><div class="empty-content"><span class="empty-icon" aria-hidden="true">⌁</span><h3>Your first session starts with real data</h3><p>No prices, signals, or performance results have been recorded.</p><a class="outline-button" href="#connection">Review connection requirements <span aria-hidden="true">↗</span></a></div></div><div class="chart-footer"><span>7 calendar days planned</span><span>0 sessions captured</span><span>UTC storage · IST display</span></div></section>
+      <section class="panel" id="risk" aria-labelledby="risk-title"><div class="section-heading"><h2 id="risk-title">Safety boundaries</h2><span class="shield" aria-hidden="true">◇</span></div><p class="muted">Required defaults for later execution phases.</p><div class="risk-item"><div><h3>Position stop trigger</h3><p>Based on average filled entry</p></div><strong>35<span>%</span></strong></div><div class="risk-item"><div><h3>Account circuit breaker</h3><p>Manual reactivation required</p></div><strong>35<span>%</span></strong></div><p class="risk-note">Risk enforcement is not implemented yet. All order execution is unavailable. A stop trigger cannot guarantee an execution price.</p><div class="locked"><span aria-hidden="true">▣</span> Live execution unavailable</div></section>
+    </div>
+    <section class="panel instrument-panel" aria-labelledby="instrument-title">
+      <div class="section-heading"><h2 id="instrument-title">Instrument master</h2><span id="instrument-status" class="pill">Sign-in required</span></div>
+      <p class="muted">Official NSE indices and index options/futures. Metadata only; prices and observation recording are not active.</p>
+      <dl class="catalog-summary" id="instrument-summary" hidden><div><dt>Selected contracts & indices</dt><dd id="instrument-selected">—</dd></div><div><dt>Source records</dt><dd id="instrument-source-count">—</dd></div><div><dt>Published · IST</dt><dd id="instrument-published">—</dd></div><div><dt>Imported · IST</dt><dd id="instrument-imported">—</dd></div></dl>
+      <div class="import-actions"><p id="instrument-feedback" class="muted" role="status" aria-live="polite">Sign in to review instrument metadata.</p><button id="instrument-sync" class="outline-button" hidden>Import official NSE metadata</button></div>
+    </section>
+    <section class="panel instrument-panel" aria-labelledby="history-title">
+      <div class="section-heading"><h2 id="history-title">Historical candles</h2><span id="history-status" class="pill">Sign-in required</span></div>
+      <p class="muted">Completed prior-day minute bars for research. Imports do not enable signals, simulate option fills or start observation recording.</p>
+      <form id="history-form" class="history-form" hidden>
+        <div><label for="history-key">Instrument key from catalog</label><input id="history-key" name="instrument_key" maxlength="160" placeholder="Paste an imported instrument key" required></div>
+        <div><label for="history-interval">Bar interval</label><select id="history-interval" name="interval"><option value="1">1 minute</option><option value="5">5 minutes</option><option value="15">15 minutes</option></select></div>
+        <div><label for="history-from">From · IST date</label><input id="history-from" name="from_date" type="date" min="2022-01-01" required></div>
+        <div><label for="history-to">To · IST date</label><input id="history-to" name="to_date" type="date" min="2022-01-01" required></div>
+        <button id="history-import" class="outline-button" type="submit">Import historical candles</button>
+      </form>
+      <p id="history-feedback" class="muted broker-feedback" role="status" aria-live="polite">Sign in to review historical imports.</p>
+    </section>
+    <section class="panel instrument-panel" aria-labelledby="chain-title">
+      <div class="section-heading"><h2 id="chain-title">Option-chain research</h2><span id="chain-status" class="pill">Sign-in required</span></div>
+      <p class="muted">Capture explicit-expiry CE/PE observations from the imported catalog. Receipt time does not verify quote freshness; no contract selection or execution is enabled.</p>
+      <form id="chain-form" class="chain-form" hidden>
+        <div><label for="chain-key">Underlying index key</label><input id="chain-key" name="underlying_key" maxlength="160" placeholder="Imported NSE index key" required></div>
+        <button id="chain-expiries" class="outline-button" type="button">Load catalog expiries</button>
+        <div><label for="chain-expiry">Explicit expiry date</label><select id="chain-expiry" name="expiry_date" required disabled><option value="">Load catalog expiries first</option></select></div>
+        <button id="chain-capture" class="outline-button" type="submit" disabled>Capture research snapshot</button>
+      </form>
+      <p id="chain-feedback" class="muted broker-feedback" role="status" aria-live="polite">Sign in to review option-chain research snapshots.</p>
+    </section>
+    <div class="bottom-grid">
+      <section class="panel" id="connection" aria-labelledby="connection-title"><div class="section-heading"><h2 id="connection-title">Broker connection</h2><span id="broker-status" class="pill">Sign-in required</span></div><div class="broker-row"><div class="broker-logo" aria-hidden="true">u</div><div><h3>Upstox</h3><p class="muted">Read-only Analytics Token · connection check</p></div></div><p class="muted">Keep broker credentials in server secret storage. Checking exchange status does not start market-data recording or enable trading.</p><p id="broker-feedback" class="muted broker-feedback" role="status" aria-live="polite">Sign in to review the read-only connection configuration.</p><button id="broker-check" class="outline-button" hidden>Check read-only connection</button></section>
+      <section class="panel" aria-labelledby="next-title"><p class="eyebrow">NEXT OPERATOR ACTION</p><h2 id="next-title">Prepare the data connection</h2><p class="muted">Verify database readiness and administrator access before connecting market data. No live activation controls are available in this release.</p><div class="readiness-row"><span id="health-dot" class="neutral-dot" aria-hidden="true"></span><span id="health">Checking backend readiness…</span><button id="refresh" class="text-button">Refresh</button></div></section>
+    </div>
+    <footer>AlgoTrade AI <span>Research and monitoring · No return guarantees</span></footer>
+  </main>
+</div>
+</body>
+</html>

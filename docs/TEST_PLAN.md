@@ -1,0 +1,149 @@
+# Test plan
+
+Default pytest suite uses isolated migrated SQLite databases. Tests cover defaults and
+unsafe configuration, authentication, hashed session storage, expiry, CSRF, origin checks,
+revocation, rate limiting, input secrecy, security headers, host checks, absent live routes,
+readiness and schema failure/recovery. Tests never load a real broker credential or live adapter; synthetic credentials remain
+local to explicit protocol fixtures. HTTPX real network transports are blocked by an autouse fixture.
+
+Ten opt-in PostgreSQL checks use unique disposable schemas to verify actual migrations,
+readiness, UTC expiry/cleanup, CSRF logout/revocation and session persistence across application
+recreation. They skip without TEST_POSTGRES_URL. The native verification harness starts a
+loopback-only, SCRAM-authenticated temporary cluster and runs the full suite as a non-superuser.
+Latest Phase2 result on2026-11-06:152 passed, zero skipped with PostgreSQL. Without PostgreSQL:
+142 passed, ten skipped. One upstream TestClient deprecation warning remains.
+SQLite tests alone are not PostgreSQL verification.
+
+Run Ruff lint/format and strict mypy. Run pip-audit against installed locked dependencies.
+CI additionally starts PostgreSQL 17, runs all tests, scans dependencies and invokes the
+isolated Compose build/start/restart/outage smoke command. Compose configuration parsing
+has passed locally using the official standalone CLI. Actual image build and container
+auth/non-root/app-restart/database-outage/recovery/logout smoke checks also passed on
+Docker 29.9.2/Compose 5.6.1. CI itself must execute before its success can be claimed.
+Dependency scanning is not a penetration test.
+
+Browser smoke checks executed at true 390/768/1440px viewports: no horizontal overflow,
+theme toggle works, unauthenticated account state stays hidden and missing-database readiness
+is displayed accurately; no captured JavaScript runtime exceptions. Temporary screenshots
+were visually inspected at desktop and mobile sizes.
+
+Pending: CI execution, complete keyboard/screen reader checks, measured contrast audit,
+production hardening and later-phase trading tests. The Phase 1 container runtime gate passed.
+See VERIFICATION.md for evidence and exact reproduction commands.
+Implemented Phase2 broker mocks cover fixed GET routing, no redirects/retries, expiry,
+HTTP401/403/429/timeouts, malformed/oversized bodies, schema/timestamp checks, serialized
+throttling, CSRF, private routes, secret masking and protected local credential-file writes.
+Headless Chrome verified authenticated broker state, synthetic success, rate limiting, logout
+and no horizontal overflow at390/768/1440px with no captured runtime exceptions.
+
+Later: broader broker/data pipeline mocks, strategy/look-ahead tests, fills/idempotency,
+reconciliation, circuit breakers, holiday/calendar handling, restart and outage simulations.
+
+Instrument checks cover chunked UTF-8/JSON parsing, corrupt/truncated/concatenated gzip,
+expansion/record bounds, publication freshness, invalid contracts, duplicate keys, missing
+underlying, immutable deduplication, historical universe selection/removals, offset timestamps,
+stale status, import locking/cooldown/CSRF, rollback and missing/old schema. PostgreSQL adds
+actual numeric/UTC/archive durability, rollback and session-preserving migration upgrade.
+Explicit --check-public-instruments verification imported the real public file to a temporary
+PostgreSQL DB (83,940 source/6,504 selected records); it is not a live trading test.
+Chrome synthetic catalog import/counts/cooldown/logout passed three viewport sizes. Docker
+passed migration/readiness and catalog privacy/CSRF checks. No automatic public fetch in pytest.
+
+History tests: bounded date/interval/path requests, fixed encoded broker GET, duplicate/naive/
+partial/out-of-range/unordered bars, exact OHLC/quantity checks, extreme numbers, malformed JSON,
+identity mismatch, gaps without interpolation, explicit empty batches, option-vs-index identity,
+expired-contract rejection, canonical sanitization, deduplication/rollback, cursor pagination,
+CSRF/private routes/cooldown and missing credentials without network. PostgreSQL adds actual
+history durability/decimals/UTC/rollback and session+catalog-preserving migration roundtrip.
+Chrome uses synthetic bars to check form/import/count/throttle/logout and three widths.
+No real authenticated historical broker request or genuine recorded prices claimed.
+
+## P2-003C — option-chain research (2026-11-06)
+
+P2-003C verification:182 full PostgreSQL tests pass, zero skipped; default169 pass/13 PG
+skipped. Tests cover fixed GET construction, catalog/expiry/CE-PE identity, exact prices/Greeks,
+missing/zero data, malformed payload rejection, receipt versions, rollback, sanitized storage,
+private paginated APIs, CSRF/cooldown, native numeric/timestamp durability and migration recovery.
+Synthetic browser flow passes at390/768/1440px. Actual broker acceptance remains unverified.
+
+## P2-003D — V3 feed foundation (2026-11-06)
+
+53 new synthetic feed cases; full native PostgreSQL suite235 passed/zero skipped; default
+222 passed/13 PG skipped. Tests cover schema hash, independently encoded binary scalar vector,
+unsafe grants, redaction/expiry/reuse, missing/expired credentials, safe HTTP failures, catalog
+resolution, subscription bytes, malformed/mismatched/mode/numeric/timestamp frames and known
+market statuses. Strict mypy23 files and Ruff55 files pass. Lock check and dependency audit pass.
+Container smoke also exercises decoding. No frontend changes; no new browser check needed.
+
+## P2-003E — bounded feed lifecycle (2026-11-06)
+
+P2-003E adds25 mocked lifecycle cases. Full disposable PostgreSQL suite260 passed/zero skipped;
+default247 passed/13 PG skipped. Ruff60/mypy25/lock and dependency audit pass. Separate real
+loopback TLS verifies binary subscribe, schema ordering, server ping/client pong, cleanup and
+302 redirect rejection. CI step added but not run remotely. No real broker or browser test.
+
+## P2-003F — durable research observations (2026-11-06)
+
+P2-003F adds16 cases (13 general plus3 native PostgreSQL):full suite276 pass/zero skipped;
+default260 pass/16 PG skip. Covers canonical/idempotent receipts, pagination, sampled intervals
+and continuity breaks, unsafe/schema mismatch, transaction rollback/byte caps, lease recovery,
+private API, runner integration, cancellation/in-flight commit, concurrent row locks, restart
+and migration retention. Ruff66/mypy29/lock PASS. Docker migration/private reads/persistence
+and real loopback TLS regression PASS. No real broker data or new browser check.
+
+## P2-003G — calendar/coverage baseline (2026-11-06)
+
+P2-003G adds25 cases (23 general/2 PG):full301 pass/zero skip; default283 pass/18 PG skip.
+Coverage includes verified hashes/holiday/special priority, reviewed-hour/year unknowns, bounds,
+source separation/overlap union/discontinuities, future/closed/empty windows, archive/resource
+failures, private read-only endpoints, consistent native PG snapshot and restart. Ruff70/mypy31/
+lock PASS. No dependency/frontend change; genuine NSE source artifacts, synthetic market data.
+
+## P2-003H — bounded supervision (2026-11-06)
+
+P2-003H adds18 cases (16 general/2 PG).319 nativePG pass/zero skip; default299 pass/20 PG skip.
+Tests cover rollover/grants/distinct IDs/quota statistics, early byte/event rejection, child
+access failure/pending retry, cooperative stop/external cancellation/creation race, lease
+recovery, hard policy limits, runtime exhaustion, concurrent quota enforcement/rollback and
+restart/downgrade child preservation. Ruff77/mypy34/lock PASS. New standalone verify_supervision
+checks real local TLS and two durable synthetic sessions; CI step updated, not remotely run.
+
+## P2-003I — safe capture preflight (2026-11-06)
+
+P2-003I adds16 cases (14 general/2 PG):full335 pass/zero skip; default313 pass/22 PG skip.
+Credential/schema/catalog/calendar/quota/active-record diagnostics, no mutations/network, API
+auth/validation, CLI safe errors/no-start, native local-pass and revoked INSERT detection pass.
+Ruff81/mypy36/lock and real localTLS supervision regression PASS. No dependency/frontend change.
+Actual workspace diagnostic correctly BLOCKED for missing credential/unavailable DB.
+
+## 2026-11-06T14:26:00Z — P2-003J secure local runtime bootstrap
+
+Implemented `scripts.bootstrap_local`: protected missing DB/admin credentials, Argon2 hash,
+atomic mode0600 files, mode0700 runtime directory, local advisory lock, preservation of
+existing secrets and settings, fail-closed conflict/link/existing-volume checks, Unix-socket
+Docker restriction, private Compose startup and secret-free HTTP post-setup checks.
+No new API, schema, dependency or frontend change. Head remains0006_capture_runs.
+
+Actual persistent project `algotrade-ai-local` is running at http://127.0.0.1:8000.
+Readiness200, anonymous overview401, administrator login/private overview/preflight and CSRF
+logout passed. `.env` and `.local/runtime/admin-password.txt` hold local protected settings;
+never print or paste their contents. DB is private, application loopback-only. Actual app
+preflight BLOCKED:CREDENTIAL_MISSING,CURRENT_CATALOG_REQUIRED; database/schema/admin setup
+now works. The earlier14:05 host report describes the pre-bootstrap state only. Generated
+DATABASE_URL uses internal `db`; host CLI cannot directly reach this unpublished database.
+No broker call, public metadata import, recording, strategy, order or phase promotion occurred.
+
+Verification:348 passed against disposable PostgreSQL17.11/SCRAM/non-superuser; temporary
+cluster stopped/removed. Default326 passed/22 PostgreSQL skipped. One upstream TestClient
+warning.13 new bootstrap security cases. Ruff lint/format PASS83files, strict mypy PASS36
+backendfiles, offline locked uv sync PASS. Persistent local deployment is distinct from the
+disposable test DB. Previous same-day dependency audit retained; no dependency change.
+
+Security:credentials never returned in safe CLI report or passed in argv; local plaintext
+password file is not an encrypted vault. Existing hashes/DB passwords never reset. Existing
+volume without credentials refuses generation. Private Compose initialization user has broad
+DB privileges; production role separation/TLS/backup/retention/hardening remain pending.
+Mode OBSERVATION; entries/live false, recording_startedfalse; genuine certified days0,
+observation_started_at null. Real broker acceptance and calendar amendment proof unverified.
+Next:P2-003K persistent public instrument metadata onboarding and connection-readiness guidance;
+actual Analytics credential must be entered by the operator through local hidden helper only.
