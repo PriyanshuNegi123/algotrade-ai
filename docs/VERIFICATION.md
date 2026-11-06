@@ -555,3 +555,60 @@ and no ignores:zero findings;all-ref history scan exit0/zero unallowed findings 
 reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by agent.
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
+
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+
+Objective:fix verify job's test_postgres_preflight_missing_write_privilege without weakening
+assertions or touching operator DB/credentials. Current branchmain,baseHEADa7a8301 at inspection.
+
+Root cause:test setup,not capture_preflight. CI postgres17.6 image's POSTGRES_USER is the
+bootstrap superuser; the same login creates each schema and Alembic tables,includingcapture_runs.
+Queried actual disposable CI service:setup rolsuper=true,table owner=true,INSERTbefore=true,
+INSERTafter REVOKE FROM CURRENT_USER=true. Superuser bypass remains despite ACL revocation.
+Owner alone is not sufficient explanation:PostgreSQL permits ordinary owners to revoke their
+own DML privileges,which is why the old non-superuser native harness passed. Official reference:
+https://www.postgresql.org/docs/17/ddl-priv.html . Application correctly checks actual current_user
+has_table_privilege individually inside read-only preflight; no runtime/security change needed.
+
+Fix:tests/conftest.py adds postgres_restricted_role fixture with unique generated NOLOGIN,
+NOSUPERUSER,NOCREATEDB,NOCREATEROLE,NOINHERIT,NOBYPASSRLS role. Grants USAGE/SELECT only within
+that test's isolated schema plus exactly preflight's required write privileges. Grants setup
+login SET membership without inheritance; restricted SQLAlchemy engine SET ROLE on every new
+connection. Original setup owner retained; no ownership change. Fixture disposes pool,revokes
+its scoped table/schema grants and drops role/memberships in finally,asserting role absence.
+Identifier quoting/psycopg SQL identifiers used for DDL; no caller-controlled identifier SQL.
+
+Test asserts effective role is different from session_user,not superuser/CREATEROLE/BYPASSRLS,
+not table owner and does not inherit owner privileges. Baseline preflight succeeds. Owner
+revokes only capture_runs INSERT for that role. Permission queries verify INSERT=false and
+all other required write grants true. Actual zero-row INSERT rejected with SQLSTATE42501;
+no rows can be created even if privilege check regresses. Then original blocker assertion
+retained and strengthened:onlyDATABASE_PRIVILEGES_MISSING,write_privilegesMISSING,capturefalse.
+No skip/deletion/assertion weakening,superuser restricted role or disabled checks.
+
+scripts/verify_postgres.py grants CREATEROLE to its fresh non-superuser setup login solely
+inside disposable cluster so the fixture can create/drop temporary roles. Restricted role
+still NOCREATEROLE. .github/workflows/ci.yml reviewed and unchanged; existing CI setup supports
+role creation. No permanent role/grant/ownership or production configuration changes.
+
+Verification order/results:
+- Specific failing test first on fresh isolated CI-like Docker PostgreSQL17.6:1FAILED as
+  reported before fix; post-fix same targeted test1PASSED.
+- Requested uv run ruff check,ruff format --check,mypy allPASS (83files/36backendfiles).
+  Initial import/format findings corrected before final requested checks.
+- uv run pytest -ra against CI-like Docker17.6/superuser setup:348PASSED,zero skipped.
+- Full native PostgreSQL17.11 with non-superuser CREATEROLE setup:348PASSED,zero skipped.
+- One upstream Starlette TestClient deprecation warning; no actual broker requests in tests.
+- CI DB after tests:0temporary roles,0test/probe schemas;role drop/grant cleanup verified.
+  Disposable Docker container stopped/removed;private test credentials/harness deleted.
+  Native cluster stopped/removed. Persistent operator DB/deployment untouched.
+
+Files:tests/conftest.py,tests/integration/test_postgres.py,scripts/verify_postgres.py,
+docs/TEST_PLAN.md,docs/VERIFICATION.md,all8agent_memory records. No app/Python runtime logic,
+trading strategies,broker integration,Upstox credential/env or live activation changes.
+Mode OBSERVATION/live off unchanged; actual market data/archives not accessed or altered.
+Local commit explicitly authorized; do not push without approval. Remote GitHub rerun remains
+pending approved push; local success does not claim hosted verify job has rerun/passed.
+Remaining:one upstream warning,external disposable setup roles now require CREATEROLE; later
+CI stages not rerun because unchanged by this test-only fix. Functional backlog stillP2-003Q.
+Exact next:review local commit,obtain user approval before push,and rerun GitHub verify.

@@ -662,3 +662,22 @@ and no ignores:zero findings;all-ref history scan exit0/zero unallowed findings 
 reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by agent.
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
+
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+
+Objective:fix CI-PG-PERM and make authorized local commit;do not push. CI bootstrap user
+is superuser/table owner;queried INSERT=true after REVOKE. Test reproduced1failure first.
+Implemented separate non-owner/NOSUPERUSER/NOLOGIN/NOCREATEROLE role with scoped grants and
+SET ROLE connections. Baseline passes;only capture_runs INSERT revoked;actual INSERT denied
+42501;original blocker assertion retained/strengthened. Fixture finally removes grants/role/
+memberships;native disposable setup gets CREATEROLE,no runtime preflight/security edits.
+Files:tests/conftest.py,test_postgres.py,scripts/verify_postgres.py,TEST_PLAN/VERIFICATION,
+all8handoff records. Target1pass after fix. Required uv lint/format/mypy PASS;348tests pass
+on Docker17.6 CI-like setup and native17.11 non-superuser setup. One upstream warning.
+Initial lint formatting findings fixed. Verified0roles/0schemas remain;temporary Docker/
+native clusters and generated test credentials removed. Operator DB,Upstox credentials,
+settings and live flags untouched;OBSERVATION/no broker calls. Remote hosted rerun pending
+approved push;unchanged later CI stages not rerun. Exact next:local commit review/approved
+push/verify rerun;functional backlogP2-003Q. Full diagnostics:docs/VERIFICATION.md.
+
+Pre-commit verification:all13changed files passed default-rule Gitleaks scans without ignores;zero findings. Git whitespace check passed. No pre-existing staged changes;only this verified fix and its documentation are included in the authorized local commit. No push.

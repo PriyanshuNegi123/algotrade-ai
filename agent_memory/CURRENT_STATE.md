@@ -1,6 +1,6 @@
 # Current state
 
-Updated:2026-11-06T15:52:35.233597+00:00 (UTC). Codex / root. Phase1 complete; Phase2 partial.
+Updated:2026-11-06T17:53:39.936212+00:00 (UTC). Codex / root. Phase1 complete; Phase2 partial; CI permission fix below.
 
 Read AGENTS.md, this file, HANDOFF.md and PENDING_TASKS.md before changing source.
 Authoritative requirements:docs/PROJECT_BRIEF.md. Consolidated progress/next actions:
@@ -115,3 +115,19 @@ and no ignores:zero findings;all-ref history scan exit0/zero unallowed findings 
 reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by agent.
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
+
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+
+CI-PG-PERM fixed locally. Root cause:CI bootstrap login owns migrated tables and is a
+superuser; REVOKE leaves effective INSERT=true. Preflight was correct. Test now uses a
+unique non-owner/NOSUPERUSER/NOLOGIN/NOCREATEROLE/NOBYPASSRLS role, asserts effective grants
+and actual INSERT denial42501,then requires DATABASE_PRIVILEGES_MISSING. Fixture removes
+scoped grants/role/memberships; native disposable setup alone gets CREATEROLE.
+Files:tests/conftest.py,test_postgres.py,scripts/verify_postgres.py,verification/test-plan docs
+and all8handoff records. Target reproduced1fail before fix,then1pass. Full348pass on Docker
+PostgreSQL17.6(superuser setup) and native17.11(non-superuser setup);requested uv lint/format/
+mypy pass. One upstream TestClient warning. Zero leftover roles/schemas;temporary databases
+and credentials removed. No operator DB,Upstox credentials,application permission checks or
+trading changes;OBSERVATION/live off retained. Local commit authorized;push requires approval.
+Next:approved push and hosted verify rerun;later CI stages not rerun locally. Functional
+backlog remainsP2-003Q. Full root-cause/evidence in docs/VERIFICATION.md latest entry.

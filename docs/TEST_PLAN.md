@@ -147,3 +147,16 @@ Mode OBSERVATION; entries/live false, recording_startedfalse; genuine certified 
 observation_started_at null. Real broker acceptance and calendar amendment proof unverified.
 Next:P2-003K persistent public instrument metadata onboarding and connection-readiness guidance;
 actual Analytics credential must be entered by the operator through local hidden helper only.
+
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+
+Permission-denial tests need a disposable PostgreSQL setup login with CREATEROLE (or a
+bootstrap superuser),not production. Migrations retain setup ownership. The restricted
+execution role is separately created NOLOGIN/NOSUPERUSER/NOCREATEROLE/NOBYPASSRLS/non-owner.
+Fixture grants isolated-schema reads/required writes and SET ROLE per connection;teardown
+revokes grants and drops role/memberships. No ordinary default test role becomes superuser.
+Test positive baseline,then revoke capture_runs INSERT,query effective privileges and prove
+actual INSERT fails42501 before asserting preflight's DATABASE_PRIVILEGES_MISSING blocker.
+CI17.6superuser setup and native17.11non-superuser setup both pass348tests;target1pass after
+reproduced failure. uv Ruff/format/mypy pass. One upstream warning. Fixture cleanup verified
+zero roles/schemas remain. See VERIFICATION.md for exact root cause/security boundaries.

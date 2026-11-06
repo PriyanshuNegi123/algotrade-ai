@@ -408,3 +408,12 @@ and no ignores:zero findings;all-ref history scan exit0/zero unallowed findings 
 reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by agent.
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
+
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+
+CI permission failure root cause fixed in test setup,not app:bootstrap superuser bypassed
+self-REVOKE. Both CI-like/non-superuser disposable suites348pass;target1pass. Fixture now
+proves INSERT denied42501 and cleans roles/grants. Native/external disposable setup login
+requires CREATEROLE;restricted role remains NOCREATEROLE/NOSUPERUSER/non-owner.
+Hosted verify rerun remains pending approved push;unchanged later CI stages not rerun locally.
+One upstream TestClient warning remains. No operator DB/credentials/live change.

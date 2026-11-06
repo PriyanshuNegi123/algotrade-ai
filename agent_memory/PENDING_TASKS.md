@@ -7,6 +7,7 @@ Functional next is nowP2-003Q; publishing checks must be repeated after the fina
 
 | ID | Priority | Dependencies | Scope | Acceptance criteria | Complexity | Status |
 |---|---|---|---|---|---|---|
+| CI-PG-PERM | P0 | Disposable PostgreSQL | Realistic permission-denial test across CI/native role contexts | Non-owner/non-superuser INSERT actually denied; preflight blocks; temporary roles/grants removed | Medium | COMPLETE locally:target1pass;348pass Docker17.6+native17.11;remote rerun awaits approved push |
 | P1-VERIFY | P0 | Docker/PostgreSQL | Verify image build, migrations, auth, non-root UID, app restart and database outage/recovery | Full isolated smoke succeeds and cleanup confirmed | Medium | COMPLETE 2026-11-06: native PostgreSQL 41 tests and actual container smoke passed; CI execution tracked separately |
 | P1-UI-AUDIT | P1 | P1-004 | Keyboard, screen reader and measured contrast audit | Accessible focus/order/errors and AA contrast measured; resolve defects | Small | Pending |
 | P2-001 | P1 | P1-VERIFY | Official read-only Upstox API review | Sources/date/versions/credential limits and unknowns recorded | Medium | COMPLETE 2026-11-06; see BROKER_COMPLIANCE.md |
@@ -275,3 +276,10 @@ and no ignores:zero findings;all-ref history scan exit0/zero unallowed findings 
 reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by agent.
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
+
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+
+CI-PG-PERM verified locally:target1pass;full348pass with both CI-superuser setup and native
+non-superuser setup,uv lint/format/mypy pass. Corrected test isolation and fixture cleanup;
+preflight unchanged. Next:review local commit and approve push before hosted verify rerun.
+One upstream warning remains;functional nextP2-003Q unchanged. No production/live changes.

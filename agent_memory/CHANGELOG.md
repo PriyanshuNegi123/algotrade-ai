@@ -409,3 +409,12 @@ and no ignores:zero findings;all-ref history scan exit0/zero unallowed findings 
 reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by agent.
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
+
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+
+Fixed CI-PG-PERM:CI superuser self-REVOKE did not remove effective INSERT. Added isolated
+non-owner/non-superuser permission fixture,actual denied INSERT check,and precise blocker
+assertions. Native disposable harness permits fixture role creation;runtime checks unchanged.
+Target1pass;full348pass on Docker17.6/native17.11;uv lint/format/mypy pass. Temporary grants/
+roles/databases cleaned;no operator credentials/data or trading changes. Local commit
+requested;no push. See docs/VERIFICATION.md and TEST_PLAN.md.

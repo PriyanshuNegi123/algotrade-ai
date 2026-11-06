@@ -199,3 +199,24 @@ and no ignores:zero findings;all-ref history scan exit0/zero unallowed findings 
 reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by agent.
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
+
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+
+User authorized fixing CI's permission test and committing locally without pushing.
+Root cause:CI POSTGRES_USER is bootstrap superuser and Alembic owner; effective INSERT
+stays true after REVOKE. Non-superuser owners can revoke own DML,explaining old local pass.
+Application has_table_privilege(current_user,...) is correct and unchanged.
+Fixture now creates a unique isolated-schema non-owner role (NOLOGIN,NOSUPERUSER,NOCREATEDB,
+NOCREATEROLE,NOINHERIT,NOBYPASSRLS),uses SET ROLE per new connection,and cleans grants,
+role/memberships in finally. Test verifies baseline passes,only capture_runs INSERT missing,
+actual INSERT SQLSTATE42501,and original blocker/stronger checks. Native disposable setup
+gets CREATEROLE solely to create/delete fixture roles;no production grants or owner changes.
+Target1failed before fix/1passed after. Requested uv Ruff/format/mypy PASS. Full348passed on
+Docker17.6 CI-superuser setup and native17.11 non-superuser setup;zero skips,one upstream
+TestClient warning. Zero leaked roles/schemas;both disposable databases/credentials removed.
+Files:3test/harness source files,TEST_PLAN/VERIFICATION and all8agent_memory records.
+Security:operator DB/Upstox/env/runtime untouched,OBSERVATION/live off,no real broker calls.
+Next:review local commit,obtain approval before push,rerun GitHub verify. Hosted success
+not claimed;later unchanged CI stages not rerun. Functional next remainsP2-003Q.
+
+Pre-commit verification:all13changed files passed default-rule Gitleaks scans without ignores;zero findings. Git whitespace check passed. No pre-existing staged changes;only this verified fix and its documentation are included in the authorized local commit. No push.

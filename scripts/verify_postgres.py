@@ -103,7 +103,7 @@ def main():
                 connection.execute(
                     sql.SQL(
                         "CREATE ROLE algotrade_verify LOGIN PASSWORD {} "
-                        "NOSUPERUSER NOCREATEDB NOCREATEROLE"
+                        "NOSUPERUSER NOCREATEDB CREATEROLE"
                     ).format(sql.Literal(app_password))
                 )
                 connection.execute("CREATE DATABASE algotrade_test OWNER algotrade_verify")
@@ -125,7 +125,9 @@ def main():
                 }
             )
             print(
-                f"PostgreSQL {version}; loopback only, SCRAM; non-superuser test role.", flush=True
+                f"PostgreSQL {version}; loopback only, SCRAM; non-superuser test setup role "
+                "with CREATEROLE for disposable permission fixtures.",
+                flush=True,
             )
             run([sys.executable, "-m", "pytest", "--tb=short"], env=environment)
             if args.check_public_instruments:

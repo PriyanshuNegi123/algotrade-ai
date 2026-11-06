@@ -525,3 +525,12 @@ and no ignores:zero findings;all-ref history scan exit0/zero unallowed findings 
 reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by agent.
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
+
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+
+CI-PG-PERM:retain correct runtime privilege detection. Test real execution privileges with
+a fresh non-owner/NOSUPERUSER/NOLOGIN role and SET ROLE per connection;do not alter ownership,
+weaken blocker assertion,skip test or use superuser as restricted role. Grant only isolated
+schema reads and required writes,then revoke one INSERT. Prove denial42501 before preflight.
+Drop role/scoped grants in finally. Only disposable native setup gets CREATEROLE;no app-role
+or production permission changes. Both348-test configurations pass;hosted rerun awaits push.

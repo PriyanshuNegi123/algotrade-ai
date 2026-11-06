@@ -6,7 +6,8 @@ from alembic import command
 from alembic.config import Config
 from argon2 import PasswordHasher
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from psycopg import sql
+from sqlalchemy import create_engine, event, text
 from sqlalchemy.engine import make_url
 from sqlalchemy.schema import CreateSchema, DropSchema
 
@@ -87,3 +88,76 @@ def postgres_config(monkeypatch, password_hash):
                 connection.execute(DropSchema(schema, cascade=True, if_exists=True))
         finally:
             root_engine.dispose()
+
+
+@pytest.fixture
+def postgres_restricted_role(postgres_config):
+    """A disposable non-owner execution role, even when CI setup is a superuser.
+
+    Only the disposable database setup login needs CREATEROLE. SET ROLE on each
+    new connection exercises actual PostgreSQL permissions without another password.
+    """
+    from backend.app.market_data.preflight import WRITE_PERMISSIONS
+
+    url = make_url(postgres_config.database_url.get_secret_value())
+    owner = create_engine(url, hide_parameters=True)
+    restricted = create_engine(url, hide_parameters=True)
+    role = f"verify_restricted_{uuid4().hex}"
+    quote = owner.dialect.identifier_preparer.quote_identifier
+    created = False
+    try:
+        with owner.begin() as connection:
+            schema = connection.scalar(text("SELECT current_schema()"))
+            assert schema.startswith("verify_") and len(schema) == 39
+            setup_user = connection.scalar(text("SELECT current_user"))
+            assert connection.scalar(
+                text("SELECT rolsuper OR rolcreaterole FROM pg_roles WHERE rolname=current_user")
+            ), "Disposable PostgreSQL setup login requires CREATEROLE for role-isolation tests"
+            connection.execute(
+                text(
+                    f"CREATE ROLE {quote(role)} NOLOGIN NOSUPERUSER NOCREATEDB "
+                    "NOCREATEROLE NOINHERIT NOBYPASSRLS"
+                )
+            )
+            connection.execute(text(f"GRANT USAGE ON SCHEMA {quote(schema)} TO {quote(role)}"))
+            connection.execute(
+                text(f"GRANT SELECT ON ALL TABLES IN SCHEMA {quote(schema)} TO {quote(role)}")
+            )
+            for table, privilege in WRITE_PERMISSIONS:
+                connection.execute(
+                    text(f"GRANT {privilege} ON {quote(schema)}.{quote(table)} TO {quote(role)}")
+                )
+            connection.execute(
+                text(f"GRANT {quote(role)} TO {quote(setup_user)} WITH SET TRUE, INHERIT FALSE")
+            )
+        created = True
+
+        @event.listens_for(restricted, "connect")
+        def assume_restricted_role(dbapi_connection, connection_record):
+            with dbapi_connection.cursor() as cursor:
+                cursor.execute(sql.SQL("SET ROLE {}").format(sql.Identifier(role)))
+            dbapi_connection.commit()
+
+        yield owner, restricted, role
+    finally:
+        restricted.dispose()
+        try:
+            if created:
+                with owner.begin() as connection:
+                    connection.execute(
+                        text(
+                            f"REVOKE ALL ON ALL TABLES IN SCHEMA {quote(schema)} FROM {quote(role)}"
+                        )
+                    )
+                    connection.execute(
+                        text(f"REVOKE USAGE ON SCHEMA {quote(schema)} FROM {quote(role)}")
+                    )
+                    # DROP ROLE also removes its memberships. Keep the creator's
+                    # ADMIN option until then so non-superuser setup can drop it.
+                    connection.execute(text(f"DROP ROLE {quote(role)}"))
+                    assert not connection.scalar(
+                        text("SELECT EXISTS (SELECT 1 FROM pg_roles WHERE rolname=:role)"),
+                        {"role": role},
+                    )
+        finally:
+            owner.dispose()

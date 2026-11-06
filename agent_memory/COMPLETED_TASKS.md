@@ -397,3 +397,13 @@ and no ignores:zero findings;all-ref history scan exit0/zero unallowed findings 
 reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by agent.
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
+
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+
+CI-PG-PERM complete locally:replaced ineffective superuser self-REVOKE scenario with a
+non-owner/non-superuser fixture and genuine permission-denied INSERT42501. Kept and
+strengthened blocker assertion;preflight unchanged. Scoped cleanup verified. Target1pass;
+full348pass on CI-like17.6 and native17.11;uv lint/format/mypy pass. One upstream warning.
+Source:tests/conftest.py,tests/integration/test_postgres.py,scripts/verify_postgres.py.
+Docs:TEST_PLAN/VERIFICATION/all8handoff files. No production changes or push;remote verify
+rerun awaits approved push. See docs/VERIFICATION.md for reproduction/root cause.
