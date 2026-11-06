@@ -1,4 +1,23 @@
-# Completed tasks
+# Known issues
+
+## Open issue: GitHub Actions resolution unconfirmed — 2026-11-06T18:07:20.891567+00:00
+
+- Full local pytest suite with disposable PostgreSQL: **348 passed, 0 failed, 0 skipped**.
+- PostgreSQL privilege integration test: **passed** with PostgreSQL connected.
+- **One Starlette TestClient deprecation warning remains.**
+- **The previous GitHub Actions PostgreSQL failure has not yet been confirmed resolved.**
+  Local success is not confirmation that the hosted `verify` job passes. Do not mark CI
+  resolved until a GitHub Actions workflow containing the remediation completes successfully.
+- Local remediation is in `e108f1e`; connected verification evidence is in `a60a287` and
+  `docs/VERIFICATION.md`. These are previously executed results, not tests rerun by this
+  documentation update. The default run without PostgreSQL (326 passed, 22 skipped) does
+  not exercise the skipped PostgreSQL tests and is not the connected-suite result above.
+- Next: obtain approval before pushing, then inspect the hosted workflow result. If it
+  fails, investigate the new logs; if it passes, record the run/commit evidence before
+  closing the CI issue. No push or hosted workflow run was performed by this update.
+- OBSERVATION retained; live trading stays disabled. No code, credentials, environment,
+  database permissions or runtime settings changed.
+
 
 Date: 2026-11-06 UTC. Only verified implementation is marked complete.
 
@@ -409,16 +428,16 @@ reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by 
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
 
-## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM local remediation verified; hosted CI unconfirmed
 
-CI permission failure root cause fixed in test setup,not app:bootstrap superuser bypassed
+Local test-setup remediation verified; hosted CI failure remains unconfirmed:bootstrap superuser bypassed
 self-REVOKE. Both CI-like/non-superuser disposable suites348pass;target1pass. Fixture now
 proves INSERT denied42501 and cleans roles/grants. Native/external disposable setup login
 requires CREATEROLE;restricted role remains NOCREATEROLE/NOSUPERUSER/non-owner.
 Hosted verify rerun remains pending approved push;unchanged later CI stages not rerun locally.
 One upstream TestClient warning remains. No operator DB/credentials/live change.
 
-## 2026-11-06T18:00:37.861532+00:00 — PostgreSQL CI fix recheck; passed vs skipped clarified
+## 2026-11-06T18:00:37.861532+00:00 — Local PostgreSQL recheck; hosted CI unconfirmed
 
 Existing code fix e108f1e retained;no extra application/test edits needed. Root cause is CI
 superuser bypass of self-REVOKE;non-owner/non-superuser fixture and actual denial42501 already

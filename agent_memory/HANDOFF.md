@@ -1,5 +1,24 @@
 # Handoff
 
+## Latest verification status — 2026-11-06T18:07:20.891567+00:00
+
+- Full local pytest suite with disposable PostgreSQL: **348 passed, 0 failed, 0 skipped**.
+- PostgreSQL privilege integration test: **passed** with PostgreSQL connected.
+- **One Starlette TestClient deprecation warning remains.**
+- **The previous GitHub Actions PostgreSQL failure has not yet been confirmed resolved.**
+  Local success is not confirmation that the hosted `verify` job passes. Do not mark CI
+  resolved until a GitHub Actions workflow containing the remediation completes successfully.
+- Local remediation is in `e108f1e`; connected verification evidence is in `a60a287` and
+  `docs/VERIFICATION.md`. These are previously executed results, not tests rerun by this
+  documentation update. The default run without PostgreSQL (326 passed, 22 skipped) does
+  not exercise the skipped PostgreSQL tests and is not the connected-suite result above.
+- Next: obtain approval before pushing, then inspect the hosted workflow result. If it
+  fails, investigate the new logs; if it passes, record the run/commit evidence before
+  closing the CI issue. No push or hosted workflow run was performed by this update.
+- OBSERVATION retained; live trading stays disabled. No code, credentials, environment,
+  database permissions or runtime settings changed.
+
+
 ## 2026-11-06T15:05:16.615874+00:00 — P2-003O real option-chain acceptance COMPLETE
 
 Verified one actual read-only Upstox option-chain GET via private authenticated app capture.
@@ -200,7 +219,7 @@ reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by 
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
 
-## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM local remediation verified; hosted CI unconfirmed
 
 User authorized fixing CI's permission test and committing locally without pushing.
 Root cause:CI POSTGRES_USER is bootstrap superuser and Alembic owner; effective INSERT
@@ -221,7 +240,7 @@ not claimed;later unchanged CI stages not rerun. Functional next remainsP2-003Q.
 
 Pre-commit verification:all13changed files passed default-rule Gitleaks scans without ignores;zero findings. Git whitespace check passed. No pre-existing staged changes;only this verified fix and its documentation are included in the authorized local commit. No push.
 
-## 2026-11-06T18:00:37.861532+00:00 — PostgreSQL CI fix recheck; passed vs skipped clarified
+## 2026-11-06T18:00:37.861532+00:00 — Local PostgreSQL recheck; hosted CI unconfirmed
 
 Existing code fix e108f1e retained;no extra application/test edits needed. Root cause is CI
 superuser bypass of self-REVOKE;non-owner/non-superuser fixture and actual denial42501 already

@@ -1,6 +1,25 @@
 # Current state
 
-Updated:2026-11-06T18:00:37.861532+00:00 (UTC). Codex / root. PostgreSQL CI fix e108f1e reverified; latest evidence below.
+Updated:2026-11-06T18:07:20.891567+00:00 (UTC). Local PostgreSQL results verified; GitHub Actions resolution unconfirmed.
+
+## Latest verification status — 2026-11-06T18:07:20.891567+00:00
+
+- Full local pytest suite with disposable PostgreSQL: **348 passed, 0 failed, 0 skipped**.
+- PostgreSQL privilege integration test: **passed** with PostgreSQL connected.
+- **One Starlette TestClient deprecation warning remains.**
+- **The previous GitHub Actions PostgreSQL failure has not yet been confirmed resolved.**
+  Local success is not confirmation that the hosted `verify` job passes. Do not mark CI
+  resolved until a GitHub Actions workflow containing the remediation completes successfully.
+- Local remediation is in `e108f1e`; connected verification evidence is in `a60a287` and
+  `docs/VERIFICATION.md`. These are previously executed results, not tests rerun by this
+  documentation update. The default run without PostgreSQL (326 passed, 22 skipped) does
+  not exercise the skipped PostgreSQL tests and is not the connected-suite result above.
+- Next: obtain approval before pushing, then inspect the hosted workflow result. If it
+  fails, investigate the new logs; if it passes, record the run/commit evidence before
+  closing the CI issue. No push or hosted workflow run was performed by this update.
+- OBSERVATION retained; live trading stays disabled. No code, credentials, environment,
+  database permissions or runtime settings changed.
+
 
 Read AGENTS.md, this file, HANDOFF.md and PENDING_TASKS.md before changing source.
 Authoritative requirements:docs/PROJECT_BRIEF.md. Consolidated progress/next actions:
@@ -116,9 +135,9 @@ reviewed allowances. Current HEAD33c143d,3reachable commits;no index changes by 
 Default/native runtime checks passed as recorded above;git whitespace checks passed. Temporary
 real-broker harness removed;ignored reports contain safe aggregates only. Exact next:P2-003Q.
 
-## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM PostgreSQL permission regression fixed
+## 2026-11-06T17:53:39.936212+00:00 — CI-PG-PERM local remediation verified; hosted CI unconfirmed
 
-CI-PG-PERM fixed locally. Root cause:CI bootstrap login owns migrated tables and is a
+CI-PG-PERM local remediation verified; GitHub Actions resolution is unconfirmed. Root cause:CI bootstrap login owns migrated tables and is a
 superuser; REVOKE leaves effective INSERT=true. Preflight was correct. Test now uses a
 unique non-owner/NOSUPERUSER/NOLOGIN/NOCREATEROLE/NOBYPASSRLS role, asserts effective grants
 and actual INSERT denial42501,then requires DATABASE_PRIVILEGES_MISSING. Fixture removes
@@ -132,7 +151,7 @@ trading changes;OBSERVATION/live off retained. Local commit authorized;push requ
 Next:approved push and hosted verify rerun;later CI stages not rerun locally. Functional
 backlog remainsP2-003Q. Full root-cause/evidence in docs/VERIFICATION.md latest entry.
 
-## 2026-11-06T18:00:37.861532+00:00 — PostgreSQL CI fix recheck; passed vs skipped clarified
+## 2026-11-06T18:00:37.861532+00:00 — Local PostgreSQL recheck; hosted CI unconfirmed
 
 Existing code fix e108f1e retained;no extra application/test edits needed. Root cause is CI
 superuser bypass of self-REVOKE;non-owner/non-superuser fixture and actual denial42501 already
