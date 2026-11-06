@@ -373,7 +373,7 @@ def test_postgres_observation_rollback_and_migration(postgres_config):
         assert client.get(f"/api/observations/sessions/{identity}").status_code == 404
 
 
-def test_postgres_coverage_readonly_consistent_and_restart(postgres_config):
+def test_postgres_coverage_readonly_consistent_and_restart(postgres_config, coverage_clock):
     from backend.app.market_data.coverage import coverage_report
     from backend.app.market_data.observations import read_session
     from tests.integration.test_coverage import fixture_calendar, recorded, report_request
@@ -397,7 +397,7 @@ def test_postgres_coverage_readonly_consistent_and_restart(postgres_config):
         assert result["source"] == "SYNTHETIC" and result["qualifying_observation_days"] == 0
 
 
-def test_postgres_coverage_corrupt_archive_fails_closed(postgres_config):
+def test_postgres_coverage_corrupt_archive_fails_closed(postgres_config, coverage_clock):
     from sqlalchemy import update
 
     from backend.app.market_data.coverage import CoverageError, coverage_report
@@ -522,6 +522,9 @@ def test_postgres_preflight_local_pass_does_not_write_or_certify(postgres_config
         )
         assert result["state"] == "LOCAL_CHECKS_PASSED" and result["can_attempt_capture"]
         assert result["checks"]["write_privileges"] == "TABLE_GRANTS_PRESENT"
+        assert result["catalog"]["state"] == "AVAILABLE"
+        assert result["catalog"]["gate_result"] == "CURRENT_KEYS_RESOLVED"
+        assert result["catalog"]["snapshot_id"] == result["catalog_snapshot_id"]
         assert not result["database_writes_verified"] and not result["broker_access_verified"]
         assert not result["recording_started"] and not result["live_enabled"]
         with engine.connect() as connection:
@@ -586,3 +589,33 @@ def test_postgres_preflight_missing_write_privilege(postgres_config, postgres_re
     assert result["blockers"] == ["DATABASE_PRIVILEGES_MISSING"]
     assert result["checks"]["write_privileges"] == "MISSING"
     assert not result["can_attempt_capture"]
+
+
+def test_postgres_operator_stop_preserves_parent_quota_stats(postgres_config):
+    from backend.app.market_data.feed import FeedRequest
+    from backend.app.market_data.supervision_store import (
+        CapturePolicy,
+        capture_stop_requested,
+        create_capture,
+        finish_capture,
+        read_capture,
+        request_capture_stop,
+    )
+
+    with TestClient(create_app(postgres_config)) as client:
+        engine = client.app.state.engine
+        identity = create_capture(
+            engine,
+            FeedRequest(instrument_keys=("NSE_INDEX|Synthetic index",)),
+            CapturePolicy(),
+            "SYNTHETIC",
+        )
+        assert request_capture_stop(engine, identity)["stop_requested"]
+        assert capture_stop_requested(engine, identity)
+        first = read_capture(engine, identity)
+        assert first["capture"]["event_count"] == 0 and first["capture"]["payload_bytes"] == 0
+        assert request_capture_stop(engine, identity)["stop_requested"]
+        assert read_capture(engine, identity) == first
+        finish_capture(engine, identity, "COOPERATIVE_STOP")
+        assert not request_capture_stop(engine, identity)["stop_requested"]
+        assert read_capture(engine, identity)["capture"]["status"] == "CLOSED"

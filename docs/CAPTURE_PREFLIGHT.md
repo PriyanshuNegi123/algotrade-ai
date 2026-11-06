@@ -171,3 +171,47 @@ corrected against actual source, rerun passed, no database mutation by either ve
 Next:P2-003L operator-local Analytics setup and explicit read-only connection acceptance.
 Operator must enter credential/aware actual expiry through hidden local helper, never chat.
 Do not launch capture automatically or claim an unperformed acceptance check.
+
+## Catalog context and date mismatch
+
+The optional `catalog` object reports local archived publication,retrieval/import timestamps,
+publication date in IST,checked ISTdate,snapshot ID and the existing metadata gate result.
+`AVAILABLE` means the snapshot exists;it does not mean current or safe to capture. Consult
+`blockers` and `can_attempt_capture`. `NOT_IMPORTED` means no snapshot;null means database/
+schema checks could not reach this step. Raw archive/source URL/extra upstream fields are
+never returned. Dates are facts from the archive and current diagnostic check,not a new
+market-calendar or publication schedule. No network fetch or writes occur during diagnostics.
+
+The previous/current-day equality and retrieval-age checks remain unchanged. Identical
+imports preserve their original publication/retrieval/import times;reimporting a stale file
+does not make it current. The same nested context appears in authenticated HTTP and CLI
+preflight output. No broker credential or authorization URL is accepted or returned.
+
+## 2026-11-06T18:54:19.871509+00:00 — P2-003T read-only catalog freshness diagnostics COMPLETE
+
+Official source HEAD still advertises2026-11-06T00:04:11Z while ISTtoday2026-11-07;
+P2-003R-A genuine active-stop remains blocked. Continued unblocked Phase2 work:preflight
+now adds a catalog context from the same read-only DB snapshot/order as feed resolution.
+Fields:existence state,snapshotID,source publication UTC/ISTdate,retrieval/import timestamps,
+checked ISTdate and existing metadata gate_result. No policy thresholds,permissions,fetch,
+import,recovery,recording or clock semantics changed. AVAILABLE means a row exists,not fresh
+or authorized;original blockers/can_attempt_capture remain authoritative. Unknown DB/schema
+returns null context;missing snapshotNOT_IMPORTED. No source URL/raw archive/untrusted source
+fields returned;raw_gzip stays deferred. Stale context can show snapshotID while legacy top
+catalog_snapshot_id remains null if no valid plan. No new route/schema/dependency/UI change.
+
+3new tests cover missing provenance,stale IST dates,field allowlist/raw-column exclusion/
+unchanged timestamps;unavailable DB strengthened and native read-only preflight context
+asserted. Target17pass;full disposablePG17.11 374pass/0fail/0skip,cluster removed. Default
+351pass/23PGskip. Locked sync,Ruff86files,mypy36backendfiles PASS;1upstream TestClient warning.
+Initial test-only SQL-string lint line length corrected before final checks;no semantics changed.
+Deployed reviewed image via existing protected bootstrap:readiness/login PASS;actual local
+preflight shows source_dateISTNov6/checked_dateISTNov7,unchangedCURRENT_CATALOG_REQUIRED,
+exit2/recordingfalse/livefalse. Safe ignored report:reports/catalog_freshness_diagnostics.json.
+No broker-account request or active capture;settings/archives preserved,OBSERVATION/live off.
+
+Files:backend/app/market_data/preflight.py,tests/integration/test_preflight.py+test_postgres.py,
+docs/CAPTURE_PREFLIGHT.md,PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory records.
+PriorQ/R/S work preserved;no staging/commit/push/history rewrite. Hosted CI remains unconfirmed.
+Next:continue P2-003R-A only after a genuinely current catalog passes existing gates;do not
+reimport identical stale content to fake publication/currentness or auto-schedule recording.

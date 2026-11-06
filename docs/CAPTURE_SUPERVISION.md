@@ -125,3 +125,49 @@ The host supervisor CLI now runs safe local preflight before recovery or creatin
 capture command still revalidates runtime conditions. Direct library fixtures/single-session
 CLI retain their own controls. Preflight neither reserves capacity nor verifies broker account
 acceptance. See CAPTURE_PREFLIGHT.md.
+
+## 2026-11-06T18:23:41.007699+00:00 — P2-003Q durable local capture verified
+
+P2-003Q verified:private Docker wrapper scripts/capture_local.py reuses existing preflight/
+supervisor;8security cases added. Reviewed image deployed. One bounded Nifty50 durable run:
+parent3de3b096dbc947e0a91a9e95825ba68f/child8f64416c29ac40d28a9bb8fbfdb510b8,CLOSED,
+6events/3527bytes under1child/20event/64KiB/20sec caps. One stale snapshot,0sampledms/0days.
+Hashes/lineage/private reads/app restart persistence verified;settings unchanged. Full356PG
+pass/0skip;default334pass/22skip;Ruff85/mypy36/sync pass,one upstream warning. No broker/env/
+trading changes beyond explicit read-only capture;OBSERVATION/live off,CI still unconfirmed.
+No stage/commit/push. Details:docs/LOCAL_CAPTURE.md and latest VERIFICATION.md entry.
+NextP2-003R:safe status/stop workflow;host interruption may leave bounded remote capture active.
+
+## 2026-11-06T18:36:59.271163+00:00 — P2-003R targeted status/cooperative stop implemented
+
+Backend supervision_store adds request_capture_stop and read-only capture_stop_requested.
+Request uses generated parentID validation,row lock/1s SQL timeouts and existing statsJSON
+stop_requested_at;idempotent,closed/expired nonmutating,no schema migration or grants. Status
+includes historical timestamp. Supervisor polls during active-child/rollover waits every0.5s
+subject to DBlatency,uses existing cooperative cancellation/drain/finalize paths. No PID kill,
+new HTTP mutation route,automatic recording or live permissions. Added scripts/control_capture.py;
+scripts/capture_local.py supports --status[--capture-id] and --stop ID,verified local container
+matching/no recording lock for controls. Initial stop acknowledgment is not final closure.
+
+11new cases:synthetic active stop/rollover,target isolation,idempotence,closed/invalid/unknown
+IDs,control during held recording lock,invalid-input/no-start behavior and PostgreSQL stats
+persistence. Final full nativePG367passed/0failed/0skipped;default344passed/23skipped. Ruff86
+files,mypy36backendfiles,locked sync PASS;1upstream TestClient warning. Loopback TLS supervision
+regression PASS with ephemeral DB/certs removed. First default run had1pre-existing coverage
+fixture failure near ISTmidnight (test_sampled_intervals_are_unioned_and_synthetic_separated);
+isolated retry and final suites passed. No runtime checks relaxed;fixture clock stability
+tracked as next task. Initial mypy conditional inference corrected before final checks.
+
+Deployed final reviewed image via bootstrap;readiness/login PASS,operator DB/settings preserved.
+Actual status/stop on prior closed parent3de3b096dbc947e0a91a9e95825ba68f verified nonmutating;
+.env/password bytes unchanged. No real active recording started:after ISTmidnight preflight
+blocks CURRENT_CATALOG_REQUIRED. Thus genuine active-broker stop acceptance remains pending
+fresh metadata;synthetic active closure and real PostgreSQL persistence are independently
+verified. Existing1parent/1child/6events retained. No fresh quotes/day/observation clock claimed.
+OBSERVATION/live off;hosted CI still unconfirmed. Safe ignored report:
+reports/local_capture_control_acceptance.json. No staging/commit/push/history rewrite.
+Files:supervision_store.py,supervisor.py,capture_local.py,control_capture.py,supervisor/PG/local
+capture tests,LOCAL_CAPTURE/PROJECT_STATUS/CAPTURE_SUPERVISION/VERIFICATION/README and all8
+agent_memory records. Prior P2-003Q uncommitted work preserved. Next:P2-003S stabilize synthetic
+coverage fixture clocks at ISTmidnight;then refresh catalog and verify real active-stop when
+prerequisites pass. No automatic capture/scheduler,DBcleanup may extend wall time.

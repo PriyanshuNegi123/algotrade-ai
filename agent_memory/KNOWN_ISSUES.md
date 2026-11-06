@@ -467,3 +467,182 @@ review saved only to ignored reports;raw local log removed after verification. C
 agent_memory8records and docs/VERIFICATION.md. Local evidence commit authorized;no push,
 force-push,dispatch or history rewrite. Next:approved push of existing fix and verified docs,
 then check new hosted verify run before closing CI issue. Functional nextP2-003Q unchanged.
+
+## 2026-11-06T18:23:41.007699+00:00 — P2-003Q durable local capture verified
+
+P2-003Q verified:private Docker wrapper scripts/capture_local.py reuses existing preflight/
+supervisor;8security cases added. Reviewed image deployed. One bounded Nifty50 durable run:
+parent3de3b096dbc947e0a91a9e95825ba68f/child8f64416c29ac40d28a9bb8fbfdb510b8,CLOSED,
+6events/3527bytes under1child/20event/64KiB/20sec caps. One stale snapshot,0sampledms/0days.
+Hashes/lineage/private reads/app restart persistence verified;settings unchanged. Full356PG
+pass/0skip;default334pass/22skip;Ruff85/mypy36/sync pass,one upstream warning. No broker/env/
+trading changes beyond explicit read-only capture;OBSERVATION/live off,CI still unconfirmed.
+No stage/commit/push. Details:docs/LOCAL_CAPTURE.md and latest VERIFICATION.md entry.
+NextP2-003R:safe status/stop workflow;host interruption may leave bounded remote capture active.
+
+Final P2-003Q checks:17changed source/test/docs passed default-rule Gitleaks without ignores;zero findings. Existing all-ref history scan and Git whitespace checks pass. No files staged,committed or pushed;hosted CI resolution remains unconfirmed.
+
+## 2026-11-06T18:36:59.271163+00:00 — P2-003R targeted status/cooperative stop implemented
+
+Backend supervision_store adds request_capture_stop and read-only capture_stop_requested.
+Request uses generated parentID validation,row lock/1s SQL timeouts and existing statsJSON
+stop_requested_at;idempotent,closed/expired nonmutating,no schema migration or grants. Status
+includes historical timestamp. Supervisor polls during active-child/rollover waits every0.5s
+subject to DBlatency,uses existing cooperative cancellation/drain/finalize paths. No PID kill,
+new HTTP mutation route,automatic recording or live permissions. Added scripts/control_capture.py;
+scripts/capture_local.py supports --status[--capture-id] and --stop ID,verified local container
+matching/no recording lock for controls. Initial stop acknowledgment is not final closure.
+
+11new cases:synthetic active stop/rollover,target isolation,idempotence,closed/invalid/unknown
+IDs,control during held recording lock,invalid-input/no-start behavior and PostgreSQL stats
+persistence. Final full nativePG367passed/0failed/0skipped;default344passed/23skipped. Ruff86
+files,mypy36backendfiles,locked sync PASS;1upstream TestClient warning. Loopback TLS supervision
+regression PASS with ephemeral DB/certs removed. First default run had1pre-existing coverage
+fixture failure near ISTmidnight (test_sampled_intervals_are_unioned_and_synthetic_separated);
+isolated retry and final suites passed. No runtime checks relaxed;fixture clock stability
+tracked as next task. Initial mypy conditional inference corrected before final checks.
+
+Deployed final reviewed image via bootstrap;readiness/login PASS,operator DB/settings preserved.
+Actual status/stop on prior closed parent3de3b096dbc947e0a91a9e95825ba68f verified nonmutating;
+.env/password bytes unchanged. No real active recording started:after ISTmidnight preflight
+blocks CURRENT_CATALOG_REQUIRED. Thus genuine active-broker stop acceptance remains pending
+fresh metadata;synthetic active closure and real PostgreSQL persistence are independently
+verified. Existing1parent/1child/6events retained. No fresh quotes/day/observation clock claimed.
+OBSERVATION/live off;hosted CI still unconfirmed. Safe ignored report:
+reports/local_capture_control_acceptance.json. No staging/commit/push/history rewrite.
+Files:supervision_store.py,supervisor.py,capture_local.py,control_capture.py,supervisor/PG/local
+capture tests,LOCAL_CAPTURE/PROJECT_STATUS/CAPTURE_SUPERVISION/VERIFICATION/README and all8
+agent_memory records. Prior P2-003Q uncommitted work preserved. Next:P2-003S stabilize synthetic
+coverage fixture clocks at ISTmidnight;then refresh catalog and verify real active-stop when
+prerequisites pass. No automatic capture/scheduler,DBcleanup may extend wall time.
+
+Final P2-003R checks:all22changed source/test/docs (including preserved priorQ work)
+passed default-rule Gitleaks without ignores;all-ref history scan and whitespace checks pass.
+No files staged/committed/pushed. Final367PGpass/0fail/0skip,default344pass/23skip;one upstream
+warning. Genuine active-broker stop acceptance remains explicitly pending fresh metadata.
+
+## 2026-11-06T18:44:21.685960+00:00 — P2-003S deterministic synthetic coverage fixtures COMPLETE
+
+Root cause reproduced at fixed2026-11-06T18:29:58Z(23:59:58IST):old helper used wall-clock
+recent observations but its synthetic session closed23:59;sampled union became0instead1000ms.
+At ISTmidnight,independent date reads could also select a different date than recorded samples.
+A temporary test-only clock harness first hit a module-alias mismatch;corrected it and verified
+the exact original coverage assertion fails before changes and passes after at the same time.
+No runtime guard,window or assertion was relaxed to obtain passing results.
+
+Added opt-in coverage_clock fixture in tests/conftest.py with synthetic fixed instant
+2026-11-06T06:30:00Z(noonIST). Only requesting tests' catalog/recording/coverage modules and
+synthetic metadata builders receive restored-after-test datetime references. Authentication,
+OS/system clock,production configuration and unrelated tests are not frozen. Coverage helpers
+use the same explicit instant for calendar/request/base;two PostgreSQL coverage consumers now
+request this fixture.4regression cases poison helper wall-clock at23:59:58,23:59:59.999999,
+00:00:00IST and a year rollover;coverage/source separation and zero-day assertions preserved.
+
+Verification:original deterministic reproducer now1pass;coverage module27pass;full disposable
+PostgreSQL17.11 suite371passed/0failed/0skipped,cluster removed. Default348passed/23PGskipped.
+Ruff86files/mypy36backendfiles/locked uv sync PASS;1Starlette TestClient warning remains.
+No operator DB,Upstox token,env,calendar manifest,broker call,live flag or runtime implementation
+changed by this task. No source-type claims made for genuine data;fixtures remainSYNTHETIC.
+PriorQ/R uncommitted changes preserved. Temporary reproducer removed. CI hosted resolution
+remains unconfirmed. This task only changes3test files plus relevant docs/handoff records.
+No staging/commit/push/history rewrite. OBSERVATION/live disabled retained.
+Next:P2-003R-A recheck official catalog freshness then genuine active-broker stop acceptance
+only if preflight passes;last operator report blocked CURRENT_CATALOG_REQUIRED. Do not bypass
+freshness/closed-market gates or certify a day from snapshots. Longer observation still pending.
+
+Final P2-003S checks:all25current changed files (including priorQ/R work) pass default
+Gitleaks without ignores;history scan and whitespace checks pass. No staging/commit/push.
+Final371PGpass/0fail/0skip;default348pass/23skip;one upstream warning. Runtime policy and
+operator resources untouched by this fixture-only task;hosted CI remains unconfirmed.
+
+## 2026-11-06T18:48:13.060188+00:00 — P2-003R-A prerequisite check; broker acceptance BLOCKED
+
+User requested next task:genuine active-broker cooperative stop,only after current catalog
+and preflight. Official fixed NSE source HEAD200 and existing bounded GET both advertise
+publication2026-11-06T00:04:11Z while operator IST date is2026-11-07. Download bytes hash
+matches the previous archived source;no invented publication/retrieval date or fresh catalog.
+No redundant stale import/dedup update. Source verification uses public metadata only,no
+Analytics authorization or broker-account request. Safe report:reports/active_stop_prerequisites.json.
+Actual local readiness200,admin login/status/preflight200/CSRF logout204. CatalogSTALE_METADATA;
+preflightBLOCKED onlyCURRENT_CATALOG_REQUIRED,can_attempt_capturefalse;0active persisted
+captures. No new recording or stop request,existing archives/settings untouched. No runtime/
+calendar/expiry/policy/security change or live activation. OBSERVATION/live off remains.
+
+P2-003R-A is NOT complete:genuine active-broker stop acceptance awaits a source meeting
+unchanged currentness policy. Next:recheck official catalog,import only when actually current,
+rerun preflight,then explicit finite recorder/exact-ID stop/final parent-child verification.
+Do not bypass freshness or auto-schedule retry/capture. Prior synthetic/PGstop proof retained.
+This iteration checks prerequisites only;latest full371PGpass/0fail/0skip and default348pass/
+23skip with1upstream warning are prior results,not rerun. Relevant doc whitespace/secret
+checks recorded below. Hosted GitHub CI resolution remains unconfirmed. No staging/commit/
+push/history rewrite. Files:all8agent_memory records and docs/VERIFICATION.md;priorQ/R/S
+uncommitted work preserved. No strategy/paper/execution/observation-day promotion.
+
+Prerequisite-only final checks:nine touched Markdown records passed default-rule Gitleaks without ignores;zero findings. Git whitespace check passed;no staging/commit/push. Runtime tests not rerun;active broker-stop acceptance remains blocked.
+
+## 2026-11-06T18:54:19.871509+00:00 — P2-003T read-only catalog freshness diagnostics COMPLETE
+
+Official source HEAD still advertises2026-11-06T00:04:11Z while ISTtoday2026-11-07;
+P2-003R-A genuine active-stop remains blocked. Continued unblocked Phase2 work:preflight
+now adds a catalog context from the same read-only DB snapshot/order as feed resolution.
+Fields:existence state,snapshotID,source publication UTC/ISTdate,retrieval/import timestamps,
+checked ISTdate and existing metadata gate_result. No policy thresholds,permissions,fetch,
+import,recovery,recording or clock semantics changed. AVAILABLE means a row exists,not fresh
+or authorized;original blockers/can_attempt_capture remain authoritative. Unknown DB/schema
+returns null context;missing snapshotNOT_IMPORTED. No source URL/raw archive/untrusted source
+fields returned;raw_gzip stays deferred. Stale context can show snapshotID while legacy top
+catalog_snapshot_id remains null if no valid plan. No new route/schema/dependency/UI change.
+
+3new tests cover missing provenance,stale IST dates,field allowlist/raw-column exclusion/
+unchanged timestamps;unavailable DB strengthened and native read-only preflight context
+asserted. Target17pass;full disposablePG17.11 374pass/0fail/0skip,cluster removed. Default
+351pass/23PGskip. Locked sync,Ruff86files,mypy36backendfiles PASS;1upstream TestClient warning.
+Initial test-only SQL-string lint line length corrected before final checks;no semantics changed.
+Deployed reviewed image via existing protected bootstrap:readiness/login PASS;actual local
+preflight shows source_dateISTNov6/checked_dateISTNov7,unchangedCURRENT_CATALOG_REQUIRED,
+exit2/recordingfalse/livefalse. Safe ignored report:reports/catalog_freshness_diagnostics.json.
+No broker-account request or active capture;settings/archives preserved,OBSERVATION/live off.
+
+Files:backend/app/market_data/preflight.py,tests/integration/test_preflight.py+test_postgres.py,
+docs/CAPTURE_PREFLIGHT.md,PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory records.
+PriorQ/R/S work preserved;no staging/commit/push/history rewrite. Hosted CI remains unconfirmed.
+Next:continue P2-003R-A only after a genuinely current catalog passes existing gates;do not
+reimport identical stale content to fake publication/currentness or auto-schedule recording.
+
+Final P2-003T verification (2026-11-06T18:56:54.651627+00:00): Ruff, format (86 files), mypy (36 files) and Git whitespace checks passed. Default-rule Gitleaks scanned all 28 pending files: zero new findings; the unchanged docs/CAPTURE_PREFLIGHT.md:90 generic-api-key finding matches the existing documented negative-test prose false positive byte-for-byte. Full Git history passed with existing exact historical allowances; scanner configuration unchanged. No staging, commit or push.
+
+## 2026-11-06T19:04:02.904861+00:00 — P1-UI-AUDIT-A keyboard focus and control contrast
+
+Official public catalog HEAD200 still publishes 2026-11-06T00:04:11Z while IST date is
+2026-11-07; genuine active-stop acceptance P2-003R-A remains blocked. Took the existing
+unblocked accessibility backlog item, scoped to keyboard focus/control borders/reflow.
+Only runtime source changed: frontend/css/app.css. Added theme-specific focus/control-border
+variables, sidebar focus color, explicit select/main focus, date-input :focus-within for
+native date segments, and narrow-screen minmax(0,1fr)/connection-link wrapping. No text,
+API, broker, freshness rule, database, credential or execution behavior changed.
+
+Isolated Chrome CDP audit with synthetic form visibility and API401/no account connection:
+1280px/320px × light/dark,18 distinct keyboard targets per scenario; skip-to-main and Enter
+theme toggle PASS. Minimum focus contrast light5.51:1/dark7.90:1;input/select border
+light3.40:1/dark4.98:1. No horizontal overflow. Original light focus2.16:1/border1.15:1;
+original 320px content grid extended to342px; native date segments lost host focus-visible.
+Audit harness initially needed page-target/load/key-event/transition corrections; corrected
+checks exposed the actual date focus and layout defects and all final scenarios passed.
+Safe aggregate:reports/dashboard_keyboard_audit.json; local harness under ignored.local.
+Screen-reader/VoiceOver, authenticated dynamic announcements/errors, forced-colors/zoom and
+complete WCAG audit remain pending; do not claim full AA conformance or P1-UI-AUDIT complete.
+
+Fresh tests:374passed/0failed/0skipped with disposablePG17.11 (cluster removed); default
+351passed/23PGskipped;1upstream Starlette warning each. Locked offline sync passed using
+workspace cache after default cache permission failure; Ruff86files/mypy36files/format PASS.
+OBSERVATION/live disabled. No real broker-account call or recording. PriorQ/R/S/T work
+preserved;no staging/commit/push/history rewrite. Hosted CI remains unconfirmed.
+Next:P2-003R-A only when genuinely current metadata passes unchanged preflight; otherwise
+continue the remaining documented accessibility checks without starting later trading phases.
+
+Final verification (2026-11-06T19:04:39.712477+00:00 UTC): protected local bootstrap returned
+READY_LOCAL with login verified, live/entries false and recording not started. The served
+CSS matches the reviewed file byte-for-byte. Preflight still blocks CURRENT_CATALOG_REQUIRED.
+Gitleaks scanned all 30 pending files: zero new findings, one unchanged previously documented
+prose false positive; full-history scan passed existing exact allowances. Scanner settings
+unchanged. Git whitespace check passed. No staging, commit or push.

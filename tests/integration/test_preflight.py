@@ -11,6 +11,7 @@ from sqlalchemy import text, update
 from backend.app.instruments.models import InstrumentSnapshot
 from backend.app.instruments.service import archive, prepare
 from backend.app.market_data.calendar import CalendarError
+from backend.app.market_data.contracts import IST
 from backend.app.market_data.feed import FeedRequest
 from backend.app.market_data.preflight import capture_preflight
 from backend.app.market_data.supervision_store import CapturePolicy, create_capture, read_capture
@@ -108,6 +109,82 @@ def test_unavailable_database_redacts_error(client, monkeypatch):
     assert "DATABASE_UNAVAILABLE" in result["blockers"] and TOKEN not in json.dumps(
         result, default=str
     )
+    assert result["catalog"] is None
+
+
+def test_catalog_diagnostics_missing_never_invents_provenance(client):
+    result = inspect(client.app.state.engine, configured(client.app.state.settings))
+    assert result["catalog"] == {"state": "NOT_IMPORTED", "gate_result": "CURRENT_CATALOG_REQUIRED"}
+    assert result["catalog_snapshot_id"] is None
+    assert "CURRENT_CATALOG_REQUIRED" in result["blockers"]
+
+
+def test_catalog_diagnostics_excludes_raw_archive_and_source_fields(client):
+    from sqlalchemy import event
+
+    engine = client.app.state.engine
+    seed(engine)
+    marker = "synthetic-private-source-marker"
+    with engine.begin() as connection:
+        connection.execute(
+            update(InstrumentSnapshot).values(source_url=marker, raw_gzip=marker.encode())
+        )
+        before = connection.execute(
+            text(
+                "SELECT id, source_modified_at, retrieved_at, imported_at FROM instrument_snapshots"
+            )
+        ).all()
+    statements = []
+
+    def observed_sql(connection, cursor, statement, parameters, context, executemany):
+        statements.append(statement)
+
+    event.listen(engine, "before_cursor_execute", observed_sql)
+    try:
+        result = inspect(engine, configured(client.app.state.settings))
+    finally:
+        event.remove(engine, "before_cursor_execute", observed_sql)
+    assert marker not in json.dumps(result, default=str)
+    assert all("raw_gzip" not in statement for statement in statements)
+    assert set(result["catalog"]) == {
+        "state",
+        "snapshot_id",
+        "source_modified_at",
+        "source_publication_date_ist",
+        "retrieved_at",
+        "imported_at",
+        "checked_date_ist",
+        "gate_result",
+    }
+    assert result["catalog"]["state"] == "AVAILABLE"
+    assert result["catalog"]["gate_result"] == "CURRENT_KEYS_RESOLVED"
+    assert result["catalog"]["snapshot_id"] == result["catalog_snapshot_id"]
+    with engine.connect() as connection:
+        assert (
+            connection.execute(
+                text(
+                    "SELECT id, source_modified_at, retrieved_at, imported_at "
+                    "FROM instrument_snapshots"
+                )
+            ).all()
+            == before
+        )
+
+
+def test_stale_diagnostics_explain_ist_dates_without_changing_gate(client):
+    engine = client.app.state.engine
+    seed(engine)
+    published = datetime.now(UTC) - timedelta(days=2)
+    with engine.begin() as connection:
+        connection.execute(update(InstrumentSnapshot).values(source_modified_at=published))
+    result = inspect(engine, configured(client.app.state.settings))
+    context = result["catalog"]
+    assert context["source_modified_at"] == published
+    assert context["source_publication_date_ist"] == published.astimezone(IST).date()
+    assert context["checked_date_ist"] == result["checked_at"].astimezone(IST).date()
+    assert context["gate_result"] == "CURRENT_CATALOG_REQUIRED"
+    assert "CURRENT_CATALOG_REQUIRED" in result["blockers"]
+    assert not result["can_attempt_capture"] and not result["recording_started"]
 
 
 def test_stale_catalog_and_unsupported_keys(client):

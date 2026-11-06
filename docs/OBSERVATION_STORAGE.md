@@ -137,3 +137,15 @@ schema0005 unchanged; no report starts capture or enables a strategy.
 CAPTURE_SUPERVISION.md. Standalone records remain supported; current schema0006 required.
 Parent quota accounting is in the same event transaction. Child sampled intervals retain
 continuity breaks; no cross-child span or completed-day inference is introduced.
+
+## 2026-11-06T18:23:41.007699+00:00 — P2-003Q durable local capture verified
+
+P2-003Q verified:private Docker wrapper scripts/capture_local.py reuses existing preflight/
+supervisor;8security cases added. Reviewed image deployed. One bounded Nifty50 durable run:
+parent3de3b096dbc947e0a91a9e95825ba68f/child8f64416c29ac40d28a9bb8fbfdb510b8,CLOSED,
+6events/3527bytes under1child/20event/64KiB/20sec caps. One stale snapshot,0sampledms/0days.
+Hashes/lineage/private reads/app restart persistence verified;settings unchanged. Full356PG
+pass/0skip;default334pass/22skip;Ruff85/mypy36/sync pass,one upstream warning. No broker/env/
+trading changes beyond explicit read-only capture;OBSERVATION/live off,CI still unconfirmed.
+No stage/commit/push. Details:docs/LOCAL_CAPTURE.md and latest VERIFICATION.md entry.
+NextP2-003R:safe status/stop workflow;host interruption may leave bounded remote capture active.

@@ -10,6 +10,8 @@ from sqlalchemy.orm import Session
 
 from backend.app.config import Settings
 from backend.app.database import SCHEMA_REVISION
+from backend.app.instruments.models import InstrumentSnapshot
+from backend.app.instruments.service import aware
 from backend.app.market_data.calendar import CalendarError, load_calendar
 from backend.app.market_data.contracts import IST
 from backend.app.market_data.feed import FeedError, FeedPlan, FeedRequest, resolve_feed_catalog
@@ -114,6 +116,7 @@ def capture_preflight(
     except CalendarError:
         blockers.append("CALENDAR_EVIDENCE_INVALID")
     plan: FeedPlan | None = None
+    catalog: dict[str, Any] | None = None
     isolation = "REPEATABLE READ" if engine.dialect.name == "postgresql" else "SERIALIZABLE"
     try:
         with engine.connect().execution_options(isolation_level=isolation) as connection:
@@ -154,6 +157,25 @@ def capture_preflight(
                         )
                         if not all(privileges):
                             blockers.append("DATABASE_PRIVILEGES_MISSING")
+                    # Facts only, from the same read-only snapshot/order used by feed resolution.
+                    # Do not serialize the raw archive, source URL or arbitrary source fields.
+                    snapshot = db.scalar(
+                        select(InstrumentSnapshot)
+                        .order_by(InstrumentSnapshot.imported_at.desc())
+                        .limit(1)
+                    )
+                    catalog = {"state": "NOT_IMPORTED"}
+                    if snapshot is not None:
+                        published = aware(snapshot.source_modified_at)
+                        catalog = {
+                            "state": "AVAILABLE",
+                            "snapshot_id": snapshot.id,
+                            "source_modified_at": published,
+                            "source_publication_date_ist": published.astimezone(IST).date(),
+                            "retrieved_at": aware(snapshot.retrieved_at),
+                            "imported_at": aware(snapshot.imported_at),
+                            "checked_date_ist": now.astimezone(IST).date(),
+                        }
                     try:
                         plan = resolve_feed_catalog(db, request)
                         checks["metadata"] = "CURRENT_KEYS_RESOLVED"
@@ -161,6 +183,7 @@ def capture_preflight(
                         code = str(error)
                         checks["metadata"] = code
                         blockers.append(code if code in ACTIONS else "CURRENT_CATALOG_REQUIRED")
+                    catalog["gate_result"] = checks["metadata"]
                     active_parent = db.scalar(
                         select(CaptureRun.id)
                         .where(CaptureRun.status == "RUNNING", CaptureRun.lease_expires_at > now)
@@ -208,6 +231,7 @@ def capture_preflight(
         "policy": policy.model_dump(),
         "plan_reserve_bytes": reserve,
         "catalog_snapshot_id": plan.catalog_snapshot_id if plan else None,
+        "catalog": catalog,
         "calendar": calendar,
         "broker_access_verified": False,
         "database_writes_verified": False,

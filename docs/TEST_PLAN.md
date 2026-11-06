@@ -27,7 +27,9 @@ theme toggle works, unauthenticated account state stays hidden and missing-datab
 is displayed accurately; no captured JavaScript runtime exceptions. Temporary screenshots
 were visually inspected at desktop and mobile sizes.
 
-Pending: CI execution, complete keyboard/screen reader checks, measured contrast audit,
+Keyboard focus/control contrast and320px reflow now verified in an isolated Chrome audit;
+see ACCESSIBILITY_AUDIT.md. Pending: CI execution, complete keyboard/screen reader checks,
+authenticated dynamic states and broader measured contrast audit,
 production hardening and later-phase trading tests. The Phase 1 container runtime gate passed.
 See VERIFICATION.md for evidence and exact reproduction commands.
 Implemented Phase2 broker mocks cover fixed GET routing, no redirects/retries, expiry,
@@ -170,3 +172,32 @@ Fresh Compose PostgreSQL17.6 verification:fixed target1pass,PGintegration22pass,
 all0skips;old-code archive reproduces1expected failure. Runtime fix is in e108f1e. Ruff/mypy
 pass. Fixture roles/grants/schemas and disposable project cleanup verified. Operator DB must
 never be supplied as TEST_POSTGRES_URL. Full evidence:VERIFICATION.md latest entry.
+
+## 2026-11-06T18:44:21.685960+00:00 — P2-003S deterministic synthetic coverage fixtures COMPLETE
+
+Root cause reproduced at fixed2026-11-06T18:29:58Z(23:59:58IST):old helper used wall-clock
+recent observations but its synthetic session closed23:59;sampled union became0instead1000ms.
+At ISTmidnight,independent date reads could also select a different date than recorded samples.
+A temporary test-only clock harness first hit a module-alias mismatch;corrected it and verified
+the exact original coverage assertion fails before changes and passes after at the same time.
+No runtime guard,window or assertion was relaxed to obtain passing results.
+
+Added opt-in coverage_clock fixture in tests/conftest.py with synthetic fixed instant
+2026-11-06T06:30:00Z(noonIST). Only requesting tests' catalog/recording/coverage modules and
+synthetic metadata builders receive restored-after-test datetime references. Authentication,
+OS/system clock,production configuration and unrelated tests are not frozen. Coverage helpers
+use the same explicit instant for calendar/request/base;two PostgreSQL coverage consumers now
+request this fixture.4regression cases poison helper wall-clock at23:59:58,23:59:59.999999,
+00:00:00IST and a year rollover;coverage/source separation and zero-day assertions preserved.
+
+Verification:original deterministic reproducer now1pass;coverage module27pass;full disposable
+PostgreSQL17.11 suite371passed/0failed/0skipped,cluster removed. Default348passed/23PGskipped.
+Ruff86files/mypy36backendfiles/locked uv sync PASS;1Starlette TestClient warning remains.
+No operator DB,Upstox token,env,calendar manifest,broker call,live flag or runtime implementation
+changed by this task. No source-type claims made for genuine data;fixtures remainSYNTHETIC.
+PriorQ/R uncommitted changes preserved. Temporary reproducer removed. CI hosted resolution
+remains unconfirmed. This task only changes3test files plus relevant docs/handoff records.
+No staging/commit/push/history rewrite. OBSERVATION/live disabled retained.
+Next:P2-003R-A recheck official catalog freshness then genuine active-broker stop acceptance
+only if preflight passes;last operator report blocked CURRENT_CATALOG_REQUIRED. Do not bypass
+freshness/closed-market gates or certify a day from snapshots. Longer observation still pending.

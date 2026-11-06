@@ -20,6 +20,7 @@ from backend.app.market_data.observations import ObservationWriter, recover_aban
 from backend.app.market_data.supervision_store import (
     CaptureError,
     CapturePolicy,
+    capture_stop_requested,
     create_capture,
     finish_capture,
     read_capture,
@@ -67,11 +68,25 @@ class CaptureSupervisor:
 
     async def _wait(self, task: asyncio.Future[Any], remaining: float) -> bool:
         stopped = asyncio.create_task(self.stop.wait())
+        deadline = asyncio.get_running_loop().time() + max(0, remaining)
         try:
-            done, _ = await asyncio.wait(
-                {task, stopped}, timeout=max(0, remaining), return_when=asyncio.FIRST_COMPLETED
-            )
-            return task in done and not self.stop.is_set()
+            while True:
+                left = max(0, deadline - asyncio.get_running_loop().time())
+                done, _ = await asyncio.wait(
+                    {task, stopped}, timeout=min(left, 0.5), return_when=asyncio.FIRST_COMPLETED
+                )
+                if self.identity is not None:
+                    requested: bool = await self._db(
+                        capture_stop_requested, self.engine, self.identity
+                    )
+                    if requested:
+                        self.stop.set()
+                if self.stop.is_set():
+                    return False
+                if task in done:
+                    return True
+                if asyncio.get_running_loop().time() >= deadline:
+                    return False
         except asyncio.CancelledError:
             self._cancelled = True
             self.stop.set()

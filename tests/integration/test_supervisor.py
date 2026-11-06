@@ -12,9 +12,14 @@ from backend.app.market_data.feed_lifecycle import LifecyclePolicy
 from backend.app.market_data.observations import read_session, start_session
 from backend.app.market_data.supervision_models import CaptureRun
 from backend.app.market_data.supervision_store import (
+    CaptureError,
     CapturePolicy,
+    capture_stop_requested,
+    create_capture,
+    finish_capture,
     read_capture,
     recover_captures,
+    request_capture_stop,
 )
 from backend.app.market_data.supervisor import CaptureSupervisor
 from tests.chain_fixtures import chain_metadata
@@ -124,6 +129,80 @@ def test_cooperative_stop_closes_active_child(client):
         assert result["sessions"][0]["status"] == "CLOSED" and connector.closed == 1
 
     asyncio.run(exercise())
+
+
+def test_persisted_operator_stop_closes_child_and_preserves_request(client):
+    async def exercise():
+        engine = client.app.state.engine
+        supervisor = None
+
+        async def sink(event):
+            if event.kind == "SNAPSHOT":
+                first = await asyncio.to_thread(request_capture_stop, engine, supervisor.identity)
+                assert first["stop_requested"] and not first["final_state_verified"]
+                recorded = read_capture(engine, supervisor.identity)["capture"]["stop_requested_at"]
+                await asyncio.to_thread(request_capture_stop, engine, supervisor.identity)
+                assert (
+                    read_capture(engine, supervisor.identity)["capture"]["stop_requested_at"]
+                    == recorded
+                )
+
+        supervisor, _, connector, _ = build(client.app.state.engine, sink=sink)
+        supervisor.child_policy = LifecyclePolicy(max_frames=10)
+        result = await supervisor.run()
+        assert result["capture"]["reason"] == "COOPERATIVE_STOP"
+        assert result["capture"]["status"] == "CLOSED"
+        assert result["capture"]["stop_requested_at"]
+        assert result["sessions"][0]["status"] == "CLOSED" and connector.closed == 1
+
+    asyncio.run(exercise())
+
+
+def test_operator_stop_only_targets_requested_parent(client):
+    engine = client.app.state.engine
+    request = FeedRequest(instrument_keys=(KEY,))
+    first = create_capture(engine, request, CapturePolicy(), "SYNTHETIC")
+    other = create_capture(engine, request, CapturePolicy(), "SYNTHETIC")
+    assert request_capture_stop(engine, first)["stop_requested"]
+    assert capture_stop_requested(engine, first)
+    assert not capture_stop_requested(engine, other)
+    finish_capture(engine, first, "COOPERATIVE_STOP")
+    finish_capture(engine, other, "SESSION_LIMIT")
+
+
+def test_operator_stop_interrupts_rollover_without_another_subscription(client):
+    async def exercise():
+        engine = client.app.state.engine
+        supervisor, authorizer, connector, _ = build(engine, 2)
+
+        async def wait_between_sessions(delay):
+            await asyncio.to_thread(request_capture_stop, engine, supervisor.identity)
+            await asyncio.Future()
+
+        supervisor.sleep = wait_between_sessions
+        result = await supervisor.run()
+        assert result["capture"]["reason"] == "COOPERATIVE_STOP"
+        assert result["capture"]["session_count"] == 1
+        assert authorizer.calls == 1 and connector.closed == 1
+
+    asyncio.run(exercise())
+
+
+def test_stop_on_closed_capture_is_nonmutating(client):
+    engine = client.app.state.engine
+    identity = create_capture(
+        engine, FeedRequest(instrument_keys=(KEY,)), CapturePolicy(), "SYNTHETIC"
+    )
+    finish_capture(engine, identity, "SESSION_LIMIT")
+    before = read_capture(engine, identity)
+    assert not request_capture_stop(engine, identity)["stop_requested"]
+    assert read_capture(engine, identity) == before
+
+
+@pytest.mark.parametrize("identity", ["not-an-id", "a" * 32])
+def test_stop_invalid_or_unknown_capture_fails_closed(client, identity):
+    with pytest.raises(CaptureError):
+        request_capture_stop(client.app.state.engine, identity)
 
 
 def test_cancelled_parent_drains_child_before_closing(client):

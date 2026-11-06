@@ -1,5 +1,6 @@
 """Parent quota ledger; acquire its row before any linked observation-session lock."""
 
+import re
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 from uuid import uuid4
@@ -27,6 +28,39 @@ class CapturePolicy(BaseModel):
 
 class CaptureError(Exception):
     pass
+
+
+def request_capture_stop(engine: Engine, identity: str) -> dict[str, Any]:
+    """Request one parent's cooperative stop; never signal a PID or alter child state."""
+    if re.fullmatch(r"[0-9a-f]{32}", identity) is None:
+        raise CaptureError("INVALID_CAPTURE_ID")
+    with Session(engine) as db, db.begin():
+        if engine.dialect.name == "postgresql":
+            db.execute(text("SET LOCAL statement_timeout = '1000ms'"))
+            db.execute(text("SET LOCAL lock_timeout = '1000ms'"))
+        row = lock_capture(db, identity)
+        active = row.status == "RUNNING" and datetime.now(UTC) < aware(row.lease_expires_at)
+        if active and not row.stats.get("stop_requested_at"):
+            row.stats = {**row.stats, "stop_requested_at": datetime.now(UTC).isoformat()}
+        return {
+            "capture_id": identity,
+            "stop_requested": active,
+            "status": capture_info(row)["status"],
+            "final_state_verified": False,
+            "live_enabled": False,
+        }
+
+
+def capture_stop_requested(engine: Engine, identity: str) -> bool:
+    with engine.begin() as connection:
+        if engine.dialect.name == "postgresql":
+            connection.execute(text("SET TRANSACTION READ ONLY"))
+            connection.execute(text("SET LOCAL statement_timeout = '1000ms'"))
+        with Session(bind=connection) as db:
+            row = db.get(CaptureRun, identity)
+            if row is None:
+                raise CaptureError("CAPTURE_NOT_FOUND")
+            return bool(row.stats.get("stop_requested_at"))
 
 
 def lock_capture(db: Session, identity: str) -> CaptureRun:
@@ -176,6 +210,7 @@ def capture_info(row: CaptureRun) -> dict[str, Any]:
         "payload_bytes": row.payload_bytes,
         "stats": row.stats,
         "health_current": False,
+        "stop_requested_at": row.stats.get("stop_requested_at"),
         "qualifying_observation_days": 0,
         "signal_eligible": False,
         "execution_eligible": False,

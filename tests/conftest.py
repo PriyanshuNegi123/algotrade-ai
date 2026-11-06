@@ -1,4 +1,6 @@
 import os
+from datetime import UTC, datetime
+from importlib import import_module
 from uuid import uuid4
 
 import pytest
@@ -16,6 +18,34 @@ from backend.app.main import create_app
 
 PASSWORD = "local-test-password-only"
 ORIGIN = {"Origin": "http://testserver"}
+COVERAGE_NOW = datetime(2026, 11, 6, 6, 30, tzinfo=UTC)  # Synthetic noon IST, never real evidence.
+
+
+@pytest.fixture
+def coverage_clock(monkeypatch):
+    """Opt-in shared time for synthetic catalog/recording/coverage fixtures only.
+
+    Authentication, unrelated tests, the OS clock and production policy are not frozen.
+    Module attributes are restored by monkeypatch after each requesting test.
+    """
+
+    class FixtureDatetime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            if tz is None:
+                return COVERAGE_NOW.replace(tzinfo=None)
+            return COVERAGE_NOW.astimezone(tz)
+
+    for name in (
+        "tests.instrument_fixtures",
+        "tests.chain_fixtures",
+        "backend.app.instruments.service",
+        "backend.app.market_data.feed",
+        "backend.app.market_data.observations",
+        "backend.app.market_data.coverage",
+    ):
+        monkeypatch.setattr(import_module(name), "datetime", FixtureDatetime)
+    return COVERAGE_NOW
 
 
 @pytest.fixture(scope="session")

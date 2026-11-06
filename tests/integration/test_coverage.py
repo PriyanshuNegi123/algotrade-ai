@@ -1,4 +1,5 @@
 import hashlib
+import sys
 from dataclasses import replace
 from datetime import UTC, date, datetime, time, timedelta
 
@@ -23,17 +24,18 @@ from backend.app.market_data.observation_models import ObservationEvent
 from backend.app.market_data.observations import append_event, read_session, start_session
 from backend.vendor.upstox import MarketDataFeed_pb2 as pb
 from tests.chain_fixtures import chain_metadata
-from tests.conftest import ORIGIN, PASSWORD
+from tests.conftest import COVERAGE_NOW, ORIGIN, PASSWORD
 
 KEY = "NSE_FO|synthetic-option"
+pytestmark = pytest.mark.usefixtures("coverage_clock")
 
 
 def fixture_calendar():
-    today = datetime.now(IST).date()
+    today = COVERAGE_NOW.astimezone(IST).date()
     return CalendarPolicy(
         kind="SYNTHETIC_FIXTURE",
         segment="NSE_FO",
-        reviewed_at=datetime.now(UTC),
+        reviewed_at=COVERAGE_NOW,
         valid_from=date(today.year, 1, 1),
         valid_through=date(today.year, 12, 31),
         regular_from=date(today.year, 1, 1),
@@ -46,7 +48,7 @@ def fixture_calendar():
 
 
 def report_request(source="SYNTHETIC", keys=(KEY,)):
-    today = datetime.now(IST).date()
+    today = COVERAGE_NOW.astimezone(IST).date()
     return CoverageRequest(from_date=today, to_date=today, instrument_keys=keys, source=source)
 
 
@@ -56,7 +58,7 @@ def recorded(engine, base=None, break_kind=None):
     identity = start_session(
         engine, FeedRequest(instrument_keys=(KEY,)), LifecyclePolicy(), "SYNTHETIC"
     )
-    base = base or datetime.now(UTC) - timedelta(seconds=3)
+    base = base or COVERAGE_NOW - timedelta(seconds=3)
     append_event(engine, identity, FeedEvent("PLAN", 1, plan=plan, observed_at=base, elapsed_ms=0))
     tracker = FeedTracker(LifecyclePolicy(), (KEY,))
     for elapsed, info in [(10, True), (1000, False), (2000, False)]:
@@ -170,6 +172,35 @@ def test_sampled_intervals_are_unioned_and_synthetic_separated(client):
     assert result["qualifying_observation_days"] == 0 and not result["calendar_verified"]
     actual = coverage_report(engine, report_request("UPSTOX_V3"), policy=fixture_calendar())
     assert actual["session_ids"] == [] and actual["days"][0]["keys"][0]["sampled_interval_ms"] == 0
+
+
+@pytest.mark.parametrize(
+    "wall_time",
+    [
+        "2026-11-06T18:29:58+00:00",  # Last seconds of IST day, outside synthetic session.
+        "2026-11-06T18:29:59.999999+00:00",
+        "2026-11-06T18:30:00+00:00",  # IST midnight.
+        "2026-12-31T18:30:01+00:00",  # IST year rollover.
+    ],
+)
+def test_synthetic_coverage_independent_of_wall_clock(client, monkeypatch, wall_time):
+    external = datetime.fromisoformat(wall_time)
+
+    class WallDatetime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return external.astimezone(tz) if tz else external.replace(tzinfo=None)
+
+    # Poison the helper module's wall clock; fixture construction must use its shared instant.
+    monkeypatch.setattr(sys.modules[__name__], "datetime", WallDatetime)
+    engine = client.app.state.engine
+    identity, base = recorded(engine)
+    assert base == COVERAGE_NOW - timedelta(seconds=3)
+    result = coverage_report(engine, report_request(), policy=fixture_calendar())
+    key = result["days"][0]["keys"][0]
+    assert key["sampled_interval_ms"] == 1000 and key["accepted_samples"] == 2
+    assert result["session_ids"] == [identity]
+    assert result["source"] == "SYNTHETIC" and result["qualifying_observation_days"] == 0
 
 
 @pytest.mark.parametrize("kind", ["IDLE", "DISCONNECTED", "OUT_OF_ORDER"])

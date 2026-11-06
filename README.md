@@ -191,3 +191,19 @@ local diagnostics. It checks configuration, schema/grants, metadata, credential 
 and quotas without starting capture. The supervisor CLI now blocks on failed preflight;
 `--preflight-only` checks without launching. See [report contract and current blockers](docs/CAPTURE_PREFLIGHT.md).
 A local pass does not verify broker acceptance or permit trading.
+
+## Bounded recording in private Docker
+
+Check the private runtime without starting capture:
+
+```sh
+uv run python -m scripts.capture_local --instrument-key 'NSE_INDEX|Nifty 50' --preflight-only
+```
+
+See
+[local capture workflow and actual evidence](docs/LOCAL_CAPTURE.md) for a bounded recording
+command,private archive reads and interruption limits. Trading remains disabled.
+
+Inspect local captures with `uv run python -m scripts.capture_local --status`. Targeted
+cooperative stop uses `--stop` followed by the exact capture ID;poll `--status --capture-id`
+until parent and child are closed. See LOCAL_CAPTURE.md for acknowledgment/freshness limits.
