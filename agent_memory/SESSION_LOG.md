@@ -592,3 +592,25 @@ Final P2-003O checks:full disposable PostgreSQL17.11 suite348passed/zero skips;
 cluster stopped/removed, persistent operator DB preserved. One upstream TestClient warning.
 Secret-pattern scan:140source/document/config files,zero findings; .env/.local excluded.
 No runtime code changes or dependency update. Exact next:P2-003P bounded real feed acceptance.
+
+## 2026-11-06T15:45:59.740534+00:00 — Consolidated status and next steps
+
+User requested Markdown progress/next-action update. Added docs/PROJECT_STATUS.md and
+refreshed CURRENT_STATE.md to remove stale one-commit/unavailable-Git statements while
+preserving verified data lineage, safety limits and reproduction steps. Current HEAD92a941b,
+2reachable commits;tracked exact Gitleaks allowances. Rescanned actual full history this
+turn:Gitleaks8.30.1 exit0/zero unallowed findings. Prior2false-positive exceptions retained;
+no new ignore scope or detection-rule changes. Runtime verification was not rerun; prior
+348PGpass/default326pass22skip results labeled historical. Runtime health/data counts also
+not rechecked. No credentials/values copied to documentation.
+
+Functional next:P2-003P finite index-only real streaming grant/subscription/decoder verification;
+first recheck current catalog/credential/preflight,then bounded operation/safe cleanup only
+when resumed. No fake ticks/day certification or automatic recording. Publishing next:
+review and normally commit these documentation changes when authorized,check staged whitespace,
+rerun full-history Gitleaks on final refs,then push only on explicit instruction. No history
+rewrite/force-push required or authorized. OBSERVATION/live off unchanged; no source/env/
+security/broker changes or requests, staging, commit, runtime restart or push this turn.
+Files:docs/PROJECT_STATUS.md and all8agent_memory Markdown records. Existing prior review
+notes retained in HANDOFF/SESSION_LOG; source requirement phase order retained. Next pending
+functional task unchanged; strategy/backtest/paper/execution and production gates remain later.
