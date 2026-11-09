@@ -2,7 +2,7 @@
 
 Google Drive is an archive/backup destination. PostgreSQL remains the operational database.
 OAuth/synthetic checks and manual encrypted PostgreSQL cloud backups with isolated restore
-verification are implemented; see [BACKUPS.md](BACKUPS.md). Scheduling and key escrow remain
+verification are implemented; see [BACKUPS.md](BACKUPS.md). The three-day schedule is documented in BACKUP_SCHEDULE.md;key escrow remains
 separate work. Live trading remains off.
 
 ## Configuration and commands

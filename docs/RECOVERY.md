@@ -13,6 +13,6 @@
   this phase does not claim account flatness because it cannot read broker exposure.
 
 Manual encrypted PostgreSQL backup and network-isolated cloud restore checks are now
-implemented and actually verified; see [BACKUPS.md](BACKUPS.md). Automatic scheduling,
-retention, off-device key escrow and production cutover remain pending. MFA and incident
+implemented and actually verified; see [BACKUPS.md](BACKUPS.md). The requested three-day cloud schedule is installed; see BACKUP_SCHEDULE.md.
+Cloud retention deletion, off-device key escrow and production cutover remain pending. MFA and incident
 alerts remain mandatory later gates before production.

@@ -8,6 +8,7 @@ import os
 import re
 import secrets
 import selectors
+import stat
 import subprocess
 import time
 from datetime import UTC, datetime
@@ -334,9 +335,52 @@ def restore_drill(executable: str, image: str, dump: bytes) -> dict:
             invoke([executable, "rm", "--force", "--volumes", owned])
 
 
+def prune_verified_cache(path: Path, drive: DriveBackup, key: bytes) -> dict:
+    removed, reclaimed = 0, 0
+    for target in path.glob("algotrade-pg-backup-*.atbackup"):
+        if removed >= 8:
+            break
+        if re.fullmatch(r"algotrade-pg-backup-[0-9a-f]{32}\.atbackup", target.name) is None:
+            continue
+        receipt = secure_json(path / (target.name + ".json"))
+        if (
+            not receipt
+            or receipt.get("state") != "RESTORE_VERIFIED"
+            or receipt.get("file_name") != target.name
+        ):
+            continue  # Never remove an unverified/unknown archive or recovery material.
+        descriptor = os.open(target, os.O_RDONLY | os.O_NOFOLLOW)
+        with os.fdopen(descriptor, "rb") as stream:
+            before = os.fstat(stream.fileno())
+            if (
+                not stat.S_ISREG(before.st_mode)
+                or before.st_uid != os.getuid()
+                or before.st_nlink != 1
+                or before.st_size > MAX_DUMP + 4096
+            ):
+                raise BackupError("BACKUP_UNSAFE_CACHE_FILE")
+            local = stream.read(MAX_DUMP + 4097)
+        remote = drive.download(receipt)
+        decrypt_dump(remote, key)  # Cloud copy and recovery key must still work now.
+        if hashlib.sha256(local).digest() != hashlib.sha256(remote).digest():
+            raise BackupError("BACKUP_CACHE_CLOUD_MISMATCH")
+        after = target.lstat()
+        if (before.st_ino, before.st_dev, before.st_mtime_ns, before.st_size) != (
+            after.st_ino,
+            after.st_dev,
+            after.st_mtime_ns,
+            after.st_size,
+        ):
+            raise BackupError("BACKUP_CACHE_CHANGED")
+        target.unlink()  # Only the exact app-owned ciphertext just verified against Drive.
+        removed += 1
+        reclaimed += len(local)
+    return {"state": "LOCAL_CACHE_CHECKED", "files_removed": removed, "bytes_reclaimed": reclaimed}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("backup", "verify-latest"))
+    parser.add_argument("action", choices=("backup", "verify-latest", "prune-local"))
     args = parser.parse_args()
     quiet_oauth_logs()
     google = directory(ROOT)
@@ -348,23 +392,19 @@ def main() -> int:
         )
         if args.action == "backup":
             executable, container, image = local_database(ROOT)
-        else:
+        elif args.action == "verify-latest":
             executable = docker_binary()
             local_engine(executable)
         drive = DriveBackup(credentials.token)
         try:
+            if args.action == "prune-local":
+                print(json.dumps(prune_verified_cache(path, drive, key)))
+                return 0
             if args.action == "backup":
                 dump = export_dump(executable, container)
                 value = encrypt_dump(dump, key)
                 name = "algotrade-pg-backup-" + uuid4().hex + ".atbackup"
-                target = path / name
-                descriptor = os.open(
-                    target, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600
-                )
-                with os.fdopen(descriptor, "wb") as stream:
-                    stream.write(value)
-                    stream.flush()
-                    os.fsync(stream.fileno())
+                # Cloud-first: ciphertext stays in bounded RAM, not a growing local cache.
                 receipt = drive.upload(value, name)
                 receipt["postgres_image"] = image
                 private_write(path / (name + ".json"), json.dumps(receipt, indent=2) + "\n")

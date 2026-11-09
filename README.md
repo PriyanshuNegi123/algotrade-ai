@@ -211,3 +211,5 @@ until parent and child are closed. See LOCAL_CAPTURE.md for acknowledgment/fresh
 Google Drive OAuth and synthetic cloud storage are verified: [setup and security](docs/GOOGLE_DRIVE.md). PostgreSQL remains the working database.
 
 Manual encrypted PostgreSQL Drive backups and isolated cloud restore are verified: [backup/recovery guide](docs/BACKUPS.md). Recovery keys stay off Drive.
+
+Cloud-first encrypted backups run every three IST calendar days: [schedule and health](docs/BACKUP_SCHEDULE.md). Local backup caches do not accumulate.

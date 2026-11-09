@@ -570,3 +570,46 @@ Next:securely preserve recovery material outside this device,then review a manua
 scheduling policy;Phase2 genuine market-session/OAuth gates remain independent.
 
 Final verification:exact backup commit snapshot417PGpassed/0failed/0skipped;fullworking tree428passed. Candidate Ruff94files/mypy40files pass. All21staged files passed default Gitleaks without ignores;actual OAuth values and encoded/raw recovery key absent. Whitespace checks pass. No push.
+
+## 2026-11-09T15:46:17.476184+00:00 — Three-day cloud-first backups installed and checked
+
+User requested backups every3days with minimal Mac storage and reported no offline recovery
+copy. Installed per-user LaunchAgent com.algotrade-ai.cloud-backup,daily21:30IST due check.
+Only when3IST calendar dates have elapsed since the last backup creation does it run the
+existing encrypted upload/download/isolated-restore pipeline. Re-verifying an old backup
+cannot postpone the due date. Next due12November2026 at21:30IST,subject to Mac/user/Docker
+availability. No RunAtLoad backup,KeepAlive retry loop,broker startup or cloud retention
+deletion. Host IST clock verified;changed timezone blocks and records scheduled execution.
+
+Actual forced cloud-only job VERIFIED;new backup retained only on Drive,not as local
+.atbackup. Legacy cache cleanup freshly downloaded/authenticated the matching cloud copy
+before removing one exact app-owned local ciphertext,freeing4,870,741bytes. Keys,receipts,
+unverified files,operational data and all Drive files preserved. Local cache now0archives.
+Working PostgreSQL remains local;only small keys/metadata and runtime remain alongside it.
+Source-aware cleanup/Drive calls reuse existing protected OAuth scope and local locks.
+
+Installed job completed a real background check,exit0/SKIPPED_NOT_DUE. Initial10second
+probe preceded completion;later private receipt/exit status verified execution. No unsupported
+privacy/block conclusion. No extra backup during that check. Safe proof is ignored
+.local/verification/schedule_acceptance.json. Job JSON is bounded/fixed-size;stdout/stderr
+go to/dev/null and raw subprocess output is never copied to status. Actual attempts are
+separate from skipped checks so failures stay visible. Overlap is locked;timeout requests
+SIGINT only on its own child,allows cleanup grace and records pending cleanup instead of
+SIGKILL. Installer refuses conflicting agents;disable refuses active jobs and removes only
+its matching inactive agent. No global/root agent,cron,environment or Upstox changes.
+
+27new tests cover3day policy,restore-vs-creation timestamps,local-cache removal safety,
+no new cache,job errors/timeouts/locks,timezone,plist,conflicts and safe disable. Full working
+tree455PGpassed/0failed/0skipped,one upstream warning. Ruff100files/mypy41backendfiles and
+locked sync pass. Exact task-only commit snapshot/security checks recorded below. Dependency
+set unchanged from previous successful pip-audit. Prior Phase2 report changes remain separate.
+OBSERVATION/live disabled. Google keys/tokens and recovery key remain ignored/private.
+
+Offline recovery copy is still NOT_CONFIRMED:user explicitly has none. Scheduling does
+not solve device-loss/key-loss recovery. Next:prepare an independently protected recovery
+copy without pasting/uploading plaintext keys;Phase2 broker/market observation gates persist.
+Files:scripts/backup_job.py,backup_schedule.py,backup_postgres.py;test_backup_schedule.py;
+BACKUP_SCHEDULE/BACKUPS/RECOVERY/GOOGLE_DRIVE docs,README and all8agent_memory records.
+No push.
+
+Final checks:exact schedule commit444PGpassed/0failed/0skipped;fullworking tree455passed. Candidate Ruff97files/mypy40backendfiles pass. All19staged files passed default-rule Gitleaks without ignores;actual OAuth values and raw/encoded recovery key absent. Background due-check exit0 verified;local ciphertext cache0. Whitespace checks pass;no push.

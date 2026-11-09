@@ -1,7 +1,8 @@
 # Encrypted PostgreSQL backups and isolated restore checks
 
-This is an explicit manual backup workflow. PostgreSQL remains the operational database.
-It never restores over the running app database, starts trading or schedules jobs.
+PostgreSQL remains the operational database. Backups can run explicitly or through the
+user-requested three-day cloud schedule; see BACKUP_SCHEDULE.md. No workflow restores over
+the running database or starts trading.
 
 ## Commands
 
@@ -37,8 +38,8 @@ records dump SHA256,size,schema revision and excluded-session policy. Wrong keys
 headers/nonces/ciphertext,tags,invalid manifests or unsupported schema revisions fail closed.
 The cryptography library performs encryption;no custom cryptographic algorithm is used.
 
-A private `.atbackup` ciphertext file is retained locally. Drive receives only the encrypted
-blob in the existing app-created archive folder. Resumable API creation uses a fixed Google
+Ciphertext stays in bounded process memory; new backups do not create local `.atbackup`
+files. Drive receives only the encrypted blob in the existing app-created archive folder. Resumable API creation uses a fixed Google
 endpoint;the returned session URL is checked for HTTPS,exact host/path and upload ID before
 any token-bearing PUT. No redirect, automatic POST retry, overwrite, delete or sharing
 operation is implemented. Google OAuth remains drive.file.
@@ -77,8 +78,11 @@ Custom dump limit32MiB;ciphertext limit32MiB+4KiB. This initial workflow uses bo
 in-memory authenticated encryption and a single data PUT within a resumable session.
 It fails rather than silently truncating larger data. Export/network/restore have timeouts.
 Future large archives require separately reviewed streaming/chunking and resource policies.
-No scheduling,retention deletion,incremental backup,key rotation,off-device key escrow or
-complete disaster cutover is implemented. Existing files are retained. Scope/authentication
+The three-day schedule is documented separately. No cloud retention deletion,incremental
+backup,key rotation,off-device key escrow or complete disaster cutover is implemented.
+Existing Drive files are retained. `prune-local` removes only matching app-owned local
+ciphertext after a fresh successful cloud download/decryption/hash comparison;unknown,
+unverified or changed files are kept. Keys and receipts are never pruned. Scope/authentication
 errors require the documented Google reauthorization flow,not broader Drive permissions.
 
 ## Actual local/cloud verification
@@ -96,3 +100,7 @@ Primary references:
 [pg_restore](https://www.postgresql.org/docs/17/app-pgrestore.html),
 [AESGCM](https://cryptography.io/en/latest/hazmat/primitives/aead/),
 [Drive resumable uploads](https://developers.google.com/workspace/drive/api/guides/manage-uploads).
+
+Cloud-first update: new job execution and isolated restore verified without a local archive
+file; one old verified cache file removed, reclaiming4,870,741bytes. No Drive file deleted.
+See BACKUP_SCHEDULE.md for the installed three-day policy and local health commands.
