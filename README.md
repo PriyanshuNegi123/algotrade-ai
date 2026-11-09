@@ -207,3 +207,5 @@ command,private archive reads and interruption limits. Trading remains disabled.
 Inspect local captures with `uv run python -m scripts.capture_local --status`. Targeted
 cooperative stop uses `--stop` followed by the exact capture ID;poll `--status --capture-id`
 until parent and child are closed. See LOCAL_CAPTURE.md for acknowledgment/freshness limits.
+
+Google Drive OAuth and synthetic cloud storage are verified: [setup and security](docs/GOOGLE_DRIVE.md). PostgreSQL remains the working database.

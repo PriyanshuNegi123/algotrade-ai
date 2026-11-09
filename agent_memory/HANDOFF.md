@@ -1,5 +1,40 @@
 # Handoff
 
+## 2026-11-09T14:48:12.940990+00:00 — Google Drive OAuth and cloud storage VERIFIED
+
+Desktop credentials verified locally without printing values. Implemented Google's maintained
+OAuth library with exactly drive.file,S256 PKCE,state validation and ephemeral127.0.0.1
+callback. Browser consent succeeded after the user added the Google test account;earlier
+attempts ended/cancelled without tokens. Access/refresh tokens now saved atomically in
+.local/google/token.json,mode0600,directory0700. Ownership/symlinks/endpoints/client identity/
+scopes checked;exclusive local lock,bounded waits/network requests and explicit reauthorization
+preserve old tokens if new consent fails. URLs,codes,tokens and remote errors are withheld.
+
+Actual Drive v3 acceptance:created AlgoTrade-AI-Storage (app archive),uploaded and downloaded
+one generated synthetic JSON file,116bytes,with matching SHA256
+c49d466f6d206233385ae269167bb218b3b980238a3900f51337e8041ca17a26. File retained. Metadata/parent/download capability checks passed.
+Existing AlgoTrade-AI-Storage and all existing user files untouched. No delete/update/share
+operation,project-file upload,DB export or automatic POST retry. Private receipt with IDs
+and checksum is.local/google/storage-test.json(mode0600);nothing sensitive is staged.
+PostgreSQL remains operational DB;Upstox/settings/live flags unchanged,OBSERVATION/live off.
+Prior Drive-not-connected statements are superseded only for OAuth/synthetic round trip;
+encrypted backup/export/restore/scheduling remain unimplemented.
+
+23new synthetic security tests pass. Exact staged source snapshot:397passed/0failed/0skipped
+with disposablePG17.11,including existing privilege checks. Candidate Ruff90files and strict
+mypy38backendfiles pass. Full working tree:408passed/0failed/0skipped,including11earlier pending report cases
+that are deliberately outside this commit. One upstream Starlette warning remains. Locked uv sync,
+pip-audit(no known vulnerabilities),format and initial source secret scans passed.
+Temporary PG clusters removed. New local commit is authorized;no push. Earlier pending
+Phase2 report/source/test/docs remain outside this task-only commit.
+
+Files:backend/app/storage/__init__.py,google_drive.py;scripts/google_drive.py;
+tests/security/test_google_drive.py;pyproject.toml,uv.lock;docs/GOOGLE_DRIVE.md;README.md,
+docs/PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory records.
+Next:review encrypted archive/database-export and isolated restore workflow before storing
+sensitive backups;Google OAuth is separate from pending Upstox OAuth and Phase2 observation.
+
+
 ## Latest Actions investigation — 2026-11-06T18:12:23.626375+00:00
 
 - Retrieved latest available failed-job logs through authenticated GitHub CLI (read only).
@@ -468,3 +503,5 @@ CSS matches the reviewed file byte-for-byte. Preflight still blocks CURRENT_CATA
 Gitleaks scanned all 30 pending files: zero new findings, one unchanged previously documented
 prose false positive; full-history scan passed existing exact allowances. Scanner settings
 unchanged. Git whitespace check passed. No staging, commit or push.
+
+Final security verification:18staged files passed default-rule Gitleaks without ignores;actual Google credential/token values absent. Staged/working whitespace checks pass. Private Google files remain ignored;no push.
