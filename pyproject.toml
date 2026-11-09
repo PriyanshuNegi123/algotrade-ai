@@ -15,6 +15,7 @@ dependencies = [
   "protobuf>=6.33.5,<7",
   "websockets>=16,<17",
   "google-auth-oauthlib>=1.2,<2",
+  "cryptography>=46,<51",
 ]
 [dependency-groups]
 dev = [

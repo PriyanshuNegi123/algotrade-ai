@@ -533,3 +533,40 @@ Next:review encrypted archive/database-export and isolated restore workflow befo
 sensitive backups;Google OAuth is separate from pending Upstox OAuth and Phase2 observation.
 
 Final security verification:18staged files passed default-rule Gitleaks without ignores;actual Google credential/token values absent. Staged/working whitespace checks pass. Private Google files remain ignored;no push.
+
+## 2026-11-09T15:15:03.424403+00:00 — Manual encrypted PostgreSQL Drive backup and restore VERIFIED
+
+Implemented backup_crypto/drive_backup and scripts.backup_postgres. Validated private
+Compose source exports a consistent bounded custom dump;public.admin_sessions data excluded.
+AES256GCM with random96-bit nonces authenticates versioned header and encrypted manifest.
+Recovery key.local/backups/recovery.key0600,directory0700;never uploaded or silently replaced.
+Only ciphertext is sent through validated fixed-host Drive v3 resumable creation;no existing
+Drive file update/delete/share,no arbitrary-file path,no automatic retry or scheduling.
+
+Actual encrypted cloud archive:4870741bytes;SHA256e1e789a5c4dc80ea4d1777418b17139ede77c1d69f1570692567aa55d5996440.
+Cloud download/decryption/restore verified,then independently repeated with source DB lookup
+blocked. Restored2catalogs/13314instruments,75candles,270chain legs,2parents/2children/9events;
+all archive/event hashes pass. Target roleNOSUPERUSER,login sessions0,schema0006_capture_runs.
+Restore uses only generated labelled containers:networknone,no host mounts/ports,read-only
+root,tmpfsPGDATA,bounded CPU/memory/PIDs,no image pull. Only own targets removed;sourceDB
+never a restore destination. Latest/per-file receipts become verified only after success;
+failed verification preserves previous latest. Matching cached PostgreSQL image,key,receipt
+and authorized Google access suffice for verify-latest;live app/DB is not consulted.
+
+20new backup/security cases;43combined Google/storage cases pass. Working-tree disposable
+PostgreSQL428passed/0failed/0skipped;exact task-only commit candidate results recorded below.
+Ruff97files/strictmypy41backendfiles and locked sync pass;pip-audit reports no known
+vulnerabilities. One upstream Starlette warning remains. Final whitespace/secret checks
+recorded below. Prior pending Phase2 report work remains separate;no push.
+
+Operational PostgreSQL,Upstox credentials,Google authorization scope and OBSERVATION/live-off
+state preserved. No broker request/new capture,production restore or plaintext dump file.
+Off-device recovery-key/receipt copy is still required for device-loss recovery;no key escrow,
+retention deletion,scheduler,streaming huge backups or production cutover implemented.
+Initial custom-dump bound32MiB. See docs/BACKUPS.md for commands and exact limits.
+Files:backup_crypto.py,drive_backup.py,scripts/backup_postgres.py,google_drive.py,
+test_backup.py,pyproject.toml,uv.lock,BACKUPS/RECOVERY/GOOGLE_DRIVE docs and all8handoff records.
+Next:securely preserve recovery material outside this device,then review a manual retention/
+scheduling policy;Phase2 genuine market-session/OAuth gates remain independent.
+
+Final verification:exact backup commit snapshot417PGpassed/0failed/0skipped;fullworking tree428passed. Candidate Ruff94files/mypy40files pass. All21staged files passed default Gitleaks without ignores;actual OAuth values and encoded/raw recovery key absent. Whitespace checks pass. No push.

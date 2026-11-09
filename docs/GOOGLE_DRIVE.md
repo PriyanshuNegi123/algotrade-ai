@@ -1,8 +1,9 @@
 # Google Drive desktop OAuth and synthetic storage check
 
 Google Drive is an archive/backup destination. PostgreSQL remains the operational database.
-This integration currently verifies authentication and one synthetic round trip; encrypted
-database backups, restore drills and scheduling are separate work. Live trading remains off.
+OAuth/synthetic checks and manual encrypted PostgreSQL cloud backups with isolated restore
+verification are implemented; see [BACKUPS.md](BACKUPS.md). Scheduling and key escrow remain
+separate work. Live trading remains off.
 
 ## Configuration and commands
 

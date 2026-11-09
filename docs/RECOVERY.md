@@ -12,5 +12,7 @@
 - Future unresolved orders/positions must remain unknown until broker reconciliation;
   this phase does not claim account flatness because it cannot read broker exposure.
 
-PostgreSQL backup/restore is not automated or tested. Encrypted backups, restore drills,
-MFA and incident alerts are mandatory later gates before production.
+Manual encrypted PostgreSQL backup and network-isolated cloud restore checks are now
+implemented and actually verified; see [BACKUPS.md](BACKUPS.md). Automatic scheduling,
+retention, off-device key escrow and production cutover remain pending. MFA and incident
+alerts remain mandatory later gates before production.

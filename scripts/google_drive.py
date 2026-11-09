@@ -179,6 +179,18 @@ def authorize(path: Path, config: dict, *, interactive: bool, force: bool = Fals
     return credentials
 
 
+def quiet_oauth_logs() -> None:
+    for name in (
+        "google_auth_oauthlib",
+        "google.auth",
+        "requests_oauthlib",
+        "oauthlib",
+        "urllib3",
+        "httpx",
+    ):
+        logging.getLogger(name).setLevel(logging.CRITICAL)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("verify-config", "authorize", "test"))
@@ -187,8 +199,7 @@ def main() -> int:
     if args.reauthorize and args.action != "authorize":
         raise DriveError("GOOGLE_EXPLICIT_AUTHORIZATION_REQUIRED")
     # Third-party DEBUG traces can contain OAuth codes/tokens and callback query strings.
-    for name in ("google_auth_oauthlib", "requests_oauthlib", "oauthlib", "urllib3", "httpx"):
-        logging.getLogger(name).setLevel(logging.CRITICAL)
+    quiet_oauth_logs()
     path = directory(ROOT)
     config = client_config(path / "credentials.json")
     if args.action == "verify-config":
