@@ -1,5 +1,42 @@
 # Known issues
 
+## 2026-11-10T16:06:48.764693+00:00 — Local OAuth deployment ready; genuine consent pending
+
+Operator reported completing scripts.configure_upstox_oauth. Read-only validation confirms
+all three registered app fields present and protocol/callback/origin checks pass, without
+printing their values. This verifies local configuration, not broker acceptance/registration.
+Initial bootstrap failed closed on duplicate TRADING_MODE and LIVE_ENABLED bindings. Both
+copies were identical OBSERVATION/false; removed only the two redundant bindings under the
+shared bootstrap lock. In-memory comparison confirmed every effective setting unchanged.
+OAuth/Analytics/Google/DB credential values were preserved; no security setting was changed.
+
+Deployed reviewed app through scripts.bootstrap_local --oauth-vault into the existing local
+project, retaining PostgreSQL. READY_LOCAL, administrator login verified, OAuth volume
+retained, private preflight LOCAL_CHECKS_PASSED with no blockers; no recording started.
+Authenticated OAuth status on the registered dashboard origin http://localhost:8000 reports
+READY_FOR_AUTHORIZATION, can_start=true, OAUTH_VAULT_NOT_INITIALIZED, broker_access_verified
+false and entries/live false. Anonymous exact callback serves static HTML with no-referrer/
+no-store. Runtime UID10001 and vault ownership/mode0700 verified; the volume is empty.
+No actual authorization start, key/token creation, broker request or consent was performed.
+Host config checker vault-directory=false is expected: Compose supplies the service path.
+
+Locked sync,Ruff119files lint/format and mypy49backendfiles passed. Fresh full disposable
+PostgreSQL17.11 suite674passed,0failed,0skipped;one existing nonfatal Starlette warning.
+Temporary test cluster stopped/removed. Regression tests used no operational DB/account;
+local deployed readiness/login/status checks are separate operator-runtime acceptance.
+No application source/dependency/schema changes this iteration. Only the ignored.env text
+cleanup and runtime deployment above, plus documentation/handoff updates. Backup/recovery
+jobs and Google storage unchanged. No new hosted CI pass or complete Phase2 claim.
+
+Files:all8agent_memory records,docs/PROJECT_STATUS.md and docs/VERIFICATION.md. Mode
+OBSERVATION;live disabled. Exact next operator action:open http://localhost:8000,sign in
+freshly,find Broker connection and click Authorize Upstox OAuth. Complete consent in the
+popup and keep the original tab open. The localhost dashboard shares the registered callback
+origin; this binding is required. Never share the callback URL/code/secret/token. After the
+operator completes consent, verify metadata-only stored status without returning the token;
+Analytics remains the active data credential. Phase2 real market-hours/reconnect/seven-day
+and other evidence gates remain pending. Local documentation commit only;no push.
+
 ## 2026-11-10T16:01:22.904484+00:00 — Secure local registered OAuth setup helper
 
 Objective: replace ambiguous manual .env editing with a private, validated local setup path.
@@ -1333,3 +1370,8 @@ allowances unchanged. Disposable containers,volumes and only this run's image ta
 Real.env passed read-only private-file validation and remains unmodified/unconfigured for
 OAuth. OBSERVATION/live off. No genuine consent or new hosted CI claim. Local commit only,
 no push. Exact next action:operator runs scripts.configure_upstox_oauth in a local terminal.
+
+Final documentation checks:all10 changed Markdown files passed Gitleaks without allowances
+and private comparison against locally configured credential values. Full history passed
+with existing exact historical allowances unchanged. Whitespace clean;.env remains ignored.
+No credential values staged. Operator consent remains pending;local commit only,no push.
