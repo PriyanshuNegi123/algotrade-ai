@@ -25,10 +25,10 @@
   <main id="main" tabindex="-1">
     <div class="page-heading"><div><p class="eyebrow">YOUR TRADING CONTROL ROOM</p><h1>A clear view. A measured start.</h1><p class="muted">Observe the market. Validate the process. Keep risk in focus.</p></div><span class="date" id="date">Asia/Kolkata</span></div>
     <section class="notice" aria-label="Execution status"><span class="notice-icon" aria-hidden="true">i</span><div><strong>Observation first. Every trade must earn its place.</strong><p>Trading is disabled. The seven-day observation window begins only after genuine market data is connected.</p></div><span class="tag">PHASE 02</span></section>
-    <section id="signin" class="panel signin" aria-labelledby="signin-title"><div><p class="eyebrow">PRIVATE WORKSPACE</p><h2 id="signin-title">Administrator access</h2><p class="muted">Sign in to read account and system status.</p></div><form id="login-form"><label for="password">Administrator password</label><div class="form-row"><input id="password" name="password" type="password" autocomplete="current-password" minlength="12" maxlength="256" required><button class="primary" type="submit">Sign in</button></div></form></section>
-    <p id="feedback" role="status" aria-live="polite">Account data is private. Sign in to load the workspace.</p>
+    <section id="signin" class="panel signin" aria-labelledby="signin-title"><div><p class="eyebrow">PRIVATE WORKSPACE</p><h2 id="signin-title">Administrator access</h2><p class="muted">Sign in to read account and system status.</p></div><form id="login-form" aria-busy="false"><label for="password">Administrator password</label><div class="form-row"><input id="password" name="password" aria-describedby="feedback" aria-invalid="false" type="password" autocomplete="current-password" minlength="12" maxlength="256" required><button class="primary" type="submit">Sign in</button></div></form></section>
+    <p id="feedback" role="status" aria-live="polite" aria-atomic="true">Account data is private. Sign in to load the workspace.</p>
     <div id="account" hidden>
-      <div class="section-heading"><h2>Account overview</h2><button id="logout" class="text-button">Sign out</button></div>
+      <div class="section-heading"><h2 id="account-title" tabindex="-1">Account overview</h2><button id="logout" class="text-button">Sign out</button></div>
       <section class="metrics" aria-label="Account metrics">
         <article class="panel metric"><h3>Available capital</h3><p id="available_capital" class="metric-value">—</p><small>Broker funds not connected</small></article>
         <article class="panel metric"><h3>Realized P&L</h3><p id="realized_pnl" class="metric-value">—</p><small>No verified trading history</small></article>

@@ -35,7 +35,17 @@ PASSWORD = "synthetic-browser-password"
 TOKEN = "synthetic-browser-bearer"
 
 
-async def verify(chrome_binary, origin, provider_origin, profile, probes, exchanges, access):
+async def verify(
+    chrome_binary,
+    origin,
+    provider_origin,
+    profile,
+    probes,
+    exchanges,
+    access,
+    *,
+    auth_accessibility=False,
+):
     chrome = subprocess.Popen(
         [
             str(chrome_binary),
@@ -64,6 +74,8 @@ async def verify(chrome_binary, origin, provider_origin, profile, probes, exchan
     sessions = {}
     serial = 0
     exceptions = []
+    login_failure_status = None
+    overview_failure_status = None
     try:
         deadline = time.monotonic() + 15
         while not (profile / "DevToolsActivePort").exists():
@@ -103,7 +115,26 @@ async def verify(chrome_binary, origin, provider_origin, profile, probes, exchan
             elif method == "Fetch.requestPaused":
                 url = params["request"]["url"]
                 identity = params["requestId"]
-                if url.startswith(AUTHORIZATION_URL + "?"):
+                failure = (
+                    login_failure_status
+                    if url == origin + "/api/auth/login"
+                    else overview_failure_status
+                    if url == origin + "/api/overview"
+                    else None
+                )
+                if failure is not None:
+                    await send(
+                        "Fetch.fulfillRequest",
+                        {
+                            "requestId": identity,
+                            "responseCode": failure,
+                            "responseHeaders": [
+                                {"name": "Content-Type", "value": "application/json"}
+                            ],
+                        },
+                        session,
+                    )
+                elif url.startswith(AUTHORIZATION_URL + "?"):
                     state = parse_qs(urlsplit(url).query)["state"][0]
                     destination = provider_origin + "/authorize?" + urlencode({"state": state})
                     await send(
@@ -185,6 +216,73 @@ async def verify(chrome_binary, origin, provider_origin, profile, probes, exchan
         await until(
             'document.readyState === "complete" && document.getElementById("password") !== null'
         )
+        await until('document.getElementById("feedback").textContent.includes("Sign in to load")')
+        await evaluate(
+            'document.getElementById("password").focus();'
+            'document.getElementById("password").value="synthetic-incorrect-password";true'
+        )
+        await send(
+            "Input.dispatchKeyEvent",
+            {
+                "type": "keyDown",
+                "key": "Enter",
+                "code": "Enter",
+                "windowsVirtualKeyCode": 13,
+                "text": "\r",
+            },
+            main,
+        )
+        await send(
+            "Input.dispatchKeyEvent",
+            {
+                "type": "keyUp",
+                "key": "Enter",
+                "code": "Enter",
+                "windowsVirtualKeyCode": 13,
+                "text": "\r",
+            },
+            main,
+        )
+        await until(
+            'document.getElementById("feedback").textContent === "Password not recognized."'
+        )
+        auth_checks = {
+            "failed_login_focus": await evaluate('document.activeElement.id === "password"'),
+            "invalid_password_identified": await evaluate(
+                'document.getElementById("password").getAttribute("aria-invalid") === "true"'
+            ),
+            "error_description_linked": await evaluate(
+                'document.getElementById("password").getAttribute("aria-describedby")'
+                ' === "feedback"'
+            ),
+            "password_cleared_after_failure": await evaluate(
+                'document.getElementById("password").value === ""'
+            ),
+            "status_atomic": await evaluate(
+                'document.getElementById("feedback").getAttribute("aria-atomic") === "true"'
+            ),
+        }
+        if auth_accessibility:
+            tree = await send("Accessibility.getFullAXTree", session=main)
+            password_nodes = [
+                node
+                for node in tree["nodes"]
+                if node.get("role", {}).get("value") == "textbox"
+                and node.get("name", {}).get("value") == "Administrator password"
+            ]
+            auth_checks["accessible_error_description"] = any(
+                node.get("description", {}).get("value") == "Password not recognized."
+                for node in password_nodes
+            )
+            auth_checks["form_not_busy_after_failure"] = await evaluate(
+                'document.getElementById("login-form").getAttribute("aria-busy") === "false"'
+            )
+            await evaluate(
+                'document.getElementById("password").dispatchEvent(new Event("input"));true'
+            )
+            auth_checks["editing_clears_invalid_state"] = await evaluate(
+                'document.getElementById("password").getAttribute("aria-invalid") === "false"'
+            )
         await evaluate(
             'document.getElementById("password").value='
             + json.dumps(PASSWORD)
@@ -193,6 +291,10 @@ async def verify(chrome_binary, origin, provider_origin, profile, probes, exchan
         await until(
             '!document.getElementById("oauth-connect").hidden && !document.getElementByI'
             'd("oauth-connect").disabled'
+        )
+        await until('!document.querySelector("#login-form button").disabled')
+        auth_checks["successful_login_focus"] = await evaluate(
+            'document.activeElement.id === "account-title"'
         )
         await evaluate('document.getElementById("oauth-connect").click(); true')
         await until(
@@ -270,6 +372,75 @@ async def verify(chrome_binary, origin, provider_origin, profile, probes, exchan
             raise RuntimeError("Sensitive callback fields reached server access logs")
         if exceptions:
             raise RuntimeError("Synthetic browser JavaScript exception")
+        if auth_accessibility:
+            overview_failure_status = 401
+            await evaluate('document.getElementById("account-title").focus();loadOverview()')
+            auth_checks["expired_session_focus"] = await evaluate(
+                'document.activeElement.id === "password"'
+            )
+            await evaluate('document.getElementById("theme").focus();loadOverview()')
+            auth_checks["visible_control_focus_preserved"] = await evaluate(
+                'document.activeElement.id === "theme"'
+            )
+            overview_failure_status = None
+            await evaluate(
+                'document.getElementById("password").value='
+                + json.dumps(PASSWORD)
+                + ';document.getElementById("login-form").requestSubmit();true'
+            )
+            await until(
+                'document.getElementById("signin").hidden && '
+                '!document.querySelector("#login-form button").disabled'
+            )
+        await evaluate('document.getElementById("logout").focus();true')
+        await send(
+            "Input.dispatchKeyEvent",
+            {
+                "type": "keyDown",
+                "key": "Enter",
+                "code": "Enter",
+                "windowsVirtualKeyCode": 13,
+                "text": "\r",
+            },
+            main,
+        )
+        await send(
+            "Input.dispatchKeyEvent",
+            {
+                "type": "keyUp",
+                "key": "Enter",
+                "code": "Enter",
+                "windowsVirtualKeyCode": 13,
+                "text": "\r",
+            },
+            main,
+        )
+        await until('document.getElementById("feedback").textContent.includes("Signed out.")')
+        auth_checks["signed_out_focus"] = await evaluate('document.activeElement.id === "password"')
+        if auth_accessibility:
+            for status, message in [(429, "Too many attempts."), (503, "Sign-in unavailable.")]:
+                login_failure_status = status
+                await evaluate(
+                    'document.getElementById("password").value='
+                    + json.dumps(PASSWORD)
+                    + ';document.getElementById("login-form").requestSubmit();true'
+                )
+                await until(
+                    'document.getElementById("feedback").textContent.includes('
+                    + json.dumps(message)
+                    + ") && "
+                    '!document.querySelector("#login-form button").disabled'
+                )
+                auth_checks["service_error_" + str(status)] = await evaluate(
+                    'document.activeElement.id === "password" && '
+                    'document.getElementById("password").getAttribute("aria-invalid")'
+                    ' === "false" && '
+                    'document.getElementById("password").value === "" && '
+                    'document.getElementById("login-form").getAttribute("aria-busy") === "false"'
+                )
+            login_failure_status = None
+        if auth_accessibility and not all(auth_checks.values()):
+            raise RuntimeError("Synthetic authentication accessibility checks failed")
         report = {
             "state": "SYNTHETIC_BROWSER_VERIFIED",
             "strict_cookie_absent_on_cross_site_callback": True,
@@ -284,6 +455,7 @@ async def verify(chrome_binary, origin, provider_origin, profile, probes, exchan
             "real_broker_used": False,
             "operational_database_used": False,
             "live_enabled": False,
+            "authentication_accessibility": auth_checks,
         }
         print(json.dumps(report), flush=True)
         try:
@@ -309,6 +481,7 @@ async def verify(chrome_binary, origin, provider_origin, profile, probes, exchan
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chrome-binary", type=Path, required=True)
+    parser.add_argument("--auth-accessibility", action="store_true")
     args = parser.parse_args()
     chrome_binary = args.chrome_binary.resolve()
     if not chrome_binary.is_file() or not os.access(chrome_binary, os.X_OK):
@@ -450,6 +623,7 @@ def main():
                 probes,
                 exchanges,
                 logs,
+                auth_accessibility=args.auth_accessibility,
             )
         )
     finally:

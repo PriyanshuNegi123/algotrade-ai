@@ -1,5 +1,45 @@
 # Current state
 
+## 2026-11-10T16:39:42.145034+00:00 — Authentication keyboard focus and error semantics verified
+
+With genuine market-hours acceptance blocked, completed the existing P1-UI-AUDIT-B scope
+for authentication focus and browser-accessible error semantics. Isolated Chrome baseline
+failed five of seven checks:missing invalid-field/error association/atomic status and lost
+focus after sign-in/sign-out. Initial harness Enter needed native text before collecting
+baseline; corrected. No defect in broker authentication or account permissions was claimed.
+
+Password now references feedback with aria-describedby;401 alone sets aria-invalid,editing
+clears it,429/503 do not blame the password. Form exposes busy state;feedback is atomic.
+Success focuses a non-Tab Account overview heading with visible theme-aware outline/scroll
+margin. Failure/logout focus password after final message. Overview failure moves focus only
+when the old focused content was hidden;visible controls keep focus. Initial page has no
+new autofocus. Existing password clearing, login requests, sessions,cookies,CSRF,Origin and
+backend access controls are unchanged. No financial values or new broker behavior added.
+
+Extended existing isolated OAuth Chrome verifier with --auth-accessibility. All14checks pass:
+native keyboard submission and logout, accessible error descriptions and form states;
+focus transitions, visible focus preservation and intercepted 429 or 503 responses for
+UI failures. Existing Strict-cookie/popup/session-state/nonce/access-log safeguards still
+pass with0JSexceptions. Fresh profile/temporary SQLite/synthetic credentials only;external
+requests blocked or intercepted,token exchange mocked. Own fixture resources removed.
+Receipt:.local/verification/auth_accessibility_acceptance.json,ignored/private. Actual spoken
+VoiceOver announcements,forced colors,zoom and broader audit remain pending;no full AA claim.
+
+Locked sync,Ruff121files lint/format and mypy50backendfiles passed. Fresh full disposable
+PostgreSQL17.11:728passed,0failed,0skipped;one existing nonfatal Starlette warning. Native
+cluster removed. Draft verifier line-length issues corrected before final checks. No pytest
+markup-mirroring tests added;actual browser behavior and accessibility tree were verified.
+
+Files:frontend/index.html,js/app.js,css/app.css,scripts/verify_oauth_browser.py,
+docs/ACCESSIBILITY_AUDIT.md,PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory files.
+Reviewed local deployment initiated;final readiness/served-asset results recorded below.
+No credential/.env/schema/backup job mutation or real broker request. OAuth vault and
+PostgreSQL are retained. OBSERVATION;live disabled. P1-UI-AUDIT remains partial;Phase2 still
+requires genuine market-hours/reconnect/seven-day evidence. New hosted CI unverified.
+Next:P2-003U only in a reviewed eligible session after fresh calendar/catalog/readiness;
+otherwise continue the documented forced-color/zoom or unit-evidence backlog. Local commit
+only;no push. Handoff updated for verified scope and remaining limitations.
+
 ## 2026-11-10T16:28:28.456732+00:00 — Safe next-session planning context verified
 
 Read-only runtime readiness is blocked on the reviewed10November holiday. Initial report-
@@ -1308,3 +1348,14 @@ default Gitleaks with no allowances and private configured-credential comparison
 history passed with unchanged exact historical allowances. Whitespace clean. No deployment,
 credential change, broker request, recording, new hosted CI or completed day claim.
 Local commit only;no push.
+
+Final verification (2026-11-10T16:40:57.489235+00:00 UTC):728PostgreSQL tests passed,
+0failed/0skipped;one existing Starlette warning. All14synthetic browser authentication
+accessibility checks and OAuth isolation checks pass,0JSexceptions. Locked sync,Ruff121files/
+format,mypy50files passed. Local deployment READY_LOCAL with login verified and OAuth volume
+retained;served HTML/JS/CSS match reviewed files byte-for-byte. Authenticated storage status
+remains STORED_UNVERIFIED and entries/live false. No real broker request or recording.
+All15changed files passed Gitleaks with no allowances and private configured-credential
+comparison;full history passed existing exact historical allowances unchanged. Scanner-
+triggering handoff prose was reworded;no scanner setting changed. Whitespace clean.
+VoiceOver/full accessibility and new hosted CI remain unverified. Local commit only,no push.

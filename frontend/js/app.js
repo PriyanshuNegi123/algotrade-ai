@@ -55,8 +55,10 @@ async function loadOverview() {
     byId("feedback").textContent = csrfToken ? "Workspace loaded. Financial values remain unavailable until verified data is connected." : "Session restored. Sign in again to enable secure sign-out from this page.";
     await Promise.all([loadBrokerStatus(), loadInstrumentStatus(), loadHistoryStatus(), loadChainStatus(), oauthUI.load()]);
   } catch (error) {
+    const previousFocus = document.activeElement;
     clearAccount();
     byId("feedback").textContent = error.status === 401 ? "Sign in to load your private workspace." : "Account status unavailable. Trading remains disabled. Try again after checking service health.";
+    if (previousFocus?.closest("[hidden]")) byId("password").focus();
   }
 }
 async function loadBrokerStatus() {
@@ -100,9 +102,16 @@ async function loadHealth() {
     byId("health").textContent = "Backend not ready · review database and administrator configuration";
   }
 }
+byId("password").addEventListener("input", () => {
+  byId("password").setAttribute("aria-invalid", "false");
+});
 byId("login-form").addEventListener("submit", async (event) => {
   event.preventDefault();
-  const button = event.currentTarget.querySelector("button");
+  const form = event.currentTarget;
+  const button = form.querySelector("button");
+  let retryFocus = false;
+  form.setAttribute("aria-busy", "true");
+  byId("password").setAttribute("aria-invalid", "false");
   button.disabled = true;
   button.textContent = "Signing in…";
   byId("feedback").textContent = "Verifying administrator access…";
@@ -113,13 +122,18 @@ byId("login-form").addEventListener("submit", async (event) => {
     });
     csrfToken = result.csrf_token;
     await loadOverview();
+    if (!byId("account").hidden) byId("account-title").focus();
   } catch (error) {
     clearAccount();
     byId("feedback").textContent = error.status === 401 ? "Password not recognized." : error.status === 429 ? "Too many attempts. Wait one minute before trying again." : "Sign-in unavailable. Check administrator configuration and database readiness.";
+    byId("password").setAttribute("aria-invalid", String(error.status === 401));
+    retryFocus = true;
   } finally {
     byId("password").value = "";
     button.disabled = false;
     button.textContent = "Sign in";
+    form.setAttribute("aria-busy", "false");
+    if (retryFocus) byId("password").focus();
   }
 });
 byId("logout").addEventListener("click", async () => {
@@ -128,6 +142,7 @@ byId("logout").addEventListener("click", async () => {
     csrfToken = null;
     clearAccount();
     byId("feedback").textContent = "Signed out. Your session has been revoked.";
+    byId("password").focus();
   } catch { byId("feedback").textContent = "Sign-out could not be confirmed. Retry; the session expires automatically."; }
 });
 byId("refresh").addEventListener("click", () => { loadHealth(); loadOverview(); });

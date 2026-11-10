@@ -49,6 +49,57 @@ outline/border colors and bounding boxes. Native date segments can take multiple
 No order/submit/import/capture button is activated. Safe aggregate results are in the ignored
 reports/dashboard_keyboard_audit.json; one-time harness is local and not a CI test.
 
-Pending: VoiceOver/screen-reader reading order, authenticated dynamic announcements and
-error focus, disabled/loaded expiry states, forced-colors, zoom and broader text/graphical
+Pending: VoiceOver/screen-reader reading order and spoken announcements,
+disabled/loaded expiry states, forced-colors, zoom and broader text/graphical
 contrast. No production-readiness or complete AA claim. Hosted CI remains unconfirmed.
+
+## Authentication focus and error semantics — 10 November 2026
+
+An isolated Chrome/SQLite audit found that successful sign-in and keyboard sign-out hid
+the focused control without assigning a visible replacement. Failed passwords had no
+programmatic error association or invalid-field state; the existing live status was not
+explicitly atomic. These were browser-observed defects, not a broker/authentication failure.
+
+The password now references the status message with aria-describedby. A rejected password
+is marked aria-invalid only after a 401; editing clears it. Rate-limit and service failures
+do not mark the password wrong. The sign-in form exposes aria-busy and the status region is
+atomic. Existing password clearing, cookie, CSRF, Origin and server authentication remain
+unchanged. All messages remain fixed text; no secret or raw server error is inserted.
+
+Successful sign-in focuses the Account overview heading, outside the ordinary Tab sequence,
+with a visible theme-aware outline and scroll margin. Failure and sign-out focus the password
+after the final message is set. When loading overview hides the previously focused account
+content, focus returns to sign-in. A still-visible focused control keeps focus on refresh.
+Initial page loading does not autofocus or bypass the existing skip-link sequence.
+
+Reproduce with an existing local Chrome executable:
+
+```sh
+uv run python -m scripts.verify_oauth_browser \
+  --chrome-binary '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
+  --auth-accessibility
+```
+
+Fourteen authentication checks pass, alongside the existing OAuth isolation proof. Native
+Enter submits the bad-password form and activates sign-out. Chrome's accessibility tree
+contains the password error description. DOM checks cover invalid-state reset, password
+clearing, atomic status, cleared busy state, successful/expired-session/sign-out focus,
+visible-control focus preservation and synthetic 429/503 failures. Those service failures
+are intercepted within the temporary browser fixture; they are not operational incidents.
+
+The audit uses a fresh disposable Chrome profile, migrated temporary SQLite and synthetic
+credentials. External requests are blocked or intercepted, and token exchange is mocked.
+No real profile, operational DB/account, broker or screen-reader speech engine is used.
+Zero JavaScript exceptions; temporary listeners/profile/DB/vault are removed. Safe aggregate
+receipt:`.local/verification/auth_accessibility_acceptance.json`, ignored/private.
+The first harness run needed native Enter text to trigger browser form submission; corrected
+before collecting baseline/final results. Baseline failed five of the original seven checks;
+the final expanded fourteen checks pass. Full PostgreSQL regression:728passed/0failed/0skipped,
+one existing Starlette warning. Ruff121files/format and mypy50backendfiles passed.
+
+This verifies accessible browser semantics and focus behavior. Actual VoiceOver reading and
+spoken announcements, forced colors, zoom and the wider audit remain pending. This does
+not establish full WCAG AA conformance or complete P1-UI-AUDIT.
+
+Primary guidance: [W3C error identification with ARIA](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA21.html)
+and [status messages](https://www.w3.org/WAI/WCAG21/Understanding/status-messages).
