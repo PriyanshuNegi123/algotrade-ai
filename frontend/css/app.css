@@ -14,3 +14,11 @@
 .oauth-return h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); line-height: 1.2; }
 
 #account-title{scroll-margin-top:90px}#account-title:focus{outline:3px solid var(--focus);outline-offset:4px}
+
+@media (forced-colors: active) {
+  button:disabled {
+    opacity: 1;
+    color: GrayText;
+    border-color: GrayText;
+  }
+}

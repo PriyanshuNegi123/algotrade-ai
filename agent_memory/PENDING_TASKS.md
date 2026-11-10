@@ -1,5 +1,41 @@
 # Prioritized backlog
 
+## 2026-11-10T16:51:48.753707+00:00 — Forced-color palette and reflow matrix verified
+
+Completed P1-UI-AUDIT-C scoped browser rendering checks while genuine market-session
+acceptance remains gated. Added --render-accessibility and scripts/browser_rendering.py.
+24cases cover signed-in/out,light/dark via actual theme control,forced colors on/off and
+1280x900,640x450,320x225CSS viewports. These are100/200/400percent reflow equivalents,
+not real browser-menu zoom,text-only enlargement or a physical high-contrast OS test.
+
+Baseline had no horizontal overflow,control fit,selected-navigation or visible focus issues.
+Six signed-in forced-color cases retained disabled-button opacity0.65. Scoped CSS now uses
+opacity1 and system GrayText for disabled text/borders only in forced colors. Ordinary
+styles and disabled behavior unchanged;no forced-color-adjust override. Disabled controls
+are contrast-exempt,so this is palette preservation,not a proven WCAG violation fix.
+Final24cases and14auth checks pass with0JSexceptions;OAuth isolation checks still pass.
+Cases report control counts;empty disabled sets do not imply tested disabled controls.
+
+Fresh profiles/temporary SQLite/synthetic credentials,mocked exchange and blocked external
+requests only. Fixtures removed. Browser harness needed foreground restoration after popup
+return to allow animation frames;baseline JSON separated from expected failure diagnostics.
+One malformed orchestration call was corrected before execution;draft lint/docs patch issues
+corrected. Ignored private receipts:render_accessibility_baseline.json and
+render_accessibility_acceptance.json under.local/verification. No operational browser/account
+or broker used in audits. Fresh full disposable PostgreSQL17.11:728passed/0failed/0skipped,
+one existing Starlette warning;cluster removed. Locked sync,Ruff122files/format,mypy50files
+passed. No redundant markup-only pytest cases added;actual browser matrix is the proof.
+
+Files:frontend/css/app.css,scripts/browser_rendering.py,verify_oauth_browser.py,
+docs/ACCESSIBILITY_AUDIT.md,PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory files.
+Reviewed local deployment initiated;final served-CSS/readiness evidence follows below.
+No credential/.env/schema/calendar/capture/backup change or real broker request. Existing
+PostgreSQL/OAuth volume retained. OBSERVATION;live disabled. Full accessibility remains
+partial:VoiceOver speech,physical palettes,browser zoom/text-only resizing and wider audit
+pending. Phase2 market-hours/reconnect/seven-day gates and new hosted CI remain unverified.
+Next:review current calendar/catalog/readiness before P2-003U during an eligible session;
+otherwise continue primary calendar/unit evidence review. Local commit only;no push.
+
 ## 2026-11-10T16:39:42.145034+00:00 — Authentication keyboard focus and error semantics verified
 
 With genuine market-hours acceptance blocked, completed the existing P1-UI-AUDIT-B scope
@@ -317,7 +353,7 @@ Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit aut
 |---|---|---|---|---|---|---|
 | CI-PG-PERM | P0 | Disposable PostgreSQL | Realistic permission-denial test across CI/native role contexts | Non-owner/non-superuser INSERT actually denied; preflight blocks; temporary roles/grants removed | Medium | COMPLETE locally and hosted: foundation run42630898094/verify passed on0f2df43; latest local385PGpass |
 | P1-VERIFY | P0 | Docker/PostgreSQL | Verify image build, migrations, auth, non-root UID, app restart and database outage/recovery | Full isolated smoke succeeds and cleanup confirmed | Medium | COMPLETE 2026-11-06: native PostgreSQL 41 tests and actual container smoke passed; CI execution tracked separately |
-| P1-UI-AUDIT | P1 | P1-004 | Keyboard, screen reader and measured contrast audit | Accessible focus/order/errors and AA contrast measured; resolve defects | Small | PARTIAL:keyboard contrast/reflow and14synthetic auth focus/error/AX checks verified;VoiceOver/forced-colors/zoom/full audit pending |
+| P1-UI-AUDIT | P1 | P1-004 | Keyboard, screen reader and measured contrast audit | Accessible focus/order/errors and AA contrast measured; resolve defects | Small | PARTIAL:keyboard contrast/reflow and14synthetic auth focus/error/AX checks verified;24emulated rendering cases pass;VoiceOver/physical palettes/browser zoom/full audit pending |
 | P2-001 | P1 | P1-VERIFY | Official read-only Upstox API review | Sources/date/versions/credential limits and unknowns recorded | Medium | COMPLETE 2026-11-06; see BROKER_COMPLIANCE.md |
 | P2-002A | P1 | P2-001 | Server Analytics credential, restricted probe and secure local setup | Expiry/CSRF/errors/throttling/secret tests and container/browser checks pass | Medium | COMPLETE implementation; actual broker acceptance not tested without operator credential |
 | P2-002 | P1 | P2-001; appropriate operator app configuration | OAuth and protected persistent broker credentials | Exact registered callback; mandatory one-use session-bound state; no invented scope/refresh endpoint; no token exposure | High | COMPLETE scoped authentication/storage10November:registered browser consent, private persistent vault and one bounded real NSE endpoint check;39probe/713full PG tests;account/grant scope not certified,Analytics unchanged |
@@ -1407,3 +1443,13 @@ All15changed files passed Gitleaks with no allowances and private configured-cre
 comparison;full history passed existing exact historical allowances unchanged. Scanner-
 triggering handoff prose was reworded;no scanner setting changed. Whitespace clean.
 VoiceOver/full accessibility and new hosted CI remain unverified. Local commit only,no push.
+
+Final verification (2026-11-10T16:52:48.480613+00:00 UTC):all24rendering cases and
+14authentication checks passed with0JSexceptions;existing OAuth isolation retained. Fresh
+PostgreSQL suite728passed/0failed/0skipped;one existing warning. Locked sync,Ruff122files/
+format,mypy50files passed. Local deployment READY_LOCAL/login verified,OAuth volume retained;
+served CSS matches reviewed source and local storage status/entries/live checks unchanged.
+All14task files passed default Gitleaks with no allowances and private configured-credential
+comparison;full history passed existing exact historical allowances unchanged. Whitespace
+clean. Real browser-menu zoom/physical OS palettes/VoiceOver and new hosted CI remain
+unverified. No real broker request or recording. Local commit only;no push.

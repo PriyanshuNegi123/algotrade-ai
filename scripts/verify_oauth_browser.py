@@ -29,6 +29,7 @@ from backend.app.brokers.oauth import AUTHORIZATION_URL, UpstoxOAuth
 from backend.app.config import Settings
 from backend.app.main import create_app
 from scripts.bootstrap_local import ROOT
+from scripts.browser_rendering import audit_rendering
 
 CODE = "synthetic-browser-code"
 PASSWORD = "synthetic-browser-password"
@@ -45,6 +46,7 @@ async def verify(
     access,
     *,
     auth_accessibility=False,
+    render_accessibility=False,
 ):
     chrome = subprocess.Popen(
         [
@@ -296,6 +298,9 @@ async def verify(
         auth_checks["successful_login_focus"] = await evaluate(
             'document.activeElement.id === "account-title"'
         )
+        render_reports = []
+        if render_accessibility:
+            render_reports.append(await audit_rendering(send, evaluate, main, signed_in=True))
         await evaluate('document.getElementById("oauth-connect").click(); true')
         await until(
             '(async()=>{const r=await fetch("/api/broker/oauth/status");return r.ok && ('
@@ -417,6 +422,8 @@ async def verify(
         )
         await until('document.getElementById("feedback").textContent.includes("Signed out.")')
         auth_checks["signed_out_focus"] = await evaluate('document.activeElement.id === "password"')
+        if render_accessibility:
+            render_reports.append(await audit_rendering(send, evaluate, main, signed_in=False))
         if auth_accessibility:
             for status, message in [(429, "Too many attempts."), (503, "Sign-in unavailable.")]:
                 login_failure_status = status
@@ -456,8 +463,11 @@ async def verify(
             "operational_database_used": False,
             "live_enabled": False,
             "authentication_accessibility": auth_checks,
+            "render_accessibility": render_reports,
         }
         print(json.dumps(report), flush=True)
+        if render_accessibility and not all(report["passed"] for report in render_reports):
+            raise RuntimeError("Synthetic rendering accessibility checks failed")
         try:
             await send("Browser.close")
         except Exception:
@@ -482,6 +492,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chrome-binary", type=Path, required=True)
     parser.add_argument("--auth-accessibility", action="store_true")
+    parser.add_argument("--render-accessibility", action="store_true")
     args = parser.parse_args()
     chrome_binary = args.chrome_binary.resolve()
     if not chrome_binary.is_file() or not os.access(chrome_binary, os.X_OK):
@@ -624,6 +635,7 @@ def main():
                 exchanges,
                 logs,
                 auth_accessibility=args.auth_accessibility,
+                render_accessibility=args.render_accessibility,
             )
         )
     finally:

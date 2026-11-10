@@ -1,5 +1,41 @@
 # Completed tasks
 
+## 2026-11-10T16:51:48.753707+00:00 — Forced-color palette and reflow matrix verified
+
+Completed P1-UI-AUDIT-C scoped browser rendering checks while genuine market-session
+acceptance remains gated. Added --render-accessibility and scripts/browser_rendering.py.
+24cases cover signed-in/out,light/dark via actual theme control,forced colors on/off and
+1280x900,640x450,320x225CSS viewports. These are100/200/400percent reflow equivalents,
+not real browser-menu zoom,text-only enlargement or a physical high-contrast OS test.
+
+Baseline had no horizontal overflow,control fit,selected-navigation or visible focus issues.
+Six signed-in forced-color cases retained disabled-button opacity0.65. Scoped CSS now uses
+opacity1 and system GrayText for disabled text/borders only in forced colors. Ordinary
+styles and disabled behavior unchanged;no forced-color-adjust override. Disabled controls
+are contrast-exempt,so this is palette preservation,not a proven WCAG violation fix.
+Final24cases and14auth checks pass with0JSexceptions;OAuth isolation checks still pass.
+Cases report control counts;empty disabled sets do not imply tested disabled controls.
+
+Fresh profiles/temporary SQLite/synthetic credentials,mocked exchange and blocked external
+requests only. Fixtures removed. Browser harness needed foreground restoration after popup
+return to allow animation frames;baseline JSON separated from expected failure diagnostics.
+One malformed orchestration call was corrected before execution;draft lint/docs patch issues
+corrected. Ignored private receipts:render_accessibility_baseline.json and
+render_accessibility_acceptance.json under.local/verification. No operational browser/account
+or broker used in audits. Fresh full disposable PostgreSQL17.11:728passed/0failed/0skipped,
+one existing Starlette warning;cluster removed. Locked sync,Ruff122files/format,mypy50files
+passed. No redundant markup-only pytest cases added;actual browser matrix is the proof.
+
+Files:frontend/css/app.css,scripts/browser_rendering.py,verify_oauth_browser.py,
+docs/ACCESSIBILITY_AUDIT.md,PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory files.
+Reviewed local deployment initiated;final served-CSS/readiness evidence follows below.
+No credential/.env/schema/calendar/capture/backup change or real broker request. Existing
+PostgreSQL/OAuth volume retained. OBSERVATION;live disabled. Full accessibility remains
+partial:VoiceOver speech,physical palettes,browser zoom/text-only resizing and wider audit
+pending. Phase2 market-hours/reconnect/seven-day gates and new hosted CI remain unverified.
+Next:review current calendar/catalog/readiness before P2-003U during an eligible session;
+otherwise continue primary calendar/unit evidence review. Local commit only;no push.
+
 ## 2026-11-10T16:39:42.145034+00:00 — Authentication keyboard focus and error semantics verified
 
 With genuine market-hours acceptance blocked, completed the existing P1-UI-AUDIT-B scope
@@ -1539,3 +1575,13 @@ All15changed files passed Gitleaks with no allowances and private configured-cre
 comparison;full history passed existing exact historical allowances unchanged. Scanner-
 triggering handoff prose was reworded;no scanner setting changed. Whitespace clean.
 VoiceOver/full accessibility and new hosted CI remain unverified. Local commit only,no push.
+
+Final verification (2026-11-10T16:52:48.480613+00:00 UTC):all24rendering cases and
+14authentication checks passed with0JSexceptions;existing OAuth isolation retained. Fresh
+PostgreSQL suite728passed/0failed/0skipped;one existing warning. Locked sync,Ruff122files/
+format,mypy50files passed. Local deployment READY_LOCAL/login verified,OAuth volume retained;
+served CSS matches reviewed source and local storage status/entries/live checks unchanged.
+All14task files passed default Gitleaks with no allowances and private configured-credential
+comparison;full history passed existing exact historical allowances unchanged. Whitespace
+clean. Real browser-menu zoom/physical OS palettes/VoiceOver and new hosted CI remain
+unverified. No real broker request or recording. Local commit only;no push.

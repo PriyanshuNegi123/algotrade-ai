@@ -50,7 +50,7 @@ No order/submit/import/capture button is activated. Safe aggregate results are i
 reports/dashboard_keyboard_audit.json; one-time harness is local and not a CI test.
 
 Pending: VoiceOver/screen-reader reading order and spoken announcements,
-disabled/loaded expiry states, forced-colors, zoom and broader text/graphical
+disabled/loaded expiry workflows, physical high contrast, browser-menu zoom and broader text/graphical
 contrast. No production-readiness or complete AA claim. Hosted CI remains unconfirmed.
 
 ## Authentication focus and error semantics — 10 November 2026
@@ -98,8 +98,50 @@ the final expanded fourteen checks pass. Full PostgreSQL regression:728passed/0f
 one existing Starlette warning. Ruff121files/format and mypy50backendfiles passed.
 
 This verifies accessible browser semantics and focus behavior. Actual VoiceOver reading and
-spoken announcements, forced colors, zoom and the wider audit remain pending. This does
+spoken announcements and the wider audit remain pending. See emulated rendering checks below; this does
 not establish full WCAG AA conformance or complete P1-UI-AUDIT.
 
 Primary guidance: [W3C error identification with ARIA](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA21.html)
 and [status messages](https://www.w3.org/WAI/WCAG21/Understanding/status-messages).
+
+## Forced colors and zoom-equivalent reflow — 10 November 2026
+
+```sh
+uv run python -m scripts.verify_oauth_browser \
+  --chrome-binary '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
+  --auth-accessibility --render-accessibility
+```
+
+The matrix covers signed-in/signed-out views, light/dark themes through the real theme
+button, forced colors on/off and CSS viewports1280×900,640×450,320×225. These are100%,200%,
+400% reflow equivalents for a1280×900 starting viewport. Chrome metrics/media emulation
+does not exercise browser-menu zoom, text-only enlargement or physical OS high contrast.
+
+All24baseline cases had no page horizontal overflow, visible controls within horizontal
+bounds, a distinct current navigation item and visible focused form controls/outlines.
+Six signed-in forced-color cases still faded disabled buttons with opacity0.65. The CSS
+now uses opacity1 and system GrayText for disabled text/borders only in forced colors.
+This preserves the system palette without forced-color-adjust:none. Disabled controls are
+exempt from WCAG contrast requirements; the old opacity is not presented as a proven WCAG
+contrast violation. Normal themes and disabled behavior are unchanged.
+
+All24final rendering cases pass, alongside14authentication checks and existing OAuth
+isolation checks, with0JavaScript exceptions. Cases report visible/disabled control counts;
+an empty disabled set is not claimed as disabled-control coverage. Full disposable
+PostgreSQL suite728passed/0failed/0skipped;one existing Starlette warning. Ruff122files,
+format and mypy50backendfiles passed.
+
+The fixture needed Page.bringToFront after popup return because background animation
+frames were suspended. Expected baseline failure diagnostics were separated from JSON
+before retaining receipts. Both are harness corrections, not product behavior changes.
+Ignored private receipts:render_accessibility_baseline.json and
+render_accessibility_acceptance.json under.local/verification. All browser work used fresh
+profiles, temporary SQLite, synthetic credentials, mocked exchange and blocked external
+requests. No operational profile/account/database or broker was tested.
+
+References:[W3C320CSS-pixel reflow](https://www.w3.org/WAI/WCAG21/Understanding/reflow) and
+[forced-color behavior](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/forced-colors).
+The [inactive-control exception](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast)
+is documented separately from this palette improvement.
+Screen-reader speech, physical palettes, actual browser zoom controls, text-only resizing
+and the wider audit remain pending; no full WCAG AA conformance claim.
