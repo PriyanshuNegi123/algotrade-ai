@@ -1,13 +1,13 @@
 # Prioritized backlog
 
-Immediate status:the two Gitleaks false positives are resolved by exact fingerprints;
-HEAD92a941b has2reachable commits and the latest full-history scan passed. Public push is
-still not authorized. See [project progress and next actions](../docs/PROJECT_STATUS.md).
-Functional next is nowP2-003R-A; publishing checks must be repeated after the final commit.
+Immediate status: P2-003R-A genuine active-stop acceptance is complete.
+Next functional task is P2-003U market-hours observation acceptance. HEAD 0f2df43;
+hosted CI passed on0f2df43; new local report changes await approved publication/CI.
+Phase2 remains partial; see docs/PHASE2_ACCEPTANCE.md. Push requires explicit authorization.
 
 | ID | Priority | Dependencies | Scope | Acceptance criteria | Complexity | Status |
 |---|---|---|---|---|---|---|
-| CI-PG-PERM | P0 | Disposable PostgreSQL | Realistic permission-denial test across CI/native role contexts | Non-owner/non-superuser INSERT actually denied; preflight blocks; temporary roles/grants removed | Medium | COMPLETE locally:target1pass;348pass Docker17.6+native17.11;remote rerun awaits approved push |
+| CI-PG-PERM | P0 | Disposable PostgreSQL | Realistic permission-denial test across CI/native role contexts | Non-owner/non-superuser INSERT actually denied; preflight blocks; temporary roles/grants removed | Medium | COMPLETE locally and hosted: foundation run42630898094/verify passed on0f2df43; latest local385PGpass |
 | P1-VERIFY | P0 | Docker/PostgreSQL | Verify image build, migrations, auth, non-root UID, app restart and database outage/recovery | Full isolated smoke succeeds and cleanup confirmed | Medium | COMPLETE 2026-11-06: native PostgreSQL 41 tests and actual container smoke passed; CI execution tracked separately |
 | P1-UI-AUDIT | P1 | P1-004 | Keyboard, screen reader and measured contrast audit | Accessible focus/order/errors and AA contrast measured; resolve defects | Small | PARTIAL:keyboard focus/control contrast/320px reflow verified;screen-reader/dynamic errors/full audit pending |
 | P2-001 | P1 | P1-VERIFY | Official read-only Upstox API review | Sources/date/versions/credential limits and unknowns recorded | Medium | COMPLETE 2026-11-06; see BROKER_COMPLIANCE.md |
@@ -30,10 +30,12 @@ Functional next is nowP2-003R-A; publishing checks must be repeated after the fi
 | P2-003O | P1 | P2-003N; valid Analytics token/current catalog | Bounded real option-chain acceptance | One explicit catalog expiry; validate source/legs/archive/private read; no freshness guarantees/orders/stream capture | Medium | COMPLETE2026-11-06:135strikes/270legs;72flagged;canonical/catalog/pagination verified |
 | P2-003P | P1 | P2-003O; valid Analytics/current catalog | Bounded actual streaming authorization and decoder acceptance | Finite index-only subscription, safe outcome/diagnostics, no invented tick/day or trading permission | Medium | COMPLETE2026-11-06:20sec/one attempt,2frames,closed-market stale snapshot,9pongs;no durable record |
 | P2-003Q | P1 | P2-003P; current private runtime | Reproducible bounded durable capture through private Compose runtime | Deploy reviewed manifests; explicit quota-bound recorder; persisted event/health/stop verification; no invented days or secrets in argv/output | Medium | COMPLETE2026-11-06:6durable events/3527bytes;closed parent-child;hashes/restart verified |
-| P2-003R | P1 | P2-003Q | Safe private-runtime capture status and cooperative stop workflow | Target only verified local recorder; no broad process kill or credential leak; persisted stop/cleanup evidence; no automatic recording | Medium | COMPLETE implementation/synthetic+PG verification;active broker acceptance awaits current catalog |
-| P2-003R-A | P1 NEXT | P2-003R;fresh catalog | Genuine active-broker stop acceptance | Explicit short bounded run,request one parent stop,verify connection/child/parent finalization;no day certification | Small | BLOCKED prerequisite rechecked:official HEAD+GET stillNov6;ISTNov7;no recording |
+| P2-003R | P1 | P2-003Q | Safe private-runtime capture status and cooperative stop workflow | Target only verified local recorder; no broad process kill or credential leak; persisted stop/cleanup evidence; no automatic recording | Medium | COMPLETE implementation/synthetic+PG verification; genuine active stop accepted 2026-11-09 |
+| P2-003R-A | P1 | P2-003R;fresh catalog | Genuine active-broker stop acceptance | Explicit short bounded run,request one parent stop,verify connection/child/parent finalization;no day certification | Small | COMPLETE 2026-11-09: genuine snapshot then exact-parent stop; parent/child closed; transport cleanup and archive verified |
 | P2-003S | P1 | P2-003R | Deterministic synthetic coverage fixture clocks around IST midnight | Preserve coverage assertions/policy;reproduce boundary case without real account/network and remove wall-clock dependence | Small | COMPLETE:fixed synthetic clock;4boundary regressions;371PGpass/0skip |
 | P2-003T | P1 | P2-003S | Read-only catalog freshness diagnostics | Safe publication/retrieval/ISTdate context,same transaction,unchanged blockers/no raw archive;native+security tests | Small | COMPLETE:374PGpass;actual stale-date explanation verified |
+| P2-003U | P1 NEXT | P2-003R-A; current catalog and verified session | Bounded genuine market-hours observation acceptance | Supported explicit catalog contract; fresh update/sample lineage and honest coverage; no automated recording or day certification from a short sample | Medium | Pending: next reviewed eligible market session |
+| P2-003V | P1 | P2-003G | Initial observation evidence report and closure audit | Bounded read-only archive report, source separation, no fake days or later-phase results; full verification packet | Medium | COMPLETE implementation:11new cases;385PGpass;Phase2 overall still partial |
 | P2-003 | P1 | P2-003A; P2-002A; optional operator credential for actual data | Candles, chain, approved feed and observation | Real UTC data; freshness/duplicates/gaps/reconnect/session checks; reports only from captured sessions | High | Partial: metadata/history/chain/auth-decoder implemented; bounded socket lifecycle implemented; durable research archive implemented; reviewed calendar/sampled coverage implemented; bounded multi-session supervisor implemented; safe preflight implemented; persistent local bootstrap verified; real acceptance/completed-day certification pending |
 | P3-001 | P2 | P2-003 | Knowledge provenance, indicators, controlled research | Licensed sources, completed candles, research cannot alter permissions | High | Not started |
 | P4-001 | P2 | P3-001 | Deterministic strategy and affordability interfaces | Whole-lot, spread, stale-data and insufficient-budget tests | High | Not started |
@@ -497,6 +499,57 @@ CSS matches the reviewed file byte-for-byte. Preflight still blocks CURRENT_CATA
 Gitleaks scanned all 30 pending files: zero new findings, one unchanged previously documented
 prose false positive; full-history scan passed existing exact allowances. Scanner settings
 unchanged. Git whitespace check passed. No staging, commit or push.
+
+## 2026-11-09T14:05:58.802923+00:00 — P2-003R-A genuine active-broker stop acceptance COMPLETE
+
+P2-003R-A verified on2026-11-09: current public catalog imported (6,810 selected records);
+unchanged preflight passed. Genuine Nifty50 snapshot then exact-parent stop produced
+CLOSED/COOPERATIVE_STOP and child CLOSED/CANCELLED. Stored3events/2,388bytes; hashes,
+sequences, lineage, totals and private API access/logout verified. HTTPS socket1→0; no
+active rows remain. Quote STALE_TRADE;0sampledms/0qualifying days. No credential/settings
+or runtime-source change;OBSERVATION/live off. Fresh disposablePG374pass/0fail/0skip;
+Ruff/format/mypy/sync pass,one upstream warning;hosted CI unconfirmed. No commit/push.
+NextP2-003U: bounded genuine observation in a reviewed eligible market session; no scheduler
+or short-run day certification. Full timestamps, IDs and evidence:latest docs/VERIFICATION.md.
+
+Final checks: all11changed Markdown files passed default-rule Gitleaks without ignores; full-history scan passed existing exact allowances. Git whitespace check passed. No index changes, commit, push or history rewrite.
+
+Drive backup/archive integration remains pending connection, encryption/export and restore verification.
+
+## Phase 2 completion audit — 2026-11-09T14:19:02.977288+00:00 UTC
+
+User requested all Phase2 work/checks. Status remains PARTIAL; do not claim whole-phase
+completion. P2-003V initial observation report implemented and verified. Fresh385PGpassed/
+0failed/0skipped;default361passed/24PGskips;one upstream warning. Ruff89files/mypy37files,
+locked sync,TLS/supervision,pip-audit and isolated Docker build/restart/outage checks pass.
+Hosted foundation/verify now confirmed SUCCESS on0f2df43 via run42630898094, including the
+PostgreSQL test step. Earlier CI-unconfirmed statements are historical. New report code
+has local checks only until an approved new commit/push/run. No commit or push this turn.
+
+Actual private report exported to ignored reports/INITIAL_OBSERVATION.md (mode0600):
+UPSTOX_V3,seven requested dates,zero matching derivative sessions,NOT_CERTIFIED. Existing
+2index sessions/9events remain distinct. Report preserves bounds/hash validation, does not
+write DB/contact broker/start capture/certify days. Runtime bootstrap readiness/login and
+preflight pass;OBSERVATION/live off. See docs/PHASE2_ACCEPTANCE.md for exact evidence/gaps.
+
+Remaining: OAuth implementation plus public registered client ID/callback and local secret;
+genuine market-hours/reconnect evidence;actual seven-calendar-day observation window;
+reviewed completion criteria and calendar/field-unit limitations. OAuth settings were asked
+for;user replied with storage preference instead,so settings remain missing. Google Drive
+(user reports5TB) selected as future backup/archive destination;PostgreSQL remains working
+DB. No Drive connection/upload/migration/backup claimed;see docs/STORAGE.md.
+
+Next: obtain non-secret Upstox client ID/exact callback,configure secret only locally;
+implement/test OAuth. In an eligible reviewed market session,run finite genuine observation
+with current metadata. Do not start Phase3,relax freshness or invent completed days.
+Prior pending documentation changes preserved. No real broker request/new capture this
+iteration;the genuine active-stop evidence belongs to the preceding9November task.
+
+Final checks (2026-11-09T14:20:43.567215+00:00 UTC): all19changed/new files passed default-rule Gitleaks without
+ignores;all-ref history scan passed existing exact historical allowances. Whitespace EOF
+issues in five handoff records corrected. No index changes,commit,push or history rewrite.
+Phase2 remains partial with explicit outstanding gates;Google Drive integration is planned,
+not configured. Final runtime suite385PGpass/0skip;default361pass/24skip;one warning.
 
 ## 2026-11-09T14:48:12.940990+00:00 — Google Drive OAuth and cloud storage VERIFIED
 

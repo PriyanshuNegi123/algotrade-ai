@@ -1,6 +1,12 @@
 # Known issues
 
-## Open issue: GitHub Actions resolution unconfirmed — 2026-11-06T18:07:20.891567+00:00
+## Resolved for commit 0f2df43: previous GitHub Actions PostgreSQL failure
+
+Verified on9November: foundation run42630898094 and its verify job passed all steps.
+New report changes remain locally verified pending an approved new commit/push/run.
+The following6November account is historical evidence, superseded by that hosted success.
+
+### Historical CI status — 2026-11-06T18:07:20.891567+00:00
 
 - Full local pytest suite with disposable PostgreSQL: **348 passed, 0 failed, 0 skipped**.
 - PostgreSQL privilege integration test: **passed** with PostgreSQL connected.
@@ -646,6 +652,55 @@ CSS matches the reviewed file byte-for-byte. Preflight still blocks CURRENT_CATA
 Gitleaks scanned all 30 pending files: zero new findings, one unchanged previously documented
 prose false positive; full-history scan passed existing exact allowances. Scanner settings
 unchanged. Git whitespace check passed. No staging, commit or push.
+
+## 2026-11-09T14:05:58.802923+00:00 — P2-003R-A genuine active-broker stop acceptance COMPLETE
+
+P2-003R-A verified on2026-11-09: current public catalog imported (6,810 selected records);
+unchanged preflight passed. Genuine Nifty50 snapshot then exact-parent stop produced
+CLOSED/COOPERATIVE_STOP and child CLOSED/CANCELLED. Stored3events/2,388bytes; hashes,
+sequences, lineage, totals and private API access/logout verified. HTTPS socket1→0; no
+active rows remain. Quote STALE_TRADE;0sampledms/0qualifying days. No credential/settings
+or runtime-source change;OBSERVATION/live off. Fresh disposablePG374pass/0fail/0skip;
+Ruff/format/mypy/sync pass,one upstream warning;hosted CI unconfirmed. No commit/push.
+NextP2-003U: bounded genuine observation in a reviewed eligible market session; no scheduler
+or short-run day certification. Full timestamps, IDs and evidence:latest docs/VERIFICATION.md.
+
+Final checks: all11changed Markdown files passed default-rule Gitleaks without ignores; full-history scan passed existing exact allowances. Git whitespace check passed. No index changes, commit, push or history rewrite.
+
+## Phase 2 completion audit — 2026-11-09T14:19:02.977288+00:00 UTC
+
+User requested all Phase2 work/checks. Status remains PARTIAL; do not claim whole-phase
+completion. P2-003V initial observation report implemented and verified. Fresh385PGpassed/
+0failed/0skipped;default361passed/24PGskips;one upstream warning. Ruff89files/mypy37files,
+locked sync,TLS/supervision,pip-audit and isolated Docker build/restart/outage checks pass.
+Hosted foundation/verify now confirmed SUCCESS on0f2df43 via run42630898094, including the
+PostgreSQL test step. Earlier CI-unconfirmed statements are historical. New report code
+has local checks only until an approved new commit/push/run. No commit or push this turn.
+
+Actual private report exported to ignored reports/INITIAL_OBSERVATION.md (mode0600):
+UPSTOX_V3,seven requested dates,zero matching derivative sessions,NOT_CERTIFIED. Existing
+2index sessions/9events remain distinct. Report preserves bounds/hash validation, does not
+write DB/contact broker/start capture/certify days. Runtime bootstrap readiness/login and
+preflight pass;OBSERVATION/live off. See docs/PHASE2_ACCEPTANCE.md for exact evidence/gaps.
+
+Remaining: OAuth implementation plus public registered client ID/callback and local secret;
+genuine market-hours/reconnect evidence;actual seven-calendar-day observation window;
+reviewed completion criteria and calendar/field-unit limitations. OAuth settings were asked
+for;user replied with storage preference instead,so settings remain missing. Google Drive
+(user reports5TB) selected as future backup/archive destination;PostgreSQL remains working
+DB. No Drive connection/upload/migration/backup claimed;see docs/STORAGE.md.
+
+Next: obtain non-secret Upstox client ID/exact callback,configure secret only locally;
+implement/test OAuth. In an eligible reviewed market session,run finite genuine observation
+with current metadata. Do not start Phase3,relax freshness or invent completed days.
+Prior pending documentation changes preserved. No real broker request/new capture this
+iteration;the genuine active-stop evidence belongs to the preceding9November task.
+
+Final checks (2026-11-09T14:20:43.567215+00:00 UTC): all19changed/new files passed default-rule Gitleaks without
+ignores;all-ref history scan passed existing exact historical allowances. Whitespace EOF
+issues in five handoff records corrected. No index changes,commit,push or history rewrite.
+Phase2 remains partial with explicit outstanding gates;Google Drive integration is planned,
+not configured. Final runtime suite385PGpass/0skip;default361pass/24skip;one warning.
 
 ## 2026-11-09T14:48:12.940990+00:00 — Google Drive OAuth and cloud storage VERIFIED
 

@@ -201,3 +201,12 @@ No staging/commit/push/history rewrite. OBSERVATION/live disabled retained.
 Next:P2-003R-A recheck official catalog freshness then genuine active-broker stop acceptance
 only if preflight passes;last operator report blocked CURRENT_CATALOG_REQUIRED. Do not bypass
 freshness/closed-market gates or certify a day from snapshots. Longer observation still pending.
+
+## Initial report and Phase2 closure verification
+
+10new report/security tests plus1PostgreSQL test cover source separation, empty seven-date
+windows, corruption, Markdown/HTML escaping, input bounds, read-only access and container
+forwarding. Latest full disposablePG suite385passed/0skips;default361passed/24PGskips.
+Ruff89files,mypy37files,TLS/supervision,pip-audit and isolated Docker smoke pass. One upstream
+warning remains. Hosted foundation run42630898094 passes on0f2df43; these new tests are local
+until a new approved commit/push. See PHASE2_ACCEPTANCE.md; overall Phase2 remains partial.

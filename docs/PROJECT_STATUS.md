@@ -1,6 +1,36 @@
 # Project status and next steps
 
-Updated:2026-11-06T18:44:21.685960+00:00 (UTC). Phase1 complete;Phase2 partial;hosted CI unconfirmed.
+## Phase 2 completion audit — 2026-11-09T14:19:02.977288+00:00 UTC
+
+User requested all Phase2 work/checks. Status remains PARTIAL; do not claim whole-phase
+completion. P2-003V initial observation report implemented and verified. Fresh385PGpassed/
+0failed/0skipped;default361passed/24PGskips;one upstream warning. Ruff89files/mypy37files,
+locked sync,TLS/supervision,pip-audit and isolated Docker build/restart/outage checks pass.
+Hosted foundation/verify now confirmed SUCCESS on0f2df43 via run42630898094, including the
+PostgreSQL test step. Earlier CI-unconfirmed statements are historical. New report code
+has local checks only until an approved new commit/push/run. No commit or push this turn.
+
+Actual private report exported to ignored reports/INITIAL_OBSERVATION.md (mode0600):
+UPSTOX_V3,seven requested dates,zero matching derivative sessions,NOT_CERTIFIED. Existing
+2index sessions/9events remain distinct. Report preserves bounds/hash validation, does not
+write DB/contact broker/start capture/certify days. Runtime bootstrap readiness/login and
+preflight pass;OBSERVATION/live off. See docs/PHASE2_ACCEPTANCE.md for exact evidence/gaps.
+
+Remaining: OAuth implementation plus public registered client ID/callback and local secret;
+genuine market-hours/reconnect evidence;actual seven-calendar-day observation window;
+reviewed completion criteria and calendar/field-unit limitations. OAuth settings were asked
+for;user replied with storage preference instead,so settings remain missing. Google Drive
+(user reports5TB) selected as future backup/archive destination;PostgreSQL remains working
+DB. No Drive connection/upload/migration/backup claimed;see docs/STORAGE.md.
+
+Next: obtain non-secret Upstox client ID/exact callback,configure secret only locally;
+implement/test OAuth. In an eligible reviewed market session,run finite genuine observation
+with current metadata. Do not start Phase3,relax freshness or invent completed days.
+Prior pending documentation changes preserved. No real broker request/new capture this
+iteration;the genuine active-stop evidence belongs to the preceding9November task.
+
+
+Updated: 2026-11-09T14:05:58.802923+00:00 UTC. Phase1 complete; Phase2 partial; genuine active-stop verified; hosted CI unconfirmed.
 
 ## What is complete
 
@@ -8,10 +38,10 @@ Updated:2026-11-06T18:44:21.685960+00:00 (UTC). Phase1 complete;Phase2 partial;h
 |---|---|---|
 | Foundation | FastAPI/PostgreSQL/Alembic, vanilla dashboard, administrator authentication, CSRF/origin checks, fail-closed permissions | Production hardening and accessibility audit remain pending |
 | Local deployment | Protected bootstrap, private database, loopback-only app, migration head0006_capture_runs | Keep Docker Desktop running; do not delete the persistent volume |
-| Public instrument catalog | One real source archive;6,504 normalized instruments from83,940 source records; checksum/catalog lookups verified | Currentness must be checked again before future broker work |
+| Public instrument catalog | Two real source archives; latest6,810 selected instruments from84,868 source records; checksum/catalog lookups verified | Currentness must be checked again before future broker work |
 | Historical candles |75 real Nifty50 five-minute bars for5November2026; canonical checksum, prices and time spacing verified | Not certified session coverage, option fills or an observation day |
 | Option chain | One real Nifty50 snapshot for9November2026 expiry;135strikes/270legs; archive/catalog/pagination verified |72legs flagged; quote freshness UNKNOWN; Greek units unverified |
-| Streaming implementation | V3 authorization/decoder, bounded socket lifecycle, archives, supervisor and local preflight implemented; synthetic/local TLS checks passed | One closed-market20second authorization/subscription/2-frame acceptance verified; fresh updates/market-hours coverage pending;first bounded durable archive verified |
+| Streaming implementation | V3 authorization/decoder, bounded socket lifecycle, archives, supervisor and local preflight implemented; synthetic/local TLS checks passed | Closed-market streaming/durable capture and genuine active-stop verified; fresh updates/market-hours coverage pending |
 | Administrator security | Exposed local admin password replaced;4prior sessions revoked; old password/session rejection and new login verified | Retrieve replacement only locally; never paste it into chat |
 | Formatting | HTML trailing whitespace/line endings cleaned;10Markdown breaks preserved; dependent checksums updated with approval | Calendar timing/holiday values and functionality unchanged |
 | Gitleaks | Two verified false positives documented; exactly two historical fingerprints allowed | No broad rule/path/commit exclusions; not a general security certification |
@@ -23,9 +53,9 @@ Detailed evidence:[history](HISTORICAL_CANDLES.md),[chain](OPTION_CHAIN.md),
 ## Current safety and verification state
 
 - OBSERVATION; entries, live trading, signals and execution remain disabled. No order adapter.
-- Last verified persistent data:1catalog/6,504instruments,1history batch/75candles,
-  1chain snapshot/270legs. Now1streaming session/6events/1capture run,all closed. No genuine
-  completed observation day or seven-day certification. Runtime DB counts were rechecked during streaming acceptance and unchanged.
+- Last verified persistent data:2catalogs/latest6,810instruments,1history batch/75candles,
+  1chain snapshot/270legs. Now2streaming sessions/9events/2capture runs,all closed. No genuine
+  completed observation day or seven-day certification. Counts were verified after the 9 November active-stop acceptance; one new parent/child and3events were added.
 - Local app URL:http://127.0.0.1:8000. Administrator password stays in
   `.local/runtime/admin-password.txt`; broker token stays in protected local settings.
   The private database hostname `db` is internal to Compose, not reachable by host DB CLIs.
@@ -33,22 +63,24 @@ Detailed evidence:[history](HISTORICAL_CANDLES.md),[chain](OPTION_CHAIN.md),
   console date; it is not an independently verified exact broker expiry timestamp.
 - Latest full disposable PostgreSQL suite:374passed; default351passed/23PGskipped;
   Ruff lint/format and strict mypy passed previously. One upstream TestClient warning.
-  Full regression suite rerun this streaming iteration:348PGpass/default326pass22skip;lint/type checks passed.
-- Current Git HEAD:`33c143d`;3reachable local commits. Full-history Gitleaks8.30.1
+  Latest fresh run:374PGpass/0fail/0skip;lint/type checks passed. Default351pass/23skip is prior evidence, not rerun this iteration.
+- Current Git HEAD:`0f2df43`;9reachable local commits. Full-history Gitleaks8.30.1
   rerun this update:exit0,zero unallowed findings,with2exact reviewed fingerprints.
   The previous statement that there was only1commit is historical. No commit/push by this agent.
 
 ## What to do next: development
 
-**P2-003R-A:recheck catalog freshness and verify genuine active-broker cooperative stop.**
+**P2-003U: bounded genuine market-hours observation acceptance.**
 
-Synthetic coverage clock stability is now verified:original late-IST assertion failure
-reproduced and fixed without changing runtime policy;4clock-boundary regressions pass.
-Before a new broker recording,recheck the official catalog and preflight. Only if freshness
-gates pass,perform a short explicitly bounded recording,stop its exact parent ID and verify
-closed child/parent state. Last operator preflight required a current catalog. Do not bypass
-that gate,auto-schedule retries or invent fresh quotes/completed days. Existing synthetic
-stop tests and private status/closed-capture controls already pass.
+P2-003R-A completed on9November: current catalog imported, local preflight passed,
+one Nifty50 snapshot received and the exact active parent stopped cooperatively. Parent
+and child closed; active HTTPS transport disappeared; hashes/private reads verified.
+The stale quote contributes0sampled milliseconds and0qualifying days. The prior catalog
+blocker is resolved for this verification time only; recheck before future capture.
+
+Next, during a reviewed eligible session, validate a supported explicit catalog contract,
+then perform a bounded genuine observation and verify recent updates/sample lineage.
+No automatic recording or invented day certification. Keep all trading flags disabled.
 
 After durable recording verification, proceed with deliberately bounded genuine observation and honest
 coverage reports. Research/strategies/backtesting/paper execution remain later phases under
@@ -263,6 +295,20 @@ CSS matches the reviewed file byte-for-byte. Preflight still blocks CURRENT_CATA
 Gitleaks scanned all 30 pending files: zero new findings, one unchanged previously documented
 prose false positive; full-history scan passed existing exact allowances. Scanner settings
 unchanged. Git whitespace check passed. No staging, commit or push.
+
+## 2026-11-09T14:05:58.802923+00:00 — P2-003R-A genuine active-broker stop acceptance COMPLETE
+
+P2-003R-A verified on2026-11-09: current public catalog imported (6,810 selected records);
+unchanged preflight passed. Genuine Nifty50 snapshot then exact-parent stop produced
+CLOSED/COOPERATIVE_STOP and child CLOSED/CANCELLED. Stored3events/2,388bytes; hashes,
+sequences, lineage, totals and private API access/logout verified. HTTPS socket1→0; no
+active rows remain. Quote STALE_TRADE;0sampledms/0qualifying days. No credential/settings
+or runtime-source change;OBSERVATION/live off. Fresh disposablePG374pass/0fail/0skip;
+Ruff/format/mypy/sync pass,one upstream warning;hosted CI unconfirmed. No commit/push.
+NextP2-003U: bounded genuine observation in a reviewed eligible market session; no scheduler
+or short-run day certification. Full timestamps, IDs and evidence:latest docs/VERIFICATION.md.
+
+Final checks: all11changed Markdown files passed default-rule Gitleaks without ignores; full-history scan passed existing exact allowances. Git whitespace check passed. No index changes, commit, push or history rewrite.
 
 ## 2026-11-09T14:48:12.940990+00:00 — Google Drive OAuth and cloud storage VERIFIED
 

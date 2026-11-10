@@ -208,6 +208,10 @@ Inspect local captures with `uv run python -m scripts.capture_local --status`. T
 cooperative stop uses `--stop` followed by the exact capture ID;poll `--status --capture-id`
 until parent and child are closed. See LOCAL_CAPTURE.md for acknowledgment/freshness limits.
 
+Phase2 completion evidence and remaining requirements: [acceptance checklist](docs/PHASE2_ACCEPTANCE.md).
+The new initial-observation report is evidence-only and never certifies elapsed days.
+Google Drive is the selected future backup/archive target; see [storage decision](docs/STORAGE.md).
+
 Google Drive OAuth and synthetic cloud storage are verified: [setup and security](docs/GOOGLE_DRIVE.md). PostgreSQL remains the working database.
 
 Manual encrypted PostgreSQL Drive backups and isolated cloud restore are verified: [backup/recovery guide](docs/BACKUPS.md). Recovery keys stay off Drive.

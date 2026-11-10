@@ -22,6 +22,23 @@ def sign_in(client):
     return response.json()["csrf_token"]
 
 
+def test_postgres_initial_observation_report(postgres_config, coverage_clock):
+    from backend.app.market_data.initial_report import initial_observation_report
+    from tests.integration.test_coverage import recorded, report_request
+
+    with TestClient(create_app(postgres_config)) as client:
+        engine = client.app.state.engine
+        recorded(engine)
+        genuine = initial_observation_report(engine, report_request("UPSTOX_V3"))
+        synthetic = initial_observation_report(engine, report_request())
+        assert genuine["session_ids"] == []
+        assert synthetic["recorded_session_count"] == 1
+        assert synthetic["counts"]["events"] == 4
+        assert genuine["qualifying_observation_days"] == 0
+        assert synthetic["assessment"] == "NOT_CERTIFIED"
+        assert not synthetic["live_enabled"]
+
+
 def test_postgres_migration_auth_and_restart(postgres_config):
     with TestClient(create_app(postgres_config)) as first:
         assert first.get("/health/ready").status_code == 200

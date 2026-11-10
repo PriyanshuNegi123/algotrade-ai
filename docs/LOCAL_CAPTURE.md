@@ -118,3 +118,24 @@ Eight new wrapper security cases passed;Ruff85files,mypy36backendfiles passed. O
 Starlette TestClient deprecation warning remains. Hosted GitHub Actions resolution is still
 unconfirmed; the previous local348result precedes these8new cases. No commit/push or live
 activation is implied by acceptance. Status/stop handling is implemented above;active broker-stop acceptance awaits a fresh catalog.
+
+## 2026-11-09T14:05:58.802923+00:00 — P2-003R-A genuine active-broker stop acceptance COMPLETE
+
+P2-003R-A verified on2026-11-09: current public catalog imported (6,810 selected records);
+unchanged preflight passed. Genuine Nifty50 snapshot then exact-parent stop produced
+CLOSED/COOPERATIVE_STOP and child CLOSED/CANCELLED. Stored3events/2,388bytes; hashes,
+sequences, lineage, totals and private API access/logout verified. HTTPS socket1→0; no
+active rows remain. Quote STALE_TRADE;0sampledms/0qualifying days. No credential/settings
+or runtime-source change;OBSERVATION/live off. Fresh disposablePG374pass/0fail/0skip;
+Ruff/format/mypy/sync pass,one upstream warning;hosted CI unconfirmed. No commit/push.
+NextP2-003U: bounded genuine observation in a reviewed eligible market session; no scheduler
+or short-run day certification. Full timestamps, IDs and evidence:latest docs/VERIFICATION.md.
+
+Final checks: all11changed Markdown files passed default-rule Gitleaks without ignores; full-history scan passed existing exact allowances. Git whitespace check passed. No index changes, commit, push or history rewrite.
+
+## Initial observation report
+
+Read-only evidence export is now available through `scripts.initial_observation --local`.
+It shares existing coverage bounds and does not record data or contact Upstox. See
+[PHASE2_ACCEPTANCE.md](PHASE2_ACCEPTANCE.md) for the command, actual results and unfinished
+gates. A seven-date request does not certify seven days; synthetic data stays separate.
