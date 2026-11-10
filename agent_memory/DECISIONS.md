@@ -1,5 +1,43 @@
 # Architecture decisions
 
+## 2026-11-10T15:48:56.336172+00:00 — Bootstrap retains optional OAuth storage
+
+Objective: integrate the opt-in OAuth volume into the existing safe local lifecycle.
+Added bootstrap --oauth-vault for first opt-in. Every start lists Docker volumes and retains
+that overlay when the exact <project>_upstox_oauth volume already exists, even without the
+flag. Other projects and prefix/suffix lookalikes do not activate it. No new marker or .env
+rewrite is required for this mode. Failed inspection stops startup; no automatic opt-out,
+volume deletion, ownership repair, key generation, consent or token exchange is introduced.
+The safe result includes oauth_vault_enabled. Registered app configuration is still separate.
+
+Before Compose up, validate exact private target/project-local named volume, writable vault,
+read-only root, dropped capabilities/no-new-privileges and no migration mount. Reject bind,
+external/remote/driver-option volumes, subpaths and disabled copy initialization. A configured
+vault path without opt-in or an existing volume fails with OAUTH_VOLUME_OPT_IN_REQUIRED.
+Bootstrap's test-only explicit environment_file parameter permits the isolated verifier to
+exercise the actual startup helper without reading or modifying the operational .env.
+
+Added 21 regression cases; target bootstrap file:34 passed. Full disposable PostgreSQL17.11:
+636 passed,0 failed,0 skipped; one existing nonfatal Starlette warning. Locked sync,Ruff
+lint/format117files and mypy49backendfiles passed. Temporary native cluster stopped/removed.
+Initial new test draft had style violations corrected by formatting before final checks.
+Actual scripts.verify_compose --bootstrap --oauth-vault passed image/migrations, auth/CSRF,
+private modes/encrypted roundtrip, restarts and DB outage/recovery. Removed the disposable
+app and bootstrapped again without opt-in: existing volume retained and decryption passed.
+Test containers/volumes removed. Default bootstrap Docker verification tracked below.
+
+Files:scripts/bootstrap_local.py,scripts/verify_compose.py,
+tests/security/test_runtime_bootstrap.py,README.md,docs/LOCAL_BOOTSTRAP.md,
+docs/UPSTOX_OAUTH_BROWSER.md,PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory files.
+Operational app/DB, real .env, Upstox/Google credentials and backup jobs unchanged. No real
+broker request, market recording or vault initialization. OBSERVATION; live disabled.
+Current checker:NOT_CONFIGURED,all3registered app fields absent and vault setting unset.
+Code/lifecycle verification is not genuine OAuth acceptance. New hosted CI unverified.
+Next: provide a secure local OAuth configuration helper for registered fields, validate
+operator input, then explicitly deploy/complete genuine consent once prerequisites are met.
+Phase2 stays partial; market-hours/reconnect/seven-day evidence gates remain. Local commit
+only; no push. Handoff updated for the completed iteration and pending operator acceptance.
+
 ## 2026-11-10T15:38:49.863311+00:00 — Optional private OAuth Compose storage
 
 Objective: prepare the next OAuth deployment prerequisite while real registered settings
@@ -1324,3 +1362,11 @@ no genuine OAuth acceptance or new hosted CI pass claimed. Local commit only, no
 Final cleanup: removed only the four image tags built by these two disposable smoke runs;
 no global prune or operational image change. Staged private comparison against configured
 credential and recovery material passed. Sixteen task files only; cached whitespace clean.
+
+Final verification (2026-11-10T15:49:44.791844+00:00 UTC): default bootstrap Docker
+smoke passed migrations, auth, restart and DB outage/recovery too. Both disposable projects
+removed their own containers/volumes. All16 changed files passed default Gitleaks with no
+allowances; full history passed with existing exact historical allowances unchanged. Full
+PostgreSQL suite636passed/0failed/0skipped; targeted bootstrap34passed. Ruff/format/mypy
+passed; one existing Starlette warning. No real runtime or credential changed. New CI and
+genuine OAuth remain unverified. Local commit only; no push.

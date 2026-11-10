@@ -23,6 +23,7 @@ from sqlalchemy.engine import URL, make_url
 from backend.app.config import Settings
 
 ROOT = Path(__file__).resolve().parents[1]
+OAUTH_VAULT_PATH = "/var/lib/algotrade/oauth"
 
 
 class BootstrapError(Exception):
@@ -260,12 +261,58 @@ def local_engine(executable: str) -> None:
         raise BootstrapError("LOCAL_DOCKER_ENGINE_UNAVAILABLE")
 
 
-def start_runtime(root: Path, prepared: dict, executable: str) -> dict:
+def oauth_volume_enabled(project: str, volumes: str, requested: bool) -> bool:
+    # Persist opt-in through Docker's existing project-scoped volume, not another secret file.
+    return requested or f"{project}_upstox_oauth" in volumes.splitlines()
+
+
+def validate_oauth_mount(configuration: dict, project: str, enabled: bool) -> None:
+    services = configuration["services"]
+    app = services["app"]
+    mounts = app.get("volumes", [])
+    if not enabled:
+        if mounts or app["environment"].get("UPSTOX_OAUTH_VAULT_DIR"):
+            raise BootstrapError("OAUTH_VOLUME_OPT_IN_REQUIRED")
+        return
+    expected = configuration.get("volumes", {}).get("upstox_oauth", {})
+    if (
+        app["environment"].get("UPSTOX_OAUTH_VAULT_DIR") != OAUTH_VAULT_PATH
+        or len(mounts) != 1
+        or mounts[0].get("type") != "volume"
+        or mounts[0].get("source") != "upstox_oauth"
+        or mounts[0].get("target") != OAUTH_VAULT_PATH
+        or mounts[0].get("read_only", False)
+        or mounts[0].get("volume", {}).get("nocopy", False)
+        or mounts[0].get("volume", {}).get("subpath")
+        or expected.get("name") != f"{project}_upstox_oauth"
+        or expected.get("external", False)
+        or expected.get("driver", "local") != "local"
+        or expected.get("driver_opts")
+        or not app.get("read_only")
+        or "ALL" not in app.get("cap_drop", [])
+        or "no-new-privileges:true" not in app.get("security_opt", [])
+        or services["migrate"].get("volumes")
+    ):
+        raise BootstrapError("UNSAFE_OAUTH_VOLUME_CONFIGURATION")
+
+
+def start_runtime(
+    root: Path,
+    prepared: dict,
+    executable: str,
+    *,
+    oauth_vault: bool = False,
+    environment_file: Path | None = None,
+) -> dict:
+    # An explicit private test env file lets the isolated verifier exercise this exact path.
+    environment_file = environment_file or root / ".env"
     values = prepared["values"]
+    volumes = invoke([executable, "volume", "ls", "--format", "{{.Name}}"])
+    oauth_vault = oauth_volume_enabled(prepared["project"], volumes, oauth_vault)
     environment = {
         **os.environ,
         **values,
-        "APP_ENV_FILE": str(root / ".env"),
+        "APP_ENV_FILE": str(environment_file),
         "PATH": str(Path(executable).parent) + os.pathsep + os.environ.get("PATH", ""),
     }
     base = [
@@ -278,12 +325,15 @@ def start_runtime(root: Path, prepared: dict, executable: str) -> dict:
         "--file",
         str(root / "docker-compose.yml"),
         "--env-file",
-        str(root / ".env"),
+        str(environment_file),
     ]
+    if oauth_vault:
+        base.extend(["--file", str(root / "docker-compose.oauth.yml")])
     configuration = json.loads(
         invoke([*base, "config", "--format", "json"], environment=environment)
     )
     services = configuration["services"]
+    validate_oauth_mount(configuration, prepared["project"], oauth_vault)
     if services["db"].get("ports") or services["app"]["ports"][0]["host_ip"] != "127.0.0.1":
         raise BootstrapError("UNSAFE_LOCAL_PORT_BINDING")
     if services["app"]["environment"]["ADMIN_PASSWORD_HASH"] not in (
@@ -305,6 +355,7 @@ def start_runtime(root: Path, prepared: dict, executable: str) -> dict:
         "entries_enabled": False,
         "live_enabled": False,
         "recording_started": False,
+        "oauth_vault_enabled": oauth_vault,
     }
     with httpx.Client(base_url=prepared["origin"], timeout=10, trust_env=False) as client:
         if (
@@ -366,6 +417,9 @@ def bootstrap_lock(root: Path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int)
+    parser.add_argument(
+        "--oauth-vault", action="store_true", help="Opt in to durable private OAuth storage"
+    )
     args = parser.parse_args()
     with bootstrap_lock(ROOT):
         executable = docker_binary()
@@ -379,7 +433,10 @@ def main():
             "Protected local settings prepared; starting private PostgreSQL and loopback app.",
             flush=True,
         )
-        print(json.dumps(start_runtime(ROOT, prepared, executable)), flush=True)
+        print(
+            json.dumps(start_runtime(ROOT, prepared, executable, oauth_vault=args.oauth_vault)),
+            flush=True,
+        )
 
 
 if __name__ == "__main__":

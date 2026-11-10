@@ -34,6 +34,47 @@ or reset data. If startup fails, protected configuration and any persistent reso
 for repair; the helper does not destroy volumes. Never use `docker compose down -v` against
 important data. Keep Docker Desktop running while using the app.
 
+## Optional OAuth storage lifecycle
+
+For the first explicit opt-in to private OAuth storage:
+
+```sh
+uv run python -m scripts.bootstrap_local --oauth-vault
+```
+
+This adds `docker-compose.oauth.yml` and the project's dedicated `upstox_oauth` named
+volume. It does not configure the registered app or perform consent. No key is created by
+bootstrap; an authenticated authorization start prepares the vault separately. The result
+includes `oauth_vault_enabled`. On subsequent runs, bootstrap detects the exact
+`<project>_upstox_oauth` volume and retains the overlay even without the flag. A volume for
+another project or a similarly named volume does not enable it. Detection failures stop
+startup rather than falling back to the base deployment. No separate mode marker is stored.
+
+Bootstrap validates the merged storage target, local project volume, writable vault mount,
+read-only root filesystem, dropped capabilities and no-new-privileges setting before `up`.
+Bind mounts, external/remote volumes, subpaths, disabled volume initialization and mounting
+the vault into migrations are rejected. Setting UPSTOX_OAUTH_VAULT_DIR without opting in
+or an existing project volume is rejected rather than starting with unusable storage.
+The overlay controls the container path; bootstrap does not rewrite this setting in `.env`.
+
+There is no automatic opt-out or deletion. Keep the same project name and volume for future
+rebuilds. Manual Compose commands must also include both files; bypassing bootstrap with a
+base-only command can omit the mount. Do not remove the operational named volumes.
+Registered callback settings and genuine consent remain separate gates. See
+[OAuth browser setup](UPSTOX_OAUTH_BROWSER.md) for boundaries and recovery limitations.
+
+Verify the lifecycle with disposable credentials and containers, without touching `.env`:
+
+```sh
+uv run python -m scripts.verify_compose --bootstrap --oauth-vault
+uv run python -m scripts.verify_compose --bootstrap
+```
+
+The OAuth variant replaces its test application, deliberately omits the opt-in flag on the
+second bootstrap and verifies that encrypted synthetic storage still decrypts. Both variants
+exercise real readiness, administrator login/logout and observation preflight. Tests never
+contact a broker or start market recording. Only their own containers/volumes are removed.
+
 The generated DATABASE_URL uses the internal hostname `db`. Host-based database CLI commands
 cannot resolve that private endpoint. Use authenticated dashboard controls/preflight for this
 Compose deployment. The bootstrap checks readiness inside the running application through

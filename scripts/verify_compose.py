@@ -18,6 +18,8 @@ from pathlib import Path
 import httpx
 from argon2 import PasswordHasher
 
+from scripts.bootstrap_local import start_runtime
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -28,7 +30,12 @@ def main():
     parser.add_argument(
         "--oauth-vault", action="store_true", help="Verify optional private OAuth volume"
     )
+    parser.add_argument(
+        "--bootstrap", action="store_true", help="Exercise the real bootstrap startup helper"
+    )
     args = parser.parse_args()
+    if args.bootstrap and args.compose_bin:
+        parser.error("--bootstrap uses Docker Compose via docker; omit --compose-bin")
     executable = [str(args.compose_bin.resolve())] if args.compose_bin else ["docker", "compose"]
     project = "algotrade-verify-" + secrets.token_hex(6)
     port = 8000
@@ -125,9 +132,31 @@ def main():
                 "Start Docker and rerun this command."
             ) from None
         failure = None
+
+        def bootstrap(*, opt_in):
+            result = start_runtime(
+                ROOT,
+                {
+                    "values": variables,
+                    "project": project,
+                    "origin": origin,
+                    "admin_password": password,
+                    "admin_password_file": None,
+                },
+                "docker",
+                oauth_vault=opt_in,
+                environment_file=environment_file,
+            )
+            assert result["login_verified"]
+            assert result["oauth_vault_enabled"] is args.oauth_vault
+            assert not result["recording_started"] and not result["live_enabled"]
+
         try:
             print("Building and starting isolated verification containers…", flush=True)
-            compose("up", "--build", "--wait", "--wait-timeout", "180")
+            if args.bootstrap:
+                bootstrap(opt_in=args.oauth_vault)
+            else:
+                compose("up", "--build", "--wait", "--wait-timeout", "180")
             with httpx.Client(base_url=origin, timeout=10, trust_env=False) as client:
 
                 def ready():
@@ -300,7 +329,12 @@ def main():
                 assert state.json()["live_enabled"] is False
                 if args.oauth_vault:
                     # Container replacement, rather than restart, proves volume persistence.
-                    compose("up", "--force-recreate", "--no-deps", "--wait", "app")
+                    if args.bootstrap:
+                        compose("rm", "--stop", "--force", "app")
+                        # Deliberately omit opt-in: the existing exact-project volume retains it.
+                        bootstrap(opt_in=False)
+                    else:
+                        compose("up", "--force-recreate", "--no-deps", "--wait", "app")
                     ready()
                     assert client.get("/api/broker/oauth/status").json()["vault_state"] == (
                         "STORED_UNVERIFIED"
@@ -334,6 +368,8 @@ def main():
                 "restarts, outage recovery, no execution.",
                 flush=True,
             )
+            if args.bootstrap:
+                print("Bootstrap startup verified; no operator settings or runtime modified.")
         except BaseException as exc:
             failure = exc
             raise

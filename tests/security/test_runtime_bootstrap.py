@@ -1,5 +1,6 @@
 import os
 import stat
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -9,8 +10,11 @@ from scripts.bootstrap_local import (
     BootstrapError,
     assignments,
     bootstrap_lock,
+    oauth_volume_enabled,
     prepare_runtime,
     private_read,
+    start_runtime,
+    validate_oauth_mount,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -146,3 +150,123 @@ def test_new_custom_port_updates_local_origins(workspace):
     result = prepare_runtime(workspace, existing_volume=False, port=8001)
     assert result["origin"] == "http://127.0.0.1:8001"
     assert "http://127.0.0.1:8001" in result["values"]["ALLOWED_ORIGINS"]
+
+
+@pytest.mark.parametrize(
+    ("volumes", "requested", "enabled"),
+    [
+        ("", False, False),
+        ("", True, True),
+        ("sample_upstox_oauth\nsample_postgres_data\n", False, True),
+        ("other_upstox_oauth\nsample_upstox_oauth_extra\n", False, False),
+    ],
+)
+def test_oauth_opt_in_retained_only_for_exact_project_volume(volumes, requested, enabled):
+    assert oauth_volume_enabled("sample", volumes, requested) is enabled
+
+
+def oauth_configuration():
+    return {
+        "services": {
+            "app": {
+                "environment": {"UPSTOX_OAUTH_VAULT_DIR": "/var/lib/algotrade/oauth"},
+                "volumes": [
+                    {
+                        "type": "volume",
+                        "source": "upstox_oauth",
+                        "target": "/var/lib/algotrade/oauth",
+                    }
+                ],
+                "read_only": True,
+                "cap_drop": ["ALL"],
+                "security_opt": ["no-new-privileges:true"],
+            },
+            "migrate": {},
+        },
+        "volumes": {"upstox_oauth": {"name": "sample_upstox_oauth"}},
+    }
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "bind",
+        "target",
+        "source",
+        "readonly-volume",
+        "nocopy",
+        "subpath",
+        "external",
+        "name",
+        "driver",
+        "driver-options",
+        "writable-root",
+        "capabilities",
+        "privileges",
+        "migration-mount",
+        "environment",
+    ],
+)
+def test_unsafe_oauth_configuration_rejected(fault):
+    config = deepcopy(oauth_configuration())
+    app = config["services"]["app"]
+    mount = app["volumes"][0]
+    volume = config["volumes"]["upstox_oauth"]
+    if fault == "bind":
+        mount["type"] = "bind"
+    elif fault == "target":
+        mount["target"] = "/app"
+    elif fault == "source":
+        mount["source"] = "other"
+    elif fault == "readonly-volume":
+        mount["read_only"] = True
+    elif fault == "nocopy":
+        mount["volume"] = {"nocopy": True}
+    elif fault == "subpath":
+        mount["volume"] = {"subpath": "other"}
+    elif fault == "external":
+        volume["external"] = True
+    elif fault == "name":
+        volume["name"] = "other_upstox_oauth"
+    elif fault == "driver":
+        volume["driver"] = "remote"
+    elif fault == "driver-options":
+        volume["driver_opts"] = {"device": "/host"}
+    elif fault == "writable-root":
+        app["read_only"] = False
+    elif fault == "capabilities":
+        app["cap_drop"] = []
+    elif fault == "privileges":
+        app["security_opt"] = []
+    elif fault == "migration-mount":
+        config["services"]["migrate"]["volumes"] = [mount]
+    elif fault == "environment":
+        app["environment"]["UPSTOX_OAUTH_VAULT_DIR"] = "/other"
+    with pytest.raises(BootstrapError, match="UNSAFE_OAUTH_VOLUME_CONFIGURATION"):
+        validate_oauth_mount(config, "sample", True)
+
+
+def test_default_and_enabled_mount_policies():
+    validate_oauth_mount(oauth_configuration(), "sample", True)
+    base = {"services": {"app": {"environment": {}}, "migrate": {}}}
+    validate_oauth_mount(base, "sample", False)
+    with pytest.raises(BootstrapError, match="OPT_IN_REQUIRED"):
+        validate_oauth_mount(oauth_configuration(), "sample", False)
+
+
+def test_bootstrap_rejects_vault_settings_without_opt_in_before_start(workspace, monkeypatch):
+    import json
+
+    from scripts import bootstrap_local
+
+    prepared = prepare_runtime(workspace, existing_volume=False)
+    calls = []
+
+    def invoke(command, **kwargs):
+        calls.append(command)
+        return "" if "volume" in command else json.dumps(oauth_configuration())
+
+    monkeypatch.setattr(bootstrap_local, "invoke", invoke)
+    with pytest.raises(BootstrapError, match="OPT_IN_REQUIRED"):
+        start_runtime(workspace, prepared, "/synthetic/docker")
+    assert not any("up" in command for command in calls)

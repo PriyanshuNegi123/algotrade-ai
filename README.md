@@ -223,3 +223,5 @@ Passphrase-encrypted Drive recovery: [RECOVERY_KIT.md](docs/RECOVERY_KIT.md).
 Optional Upstox browser authorization: [UPSTOX_OAUTH_BROWSER.md](docs/UPSTOX_OAUTH_BROWSER.md).
 Synthetic security/browser checks are verified. Optional private storage is available through
 `docker-compose.oauth.yml`; registered-app settings and explicit deployment remain required.
+Use `uv run python -m scripts.bootstrap_local --oauth-vault` for first opt-in. Later bootstrap
+runs retain the existing project volume automatically; see [bootstrap](docs/LOCAL_BOOTSTRAP.md).

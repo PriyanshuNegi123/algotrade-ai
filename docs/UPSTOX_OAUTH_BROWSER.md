@@ -53,9 +53,12 @@ docker compose --project-name algotrade-ai-local \
 
 This validates only; it does not start or replace the running application. Do not print
 expanded Compose configuration because it contains secrets. Configure the actual registered
-OAuth app settings locally before deployment. The existing bootstrap currently uses only
-the base file; running it does not retain the optional mount on a recreated application.
-Do not use it to manage an opted-in deployment until that lifecycle is integrated explicitly.
+OAuth app settings locally before genuine consent. Bootstrap now supports first opt-in with
+`uv run python -m scripts.bootstrap_local --oauth-vault`; subsequent runs detect the exact
+project's existing named volume and retain the overlay automatically. No credential is
+generated or exchanged by bootstrap. See [local bootstrap](LOCAL_BOOTSTRAP.md) for lifecycle
+validation and disposable verification commands. Manual Compose lifecycle commands still
+require both files.
 Never use `down --volumes` against the operational project: it destroys both database and
 OAuth storage. Retain the named volume across rebuilds; do not silently reset unsafe data.
 
