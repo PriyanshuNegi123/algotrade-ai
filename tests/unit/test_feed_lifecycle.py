@@ -27,9 +27,9 @@ from tests.unit.test_feed import KEY, PLAN, URL, grant_body
 from tests.unit.test_feed import message as original_message
 
 
-def message():
+def message(now: datetime | None = None):
     result = original_message()
-    result.currentTs = int(datetime.now(UTC).timestamp() * 1000)
+    result.currentTs = int((now or datetime.now(UTC)).timestamp() * 1000)
     result.feeds[KEY].ltpc.ltt = result.currentTs - 1000
     return result
 
@@ -50,9 +50,9 @@ class Authorizer:
         return grant
 
 
-def info():
+def info(now: datetime | None = None):
     result = pb.FeedResponse(
-        type=pb.market_info, currentTs=int(datetime.now(UTC).timestamp() * 1000)
+        type=pb.market_info, currentTs=int((now or datetime.now(UTC)).timestamp() * 1000)
     )
     result.marketInfo.segmentStatus["NSE_INDEX"] = pb.NORMAL_OPEN
     return result.SerializeToString()
@@ -305,11 +305,13 @@ def test_slow_and_failed_consumer_fail_closed():
     assert result["reason"] == "FEED_SINK_FAILED" and URL not in str(result)
 
 
-def test_tracker_duplicate_watermarks_and_trade_freshness():
-    now = datetime.now(UTC)
-    first = decode_frame(message().SerializeToString(), PLAN, now)
+@pytest.mark.parametrize("microsecond", [0, 999, 999999])
+def test_tracker_duplicate_watermarks_and_trade_freshness(microsecond):
+    # One synthetic clock for receipt and protobuf timestamps, including millisecond edges.
+    now = datetime(2026, 11, 10, 12, 0, 0, microsecond, tzinfo=UTC)
+    first = decode_frame(message(now).SerializeToString(), PLAN, now)
     tracker = FeedTracker(LifecyclePolicy())
-    tracker.accept(replace(decode_frame(info(), PLAN, now), generated_at=first.generated_at), 1)
+    tracker.accept(replace(decode_frame(info(now), PLAN, now), generated_at=first.generated_at), 1)
     snapshot = tracker.accept(first, 1)
     assert snapshot.kind == "SNAPSHOT"
     duplicate = tracker.accept(first, 1)

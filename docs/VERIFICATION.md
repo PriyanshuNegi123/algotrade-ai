@@ -1156,3 +1156,39 @@ Next:fix the documented feed fixture clock race,then resume Phase2 evidence gate
 Final task-only staged check:11files,Gitleaks clean with no allowances,private comparison
 against configured Google credentials/tokens and backup key clean;cached whitespace check
 passed. No private recovery receipt/key/token or unrelated pending Phase2 file staged.
+
+## 2026-11-10T11:49:46.891948+00:00 — Feed fixture clock race fixed locally
+
+Objective:resolve the intermittent duplicate/watermark/trade-freshness unit test failure.
+Reproduced the original IndexError deterministically by advancing fixture clock1ms after
+the test captured now. Frame generated_at then exceeded now;the existing production
+OUT_OF_ORDER guard correctly returned no observations. Root cause was inconsistent
+synthetic timestamps,not an application freshness or PostgreSQL permission defect.
+
+Changed only tests/unit/test_feed_lifecycle.py:message/info fixture builders accept an
+optional timestamp while preserving their default behavior for existing callers. The
+regression uses one fixed aware UTC timestamp for protobuf and receipt times,parameterized
+at0/999/999999microseconds. All duplicate,out-of-order,unknown-trade-time and high-watermark
+assertions preserved. No skips,threshold relaxation,production source or dependency change.
+
+Verification:27feed lifecycle tests passed;300direct executions of the three regression
+cases passed with datetime.now forbidden. Full working suite478passed/0failed/0skipped
+using disposable PostgreSQL17.11. Locked uv sync,Ruff104files/format and mypy43backendfiles
+passed. Initial format check flagged a wrapped line;Ruff formatted it and final check passed.
+Existing Starlette deprecation warning remains. Earlier reported fixture race is superseded
+by this local fix;hosted CI for this new commit remains unverified until approved publication.
+Exact task-only staged checks recorded below. Earlier pending Phase2 work kept separate.
+
+Files:tests/unit/test_feed_lifecycle.py,docs/VERIFICATION.md and all8agent_memory files.
+Security:only synthetic tests/docs changed,no broker/Drive request,credential access,
+operational DB write,environment/settings change or live activation. OBSERVATION/live off.
+Unfinished:Phase2 genuine market-session/observation,calendar and Upstox OAuth gates remain.
+Next:review the next eligible market-hours observation acceptance and outstanding Phase2
+evidence;do not claim completed observation days or new hosted CI success. No push.
+
+Exact task-only staged snapshot:478PostgreSQL tests passed,0failed,0skipped;Ruff104files,
+format and mypy43backendfiles passed. Earlier Phase2 work was independently committed
+as a8dd32f during this iteration and is preserved;both working tree and candidate now
+include it. Task diff remains only the fixture file and nine documentation files. All10
+staged file contents passed Gitleaks without allowances;full history passed with existing
+exact historical false-positive allowances. git diff --cached --check passed. No push.
