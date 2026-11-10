@@ -119,8 +119,10 @@ def configuration_status(settings: Settings) -> dict[str, object]:
         "state": state,
         "configured_fields": fields,
         "registration_verified": False,
-        "browser_flow_implemented": False,
-        "tokens_stored": False,
+        "browser_flow_implemented": True,
+        "vault_directory_configured": bool(settings.upstox_oauth_vault_dir),
+        "token_storage_checked": False,
+        "tokens_stored": None,
         "analytics_credential_used": False,
         "live_enabled": False,
     }

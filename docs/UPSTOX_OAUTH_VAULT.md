@@ -1,7 +1,8 @@
 # Local encrypted Upstox OAuth token vault
 
 Status: opt-in storage component implemented and tested with synthetic credentials.
-It is not connected to HTTP callbacks, the broker adapter or the current Compose deployment.
+It is connected to the opt-in HTTP callback flow described in UPSTOX_OAUTH_BROWSER.md;
+it is not an active broker credential or mounted in the current Compose deployment.
 No real vault/key/token has been initialized. The saved OAuth app settings remain missing
 at this iteration's local check. End-to-end OAuth and Phase2 remain incomplete.
 
@@ -10,8 +11,9 @@ at this iteration's local check. End-to-end OAuth and Phase2 remain incomplete.
 `backend/app/brokers/oauth_store.py` exposes OAuthTokenStore.save/load/status for trusted
 backend callers. A future integration must pass a fixed, canonical, server-controlled path
 under ignored `.local/upstox/`, not a path taken from an HTTP request. The parent must already
-exist. Creation is explicit on the first successful save; constructing a store or reading
-status does not initialize a missing directory/key.
+exist. Creation is explicit on first save or prepare() from an authenticated,CSRF-protected OAuth
+start. Preparing storage creates only its key/lock and validates existing data before broker
+consent. Constructing a store or reading status never initializes missing storage.
 
 Files are a dedicated32-byte `vault.key`, encrypted `token.enc` and `vault.lock`. The final
 directory must be owned by the process user and mode0700; files must be regular, owned by
@@ -50,16 +52,17 @@ and unrelated targets are preserved. Exceptions expose fixed codes, not raw path
 Status returns only a fixed state, expiry when usable and false broker/live flags. It does
 not prove broker acceptance, grant trading permission or expose token/key values. The
 existing `scripts.check_upstox_oauth` checks app configuration only; it does not inspect this
-unwired store or initialize it. SecretStr remains the in-process token representation.
+physical store or initialize it. SecretStr remains the in-process token representation.
 
 ## Deployment and remaining gates
 
-The future backend must authorize the administrator before save/load/status. The callback
-must also verify session revocation,CSRF/origin and browser binding before storing a token.
+The implemented backend authorizes the administrator before storage status/start/finish.
+The callback finish also verifies revocation,CSRF/origin and browser binding before saving.
 The loaded SecretStr is server-only;never return it or the key in HTTP responses or log dumps.
 The backend must use a dedicated durable
 private directory/volume writable by the backend UID. No volume, UID ownership, settings,
-HTTP route, browser or production deployment is changed by this iteration. Existing Strict
+real browser authorization or production deployment is changed. The opt-in HTTP/UI flow
+now exists as described in UPSTOX_OAUTH_BROWSER.md. Existing Strict
 administrator cookies and the Analytics-only broker adapter remain unchanged.
 
 Vault files are not included in the PostgreSQL backup or Drive recovery kit. Nothing from

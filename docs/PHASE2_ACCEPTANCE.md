@@ -10,7 +10,7 @@ not supply genuine market-hours evidence, elapsed observation time or unconfigur
 | Requirement | Verified state | Remaining acceptance |
 |---|---|---|
 | Official API/app guidance | Analytics/auth/instrument/chain primary docs rechecked9November | Registered OAuth client ID/callback and locally stored secret still needed |
-| Secure read-only authentication | Server-only Analytics token, aware cutoff, expiry/error/CSRF/origin tests; real history/chain/feed accepted | OAuth URL/state/token-exchange and optional local-configuration foundation implemented; HTTP callback,vault deployment/integration and real acceptance pending |
+| Secure read-only authentication | Server-only Analytics token, aware cutoff, expiry/error/CSRF/origin tests; real history/chain/feed accepted | OAuth URL/state/token-exchange and optional local-configuration foundation implemented; Browser HTTP/UI flow and encrypted vault integration verified synthetically;runtime vault deployment and real registered acceptance pending |
 | Instrument master | Immutable validated source/metadata; latest6,744 selected /85,462 source records,verified10November | Recheck currentness before each future capture; tick-size units unresolved |
 | Historical candles | Immutable bounded prior-day imports;75real five-minute Nifty50 bars archived | Historical point-in-time universe/session completeness remains unverified |
 | Option chain | Explicit expiry/catalog validation;135strikes/270legs accepted | No source timestamp per field; Greek units unresolved; freshness UNKNOWN |
@@ -134,3 +134,12 @@ incomplete;this does not close P2-002 or any market-observation gate.
 synthetic security cases. No real token/key/store,HTTP route or deployment was initialized.
 This completes the component implementation,not browser authorization or token-storage
 acceptance for the real registered app. Active Analytics and all execution controls unchanged.
+
+## Secure browser callback implementation — 10 November
+
+[UPSTOX_OAUTH_BROWSER.md](UPSTOX_OAUTH_BROWSER.md):authenticated/Origin/CSRF start,Strict-
+cookie original-tab finish,popup-specific nonce marker,anonymous static callback,query-log
+scrubbing,session revocation checks and encrypted storage.33new pytest cases (including
+2disposable PostgreSQL) plus fresh-profile Chrome synthetic cross-site proof. No real broker,
+operator credential or operational DB used in tests. Default missing settings keep it disabled;
+current private deployment/registered consent still pending. This does not close P2-002.

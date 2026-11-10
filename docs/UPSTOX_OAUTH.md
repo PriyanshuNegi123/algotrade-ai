@@ -1,8 +1,9 @@
 # Upstox OAuth protocol foundation
 
-Status: protocol,optional configuration and encrypted storage component implemented; end-to-end browser
-OAuth is not implemented or accepted. This is separate from the working Google Drive OAuth
-and the existing Upstox Analytics market-data path. Phase2 remains partial and live stays off.
+Status:protocol,configuration,encrypted vault and browser HTTP/UI flow implemented and
+synthetically verified. Real registered browser authorization and private runtime deployment
+remain pending. This is separate from Google Drive OAuth and the working Analytics path.
+Phase2 remains partial and live stays off. See [UPSTOX_OAUTH_BROWSER.md](UPSTOX_OAUTH_BROWSER.md).
 
 ## Local settings
 
@@ -13,6 +14,7 @@ Upstox application. Keep the API secret local; never paste it or any token into 
 UPSTOX_CLIENT_ID=YOUR_REGISTERED_PUBLIC_API_KEY
 UPSTOX_CLIENT_SECRET=YOUR_LOCAL_API_SECRET
 UPSTOX_REDIRECT_URI=YOUR_EXACT_REGISTERED_CALLBACK_URL
+UPSTOX_OAUTH_VAULT_DIR=YOUR_PRIVATE_ABSOLUTE_SERVICE_STORAGE_PATH
 ```
 
 These are placeholders, not usable credentials or a proposed callback registration.
@@ -24,8 +26,9 @@ OAuth itself rejects missing, partial or invalid settings. Check without exposin
 uv run python -m scripts.check_upstox_oauth
 ```
 
-It prints only field-presence booleans, a fixed status and false registration/browser/token/
-live flags. Exit0 means CONFIGURED_OPERATOR_DECLARED;exit2 means not configured, incomplete,
+It prints only presence/status metadata,unverified registration,false live flags and
+unknown tokens_stored=null/token_storage_checked=false. browser_flow_implemented=true
+means source exists,not real registered acceptance. Exit0 means CONFIGURED_OPERATOR_DECLARED;exit2 means not configured, incomplete,
 invalid or unavailable. It never writes settings, starts Docker, opens a browser, accesses
 the database or contacts Upstox. Local format validation cannot verify console registration.
 
@@ -33,7 +36,8 @@ Client IDs use bounded ASCII letters/digits/underscore/hyphen. The callback must
 absolute HTTPS URL, or HTTP on an explicit local loopback host for development; the provider
 must actually accept and register that exact URL. Credentials, query strings, fragments,
 control characters and backslashes are rejected. Values are not normalized before exchange.
-This validation does not set up a callback server or prove its reachability.
+The configured callback can be mounted by the new router only after all browser/storage
+configuration checks pass;this local check does not prove deployment or reachability.
 
 ## Implemented protocol safeguards
 
@@ -70,12 +74,13 @@ protocol. An opt-in encrypted storage component is now implemented separately;se
 
 1. Obtain/validate the actual registered public client ID and exact callback;keep the secret
    in protected local configuration. Latest local check in this iteration:NOT_CONFIGURED.
-2. Add authenticated,origin/CSRF-protected start and secure one-use callback integration.
+2. Deploy and genuinely verify the implemented authenticated/CSRF start and browser-bound
+   one-use callback. See UPSTOX_OAUTH_BROWSER.md for the Strict-cookie popup design.
    Preserve existing administrator SameSite=Strict cookies. Cross-site callback binding must
    be designed and tested explicitly; do not expose a route that trusts state alone or relax
    existing cookies. Recheck session revocation and app configuration on callback.
-3. Prevent callback query/code/token logging at application,server and any proxy layer; add
-   replay/cross-browser/session-revocation/expiry/denial tests through actual HTTP routes.
+3. Application/server query scrubbing and HTTP replay/browser/revocation/expiry/denial
+   tests are implemented. Review any proxy/edge logging separately before real deployment.
 4. Wire the tested encrypted server-only vault to a private backend-owned durable path,
    lifecycle and explicit operator consent;no real store is initialized yet.
    The normal OAuth token is not established as read-only. Never substitute it into the
@@ -83,8 +88,8 @@ protocol. An opt-in encrypted storage component is now implemented separately;se
 5. Complete genuine registered browser authorization and bounded read-only acceptance.
    No genuine browser or upstream token exchange has been performed for this foundation.
 
-No callback route,UI,initialized real token store,credential rotation,broker account request,market
-capture,order adapter or live activation is included. PostgreSQL remains operational;
+Callback routes and UI are now implemented behind local configuration. No real store,
+credential rotation,account request,market capture,order adapter or live activation was used. PostgreSQL remains operational;
 Google backups and their schedule remain unchanged.
 
 ## Verification and primary sources

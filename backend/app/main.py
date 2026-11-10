@@ -20,6 +20,7 @@ from backend.app.api.candles import HistoryGate
 from backend.app.api.candles import router as candle_router
 from backend.app.api.instruments import ImportGate
 from backend.app.api.instruments import router as instrument_router
+from backend.app.api.oauth import build_router as build_oauth_router
 from backend.app.api.observations import router as observation_router
 from backend.app.api.option_chain import ChainGate
 from backend.app.api.option_chain import router as chain_router
@@ -30,11 +31,14 @@ from backend.app.auth.service import (
     require_origin,
     verify_password,
 )
+from backend.app.brokers.oauth import UpstoxOAuth
+from backend.app.brokers.oauth_browser import OAuthBrowserFlows
 from backend.app.brokers.upstox import BrokerMonitor, ReadOnlyUpstox
 from backend.app.config import Settings
 from backend.app.database import AdminSession, build_engine
 from backend.app.schema import SchemaMismatch, verify_schema
 from backend.app.security.logging import configure_logging
+from backend.app.security.oauth_privacy import OAuthPrivacyMiddleware
 
 FRONTEND = Path(__file__).resolve().parents[2] / "frontend"
 
@@ -65,6 +69,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.engine = build_engine(config)
     app.state.limiter = LoginLimiter()
     app.state.broker_monitor = BrokerMonitor(ReadOnlyUpstox(config))
+    app.state.oauth_flows = OAuthBrowserFlows()
+    app.state.oauth_client = UpstoxOAuth()
+    oauth_router, oauth_callbacks = build_oauth_router(config)
+    app.include_router(oauth_router)
     app.include_router(broker_router)
     app.state.instrument_gate = ImportGate()
     app.include_router(instrument_router)
@@ -74,6 +82,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(chain_router)
     app.include_router(observation_router)
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=config.allowed_hosts)
+    app.add_middleware(OAuthPrivacyMiddleware, callback_paths=oauth_callbacks)
 
     @app.middleware("http")
     async def security_headers(request: Request, call_next: Any) -> Response:

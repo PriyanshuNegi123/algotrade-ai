@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     upstox_client_id: str = ""
     upstox_client_secret: SecretStr = SecretStr("")
     upstox_redirect_uri: str = ""
+    upstox_oauth_vault_dir: str = ""
 
     @field_validator("upstox_analytics_token")
     @classmethod

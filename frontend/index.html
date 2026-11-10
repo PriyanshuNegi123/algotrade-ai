@@ -7,6 +7,7 @@
   <meta name="robots" content="noindex,nofollow">
   <title>AlgoTrade AI · Operations</title>
   <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/upstox-oauth.js" defer></script>
   <script src="/assets/js/app.js" defer></script>
 </head>
 <body>
@@ -70,7 +71,7 @@
       <p id="chain-feedback" class="muted broker-feedback" role="status" aria-live="polite">Sign in to review option-chain research snapshots.</p>
     </section>
     <div class="bottom-grid">
-      <section class="panel" id="connection" aria-labelledby="connection-title"><div class="section-heading"><h2 id="connection-title">Broker connection</h2><span id="broker-status" class="pill">Sign-in required</span></div><div class="broker-row"><div class="broker-logo" aria-hidden="true">u</div><div><h3>Upstox</h3><p class="muted">Read-only Analytics Token · connection check</p></div></div><p class="muted">Keep broker credentials in server secret storage. Checking exchange status does not start market-data recording or enable trading.</p><p id="broker-feedback" class="muted broker-feedback" role="status" aria-live="polite">Sign in to review the read-only connection configuration.</p><button id="broker-check" class="outline-button" hidden>Check read-only connection</button></section>
+      <section class="panel" id="connection" aria-labelledby="connection-title"><div class="section-heading"><h2 id="connection-title">Broker connection</h2><span id="broker-status" class="pill">Sign-in required</span></div><div class="broker-row"><div class="broker-logo" aria-hidden="true">u</div><div><h3>Upstox</h3><p class="muted">Read-only Analytics Token · connection check</p></div></div><p class="muted">Keep broker credentials in server secret storage. Checking exchange status does not start market-data recording or enable trading.</p><p id="broker-feedback" class="muted broker-feedback" role="status" aria-live="polite">Sign in to review the read-only connection configuration.</p><button id="broker-check" class="outline-button" hidden>Check read-only connection</button><div class="oauth-setup"><h3>Optional OAuth authorization</h3><p id="oauth-feedback" class="muted" role="status" aria-live="polite">Sign in to review OAuth setup.</p><button id="oauth-connect" class="outline-button" hidden>Authorize Upstox OAuth</button> <button id="oauth-cancel" class="outline-button" hidden>Cancel authorization</button></div></section>
       <section class="panel" aria-labelledby="next-title"><p class="eyebrow">NEXT OPERATOR ACTION</p><h2 id="next-title">Prepare the data connection</h2><p class="muted">Verify database readiness and administrator access before connecting market data. No live activation controls are available in this release.</p><div class="readiness-row"><span id="health-dot" class="neutral-dot" aria-hidden="true"></span><span id="health">Checking backend readiness…</span><button id="refresh" class="text-button">Refresh</button></div></section>
     </div>
     <footer>AlgoTrade AI <span>Research and monitoring · No return guarantees</span></footer>

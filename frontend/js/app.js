@@ -1,6 +1,7 @@
 "use strict";
 const byId = (id) => document.getElementById(id);
 let csrfToken = null;
+const oauthUI = window.AlgoTradeOAuth.create({ request: api, getCsrf: () => csrfToken });
 const currency = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" });
 byId("date").textContent = new Intl.DateTimeFormat("en-IN", {
   dateStyle: "medium", timeZone: "Asia/Kolkata",
@@ -22,6 +23,7 @@ async function api(path, options = {}) {
   return response.status === 204 ? null : response.json();
 }
 function clearAccount() {
+  oauthUI.reset();
   byId("account").hidden = true;
   byId("signin").hidden = false;
   byId("chain-form").hidden = true;
@@ -51,7 +53,7 @@ async function loadOverview() {
     byId("signin").hidden = csrfToken !== null;
     byId("logout").hidden = csrfToken === null;
     byId("feedback").textContent = csrfToken ? "Workspace loaded. Financial values remain unavailable until verified data is connected." : "Session restored. Sign in again to enable secure sign-out from this page.";
-    await Promise.all([loadBrokerStatus(), loadInstrumentStatus(), loadHistoryStatus(), loadChainStatus()]);
+    await Promise.all([loadBrokerStatus(), loadInstrumentStatus(), loadHistoryStatus(), loadChainStatus(), oauthUI.load()]);
   } catch (error) {
     clearAccount();
     byId("feedback").textContent = error.status === 401 ? "Sign in to load your private workspace." : "Account status unavailable. Trading remains disabled. Try again after checking service health.";

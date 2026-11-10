@@ -202,6 +202,15 @@ class OAuthTokenStore:
                 except FileNotFoundError:
                     pass
 
+    def prepare(self, app: OAuthApp) -> None:
+        """Explicit authenticated start may prepare storage before asking for broker consent."""
+        now = aware(self._clock())
+        with self._open(create=True) as directory, self._lock(directory, create=True):
+            key = self._key(directory, create=True)
+            previous = read_file(directory, TOKEN_FILE, MAX_ENCRYPTED)
+            if previous is not None:
+                validate_token(self._decode(previous, key, app), now, allow_expired=True)
+
     def save(self, app: OAuthApp, token: OAuthToken) -> None:
         now = aware(self._clock())
         validate_token(token, now)  # Invalid input cannot initialize a key or directory.

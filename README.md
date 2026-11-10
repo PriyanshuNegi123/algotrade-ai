@@ -219,3 +219,6 @@ Manual encrypted PostgreSQL Drive backups and isolated cloud restore are verifie
 Cloud-first encrypted backups run every three IST calendar days: [schedule and health](docs/BACKUP_SCHEDULE.md). Local backup caches do not accumulate.
 
 Passphrase-encrypted Drive recovery: [RECOVERY_KIT.md](docs/RECOVERY_KIT.md).
+
+Optional Upstox browser authorization: [UPSTOX_OAUTH_BROWSER.md](docs/UPSTOX_OAUTH_BROWSER.md).
+Synthetic security/browser checks are verified;registered-app and private-volume setup remain required.

@@ -351,7 +351,9 @@ def test_optional_settings_validation_never_replaces_analytics_or_echoes_secrets
     assert app.client_secret.get_secret_value() not in text and app.client_id not in text
     assert (
         not status["registration_verified"]
-        and not status["tokens_stored"]
+        and status["tokens_stored"] is None
+        and status["token_storage_checked"] is False
+        and status["browser_flow_implemented"] is True
         and not status["live_enabled"]
     )
     assert settings.upstox_analytics_token is original

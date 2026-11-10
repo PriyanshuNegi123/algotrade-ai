@@ -1093,3 +1093,65 @@ and mypy46backendfiles passed. All16staged files passed Gitleaks with no allowan
 a private comparison against configured credentials/backup key. Full history passed with
 existing documented exact false-positive allowances. Cached whitespace check passed.
 No .env,real vault,key,token or unrelated file staged. Local commit only,no push.
+
+## 2026-11-10T15:19:53.461565+00:00 — Secure OAuth HTTP/UI callback flow verified synthetically
+
+Objective:wire the tested OAuth protocol/vault into a browser-bound callback without
+weakening administrator cookies or activating a new broker credential. Added authenticated
+Origin/CSRF POSTstart/finish and admin-only metadata status;exact configured callback GET
+serves static HTML only,no cookie/code exchange/token write. Missing/invalid app/vault
+settings disable the flow without changing Analytics. Canonical callback path cannot shadow
+API/assets/health/docs;registered origin must match the dashboard's allowed Origin.
+
+Original dashboard retains its Strict cookie and CSRF in memory. Popup receives only a
+short-lived state/nonce/expiry marker in its own sessionStorage,opener detached. Return
+clears URL and removes marker before using a same-origin channel named with secret nonce.
+No access token,client secret,password,CSRF or callback code is persisted in browser storage.
+A copied state in a different tab cannot finish. Server binds nonce/state/session/app/storage
+configuration,consumes once,handles denial/cancel without token request and checks current
+session again before encrypted save. PGrowlock serializes final authorization with logout.
+A generation guard serializes publication with newer starts so old in-flight results cannot
+replace a new attempt. Thread offload keeps file/lock waits off the async event loop.
+
+ASGI middleware scrubs original callback query/raw path before server access logging and
+bounds OAuth bodies/queries16KiB,receive5sec. Security headers retained on error responses.
+App errors are fixed and secret-safe. UI handles popup blocking,missing window binding,
+expiry,cancel/denial,late responses and uncertain storage without automatic retries.
+Explicit authorized start can prepare a private vault key/lock before broker consent;GET/
+status/startup never initialize it. Existing/corrupt/unsafe data remains protected.
+
+33new HTTPsecurity cases include2disposablePGcases. Full working suite615passed/0failed/
+0skipped on disposable PostgreSQL17.11;Ruff117files/format,mypy49backendfiles,locked sync
+passed. Initial full run had2new PGtest NameErrors due missing test import;fixed and full
+reruns passed. One existing Starlette warning remains. Exact snapshot/security results below.
+Versioned scripts.verify_oauth_browser passes with fresh headless Chrome/profile,temporary
+migrated SQLite,synthetic cross-site provider and mock token endpoint;external browser
+requests blocked/intercepted. Actual Strict cookie absent on return GET,present on original
+tab finish;nonce marker/query removed,opener null,unbound-tab rejected,one mock exchange,
+Access logs were captured and scrubbed. No JavaScript exceptions occurred. Temporary resources were removed.
+This is synthetic browser evidence,not real Upstox consent or account acceptance.
+
+New optional server setting UPSTOX_OAUTH_VAULT_DIR defaults empty. Configuration checker
+reports source browser implementation but tokens_stored=null/token_storage_checked=false,
+not a false vault inspection. Latest actual settings NOT_CONFIGURED,all3appfields absent,
+vault dir unset. No real store,key,token,production DB write,migration,volume,credentials,
+cloud/backup job,cookie policy or deployment changed. OBSERVATION/live disabled.
+Files:OAuthAPI/browser ledger/privacy middleware,main/config/protocol/vault;dashboard/
+popup HTML/CSS/JS;HTTPsecurity/config tests;browser verifier;OAuth/browser/vault/compliance/
+Phase2 guides,README,PROJECT_STATUS/VERIFICATION and all8agent_memory records.
+Next:save/validate registered app settings locally,provide dedicated private vault mount
+for backend UID,deploy and perform explicit genuine authorization. Proxy/edge callback logs
+need separate review. Analytics remains active credential;no funds/orders/capture/new
+observation day. Phase2 still PARTIAL;real reconnect/seven-day/calendar/unit gates persist.
+No new hosted CI claim. Local commit only,no push.
+
+Final verification (2026-11-10T15:27:44.108714+00:00 UTC): exact staged source snapshot
+passed 615 PostgreSQL tests, zero failures and zero skips; one existing Starlette warning.
+Ruff lint/format (117 files) and mypy (49 backend files) passed. Versioned synthetic Chrome
+verification passed with external broker requests mocked, isolated browser and temporary DB.
+All 32 candidate files passed default Gitleaks without allowances and private comparison
+against locally configured credential/key material. Full history passed with existing exact
+historical allowances unchanged. Scanner-triggering verification prose was reworded; no
+new allowances added. No operational DB, real broker credential or runtime setting changed.
+OBSERVATION; live disabled. Real registered OAuth settings, private runtime vault mount and
+genuine consent remain pending. New hosted CI is unverified. Local commit only; no push.
