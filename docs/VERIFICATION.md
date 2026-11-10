@@ -1330,3 +1330,50 @@ a private comparison against configured local credentials/key material. Full his
 with existing documented exact false-positive allowances. Cached whitespace check passed.
 Final project.env checker still NOT_CONFIGURED(all3canonical OAuth fields absent);do not
 claim registration/browser/token-store acceptance. Local commit only,no push.
+
+## 2026-11-10T14:19:44.767840+00:00 — Encrypted OAuth token-storage component verified
+
+Objective:complete protected storage needed by a future OAuth callback without initializing
+real credentials or exposing a new HTTP surface. Added opt-in OAuthTokenStore.save/load/status,
+using dedicated random32-byte local key,AES256GCM,fresh12-byte nonces and app-bound versioned
+AAD. Only bearer/local timestamps encrypted;no profile,callback code or client secret stored.
+Key separate from backup/Google material;no upload or Analytics adapter integration.
+
+Strict owner/mode0700directory and0600regular single-link file checks,no-follow
+descriptor-relative operations,bounded16KiB reads,exclusive nonblocking file lock.
+Rejects symlink paths/ancestors,hardlinks,insecure files,corrupt/missing keys,wrong app,
+tampering,expired/future/clock-reversed metadata and older replacement tokens. No silent
+key regeneration when ciphertext/unknown artifacts exist. Invalid input cannot initialize
+a directory/key. Read/status never initializes missing storage. Existing files are preserved.
+
+Ciphertext-only unique temp writes,file fsync,atomic replace,directory fsync. Cleanup
+tracks successful exclusive temp creation so a name collision cannot delete unknown data.
+Fault tests distinguish pre-replace preservation from post-replace directory-sync failure:
+new ciphertext may already be published if durability check fails,no rollback promised.
+Errors/status expose fixed codes/expiry and false broker/live flags,never key/token/path data.
+OS account permissions remain the key boundary,not protection from owner compromise.
+
+33new synthetic security cases passed;full working disposable PostgreSQL17.11 suite
+582passed/0failed/0skipped. Locked sync,Ruff112files/format,mypy46backendfiles passed.
+One existing Starlette warning remains. Exact staged/security results recorded below.
+Actual check_upstox_oauth still NOT_CONFIGURED(all3settings missing);no real.local/upstox
+directory/key/token created. All vault tests use temporary paths and synthetic credentials.
+No account request,DB change,broker/Google credential edit,route,cookie change,job,volume,
+container deployment,backup/schedule change,market recording or live activation.
+
+Files:backend/app/brokers/oauth_store.py,tests/security/test_upstox_oauth_store.py,
+docs/UPSTOX_OAUTH_VAULT.md,UPSTOX_OAUTH.md,BROKER_COMPLIANCE.md,PHASE2_ACCEPTANCE.md,
+PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory files. OBSERVATION/live disabled.
+Vault code complete as a component;runtime private path/UID/volume and callback wiring are
+pending. Vault key/token are not in the existing PGbackup or Drive kit;fresh OAuth required
+on loss. No automatic delete/reset/rotation/refresh. PostgreSQL remains operational.
+Next:save/validate canonical Upstox app settings locally,then implement authenticated/CSRF
+start and browser-bound callback preserving Strict admin cookies,revocation/log safety
+and vault deployment. Real registered authorization/market-session/reconnect/seven-day
+evidence and calendar/unit gates remain incomplete. Phase2 PARTIAL;no hosted CI claim/push.
+
+Final exact staged candidate:582PostgreSQL tests passed,0failed,0skipped;Ruff112files/format
+and mypy46backendfiles passed. All16staged files passed Gitleaks with no allowances and
+a private comparison against configured credentials/backup key. Full history passed with
+existing documented exact false-positive allowances. Cached whitespace check passed.
+No .env,real vault,key,token or unrelated file staged. Local commit only,no push.

@@ -18,7 +18,8 @@ redirects through Upstox, exact registered redirect URI, optional echoed state, 
 form-encoded token exchange. The protocol foundation now makes state mandatory,short-lived
 and single-use,bound to a caller-supplied validated administrator session digest. Optional
 local configuration and mock-tested token exchange are implemented;browser routes,callback
-cookie integration,protected token storage and real acceptance remain pending. See
+cookie integration,vault deployment and real acceptance remain pending. The encrypted
+storage component is verified separately in [UPSTOX_OAUTH_VAULT.md](UPSTOX_OAUTH_VAULT.md). See
 [UPSTOX_OAUTH.md](UPSTOX_OAUTH.md). No documented granular scope or PKCE parameter was
 established in the reviewed pages;do not invent either. Contracts rechecked10November2026.
 

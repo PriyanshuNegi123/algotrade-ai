@@ -3,8 +3,8 @@
 Immediate status: public catalog refreshed10November2026 and CURRENT_METADATA verified;
 6,744selected/85,462source records. Market-hours readiness remains blocked only by the
 reviewed holiday/no-session state. Next functional gate is P2-003U genuine market-hours
-acceptance with catalog/readiness rechecked immediately before the attempt. OAuth protocol/configuration foundation is verified;browser callback,token store and
-registered-app acceptance remain pending actual saved settings. Latest local suite549PGpassed/0skipped;
+acceptance with catalog/readiness rechecked immediately before the attempt. OAuth protocol/configuration and encrypted-vault components are verified;browser callback,
+vault deployment and registered-app acceptance remain pending actual saved settings. Latest local suite582PGpassed/0skipped;
 hosted CI success on0f2df43 is historical,not proof for newer local commits.
 Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit authorization.
 
@@ -15,7 +15,7 @@ Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit aut
 | P1-UI-AUDIT | P1 | P1-004 | Keyboard, screen reader and measured contrast audit | Accessible focus/order/errors and AA contrast measured; resolve defects | Small | PARTIAL:keyboard focus/control contrast/320px reflow verified;screen-reader/dynamic errors/full audit pending |
 | P2-001 | P1 | P1-VERIFY | Official read-only Upstox API review | Sources/date/versions/credential limits and unknowns recorded | Medium | COMPLETE 2026-11-06; see BROKER_COMPLIANCE.md |
 | P2-002A | P1 | P2-001 | Server Analytics credential, restricted probe and secure local setup | Expiry/CSRF/errors/throttling/secret tests and container/browser checks pass | Medium | COMPLETE implementation; actual broker acceptance not tested without operator credential |
-| P2-002 | P1 | P2-001; appropriate operator app configuration | OAuth and protected persistent broker credentials | Exact registered callback; mandatory one-use session-bound state; no invented scope/refresh endpoint; no token exposure | High | PARTIAL:46synthetic protocol/configuration cases pass;secure callback/token store/registered acceptance pending;Analytics unchanged |
+| P2-002 | P1 | P2-001; appropriate operator app configuration | OAuth and protected persistent broker credentials | Exact registered callback; mandatory one-use session-bound state; no invented scope/refresh endpoint; no token exposure | High | PARTIAL:46protocol/configuration+33vault security cases pass;secure callback/vault deployment/registered acceptance pending;Analytics unchanged |
 | P2-003A | P1 | P2-001 | Bounded official NSE index instrument import/versioned snapshots | Atomic archive, provenance, exact raw units, stale/invalid/duplicate/as-of tests and real public-data verification | Medium | COMPLETE 2026-11-06:113 PostgreSQL tests and real83,940/6,504 import verified |
 | P2-003B | P1 | P2-003A; P2-002A | Prior-day1/5/15minute history, immutable batches and private APIs/UI | Bounded/catalog-bound/UTC/OHLCV/order/completion/provenance/rollback tests | High | COMPLETE scoped implementation2026-11-06;152 PostgreSQL tests; actual broker acceptance unverified |
 | P2-003C | P1 | P2-003A; P2-002A | Bounded option-chain snapshots and data validation | Explicit expiry/catalog CE-PE identity; price/spread/quantity/OI/Greeks checks; freshness unknown absent source timestamp | High | COMPLETE scoped implementation2026-11-06;182 PostgreSQL tests; actual broker acceptance unverified |
@@ -922,3 +922,50 @@ a private comparison against configured local credentials/key material. Full his
 with existing documented exact false-positive allowances. Cached whitespace check passed.
 Final project.env checker still NOT_CONFIGURED(all3canonical OAuth fields absent);do not
 claim registration/browser/token-store acceptance. Local commit only,no push.
+
+## 2026-11-10T14:19:44.767840+00:00 — Encrypted OAuth token-storage component verified
+
+Objective:complete protected storage needed by a future OAuth callback without initializing
+real credentials or exposing a new HTTP surface. Added opt-in OAuthTokenStore.save/load/status,
+using dedicated random32-byte local key,AES256GCM,fresh12-byte nonces and app-bound versioned
+AAD. Only bearer/local timestamps encrypted;no profile,callback code or client secret stored.
+Key separate from backup/Google material;no upload or Analytics adapter integration.
+
+Strict owner/mode0700directory and0600regular single-link file checks,no-follow
+descriptor-relative operations,bounded16KiB reads,exclusive nonblocking file lock.
+Rejects symlink paths/ancestors,hardlinks,insecure files,corrupt/missing keys,wrong app,
+tampering,expired/future/clock-reversed metadata and older replacement tokens. No silent
+key regeneration when ciphertext/unknown artifacts exist. Invalid input cannot initialize
+a directory/key. Read/status never initializes missing storage. Existing files are preserved.
+
+Ciphertext-only unique temp writes,file fsync,atomic replace,directory fsync. Cleanup
+tracks successful exclusive temp creation so a name collision cannot delete unknown data.
+Fault tests distinguish pre-replace preservation from post-replace directory-sync failure:
+new ciphertext may already be published if durability check fails,no rollback promised.
+Errors/status expose fixed codes/expiry and false broker/live flags,never key/token/path data.
+OS account permissions remain the key boundary,not protection from owner compromise.
+
+33new synthetic security cases passed;full working disposable PostgreSQL17.11 suite
+582passed/0failed/0skipped. Locked sync,Ruff112files/format,mypy46backendfiles passed.
+One existing Starlette warning remains. Exact staged/security results recorded below.
+Actual check_upstox_oauth still NOT_CONFIGURED(all3settings missing);no real.local/upstox
+directory/key/token created. All vault tests use temporary paths and synthetic credentials.
+No account request,DB change,broker/Google credential edit,route,cookie change,job,volume,
+container deployment,backup/schedule change,market recording or live activation.
+
+Files:backend/app/brokers/oauth_store.py,tests/security/test_upstox_oauth_store.py,
+docs/UPSTOX_OAUTH_VAULT.md,UPSTOX_OAUTH.md,BROKER_COMPLIANCE.md,PHASE2_ACCEPTANCE.md,
+PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory files. OBSERVATION/live disabled.
+Vault code complete as a component;runtime private path/UID/volume and callback wiring are
+pending. Vault key/token are not in the existing PGbackup or Drive kit;fresh OAuth required
+on loss. No automatic delete/reset/rotation/refresh. PostgreSQL remains operational.
+Next:save/validate canonical Upstox app settings locally,then implement authenticated/CSRF
+start and browser-bound callback preserving Strict admin cookies,revocation/log safety
+and vault deployment. Real registered authorization/market-session/reconnect/seven-day
+evidence and calendar/unit gates remain incomplete. Phase2 PARTIAL;no hosted CI claim/push.
+
+Final exact staged candidate:582PostgreSQL tests passed,0failed,0skipped;Ruff112files/format
+and mypy46backendfiles passed. All16staged files passed Gitleaks with no allowances and
+a private comparison against configured credentials/backup key. Full history passed with
+existing documented exact false-positive allowances. Cached whitespace check passed.
+No .env,real vault,key,token or unrelated file staged. Local commit only,no push.

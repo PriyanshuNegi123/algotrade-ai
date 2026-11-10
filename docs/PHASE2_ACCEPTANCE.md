@@ -10,7 +10,7 @@ not supply genuine market-hours evidence, elapsed observation time or unconfigur
 | Requirement | Verified state | Remaining acceptance |
 |---|---|---|
 | Official API/app guidance | Analytics/auth/instrument/chain primary docs rechecked9November | Registered OAuth client ID/callback and locally stored secret still needed |
-| Secure read-only authentication | Server-only Analytics token, aware cutoff, expiry/error/CSRF/origin tests; real history/chain/feed accepted | OAuth URL/state/token-exchange and optional local-configuration foundation implemented; HTTP callback,token store and real acceptance pending |
+| Secure read-only authentication | Server-only Analytics token, aware cutoff, expiry/error/CSRF/origin tests; real history/chain/feed accepted | OAuth URL/state/token-exchange and optional local-configuration foundation implemented; HTTP callback,vault deployment/integration and real acceptance pending |
 | Instrument master | Immutable validated source/metadata; latest6,744 selected /85,462 source records,verified10November | Recheck currentness before each future capture; tick-size units unresolved |
 | Historical candles | Immutable bounded prior-day imports;75real five-minute Nifty50 bars archived | Historical point-in-time universe/session completeness remains unverified |
 | Option chain | Explicit expiry/catalog validation;135strikes/270legs accepted | No source timestamp per field; Greek units unresolved; freshness UNKNOWN |
@@ -127,3 +127,10 @@ No application route/browser consent/token storage or real account call is added
 working Analytics credential is unchanged. Latest saved project.env check:NOT_CONFIGURED;
 operator asked to save the three canonical variables locally. End-to-end OAuth remains
 incomplete;this does not close P2-002 or any market-observation gate.
+
+## Encrypted OAuth storage component — 10 November
+
+[UPSTOX_OAUTH_VAULT.md](UPSTOX_OAUTH_VAULT.md) documents the new opt-in vault and33
+synthetic security cases. No real token/key/store,HTTP route or deployment was initialized.
+This completes the component implementation,not browser authorization or token-storage
+acceptance for the real registered app. Active Analytics and all execution controls unchanged.

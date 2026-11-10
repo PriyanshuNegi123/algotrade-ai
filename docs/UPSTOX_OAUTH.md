@@ -1,6 +1,6 @@
 # Upstox OAuth protocol foundation
 
-Status: protocol and optional configuration foundation implemented; end-to-end browser
+Status: protocol,optional configuration and encrypted storage component implemented; end-to-end browser
 OAuth is not implemented or accepted. This is separate from the working Google Drive OAuth
 and the existing Upstox Analytics market-data path. Phase2 remains partial and live stays off.
 
@@ -62,7 +62,9 @@ The state ledger does not authenticate users or look up revocation. Future calle
 validate the real active administrator session and supply its digest/expiry. Multi-worker
 coordination is not implemented; process restart invalidates pending flows. No pending
 flow,secret or token is written to a database or file by the protocol code. Operator-supplied
-client settings remain in the ignored local.env;OAuth access tokens are not saved.
+client settings remain in the ignored local.env;OAuth access tokens are not saved by the
+protocol. An opt-in encrypted storage component is now implemented separately;see
+[UPSTOX_OAUTH_VAULT.md](UPSTOX_OAUTH_VAULT.md). It has not been initialized or wired.
 
 ## Remaining integration gates
 
@@ -74,13 +76,14 @@ client settings remain in the ignored local.env;OAuth access tokens are not save
    existing cookies. Recheck session revocation and app configuration on callback.
 3. Prevent callback query/code/token logging at application,server and any proxy layer; add
    replay/cross-browser/session-revocation/expiry/denial tests through actual HTTP routes.
-4. Add protected server-only credential storage, lifecycle and explicit operator consent.
+4. Wire the tested encrypted server-only vault to a private backend-owned durable path,
+   lifecycle and explicit operator consent;no real store is initialized yet.
    The normal OAuth token is not established as read-only. Never substitute it into the
    Analytics setting or introduce order/funds/trading permissions through this foundation.
 5. Complete genuine registered browser authorization and bounded read-only acceptance.
    No genuine browser or upstream token exchange has been performed for this foundation.
 
-No callback route,UI,real token store,credential rotation,broker account request,market
+No callback route,UI,initialized real token store,credential rotation,broker account request,market
 capture,order adapter or live activation is included. PostgreSQL remains operational;
 Google backups and their schedule remain unchanged.
 
