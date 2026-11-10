@@ -183,3 +183,77 @@ def test_local_wrapper_can_only_request_preflight_not_recording(monkeypatch, tmp
     assert cli.check_local(tmp_path, request, policy) == {"state": "BLOCKED"}
     capture.assert_called_once_with(tmp_path, request, policy, preflight_only=True)
     check.assert_called_once_with(original)
+
+
+@pytest.mark.parametrize(
+    ("now", "expected"),
+    [
+        (datetime(2026, 11, 10, 16, tzinfo=UTC), date(2026, 11, 11)),
+        (datetime(2026, 11, 11, 3, tzinfo=UTC), date(2026, 11, 11)),
+        (datetime(2026, 11, 11, 3, 45, tzinfo=UTC), date(2026, 11, 11)),
+        (NOW, date(2026, 11, 12)),
+        (datetime(2026, 11, 11, 10, 10, tzinfo=UTC), date(2026, 11, 12)),
+        (datetime(2026, 11, 7, 4, tzinfo=UTC), date(2026, 11, 8)),
+        (datetime(2026, 11, 8, 12, tzinfo=UTC), date(2026, 11, 9)),
+        (datetime(2026, 12, 31, 12, tzinfo=UTC), None),
+        (datetime(2027, 1, 4, 4, tzinfo=UTC), None),
+    ],
+)
+def test_preview_uses_only_future_reviewed_baseline_windows(now, expected):
+    source = preflight(now)
+    before = copy.deepcopy(source)
+    result = readiness.market_session_readiness(source, now=now)
+    preview = result["next_reviewed_session"]
+    assert (preview["date"] if preview else None) == expected
+    if preview:
+        assert preview["opens_at"] >= now
+        assert preview["source_ref"] in load_calendar().evidence_sha256
+    assert result["session_preview"]["authorizes_capture"] is False
+    assert result["session_preview"]["amendment_completeness_verified"] is False
+    assert source == before
+
+
+def test_future_preview_does_not_override_holiday_or_unsupported_contract():
+    now = datetime(2026, 11, 10, 16, tzinfo=UTC)
+    source = preflight(now)
+    source.update(
+        state="BLOCKED", can_attempt_capture=False, blockers=["UNSUPPORTED_FEED_INSTRUMENT"]
+    )
+    result = readiness.market_session_readiness(source, now=now)
+    assert result["next_reviewed_session"]["date"] == date(2026, 11, 11)
+    assert "NO_REVIEWED_SESSION" in result["blockers"]
+    assert "UNSUPPORTED_FEED_INSTRUMENT" in result["blockers"]
+    assert not result["can_attempt_market_hours_capture"] and result["state"] == "BLOCKED"
+    assert any("CE or PE" in action and "Futures" in action for action in result["next_actions"])
+    assert not result["recording_started"] and result["qualifying_observation_days"] == 0
+
+
+@pytest.mark.parametrize("fault", ["identity", "synthetic", "integrity"])
+def test_unverified_calendar_never_gets_future_preview(monkeypatch, fault):
+    source = preflight()
+    if fault == "identity":
+        source["calendar"]["policy_id"] = "unverified"
+    elif fault == "synthetic":
+        calendar = load_calendar().model_copy(update={"kind": "SYNTHETIC_FIXTURE"})
+        monkeypatch.setattr(readiness, "load_calendar", lambda: calendar)
+    else:
+        monkeypatch.setattr(readiness, "load_calendar", Mock(side_effect=CalendarError("private")))
+    result = readiness.market_session_readiness(source, now=NOW)
+    assert result["next_reviewed_session"] is None
+    assert not result["can_attempt_market_hours_capture"]
+
+
+def test_preview_is_bounded_to_fourteen_dates(monkeypatch):
+    calendar = load_calendar()
+    day = Mock(return_value={"state": "UNKNOWN_HOURS"})
+    monkeypatch.setattr(type(calendar), "day", lambda self, date: day(date))
+    assert readiness.next_reviewed_session(calendar, NOW) is None
+    assert day.call_count == 14
+
+
+def test_unknown_error_text_cannot_become_operator_action():
+    source = preflight()
+    source.update(state="BLOCKED", can_attempt_capture=False, blockers=["synthetic-private-value"])
+    result = readiness.market_session_readiness(source, now=NOW)
+    assert "synthetic-private-value" not in json.dumps(result, default=str)
+    assert "LOCAL_PREFLIGHT_NOT_READY" in result["blockers"]

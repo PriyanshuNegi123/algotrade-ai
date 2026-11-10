@@ -1,5 +1,42 @@
 # Session log (append-only)
 
+## 2026-11-10T16:28:28.456732+00:00 — Safe next-session planning context verified
+
+Read-only runtime readiness is blocked on the reviewed10November holiday. Initial report-
+only FUT key61471 correctly triggered UNSUPPORTED_FEED_INSTRUMENT; the existing feed only
+accepts INDEX/CE/PE and derivatives acceptance excludes indices. No validation was relaxed.
+Rechecked the previously reviewed option key35050:all local prerequisites pass, only
+NO_REVIEWED_SESSION remains. No broker call or recording was attempted.
+
+Added bounded future context and fixed operator actions to market_session_readiness. Scan
+at most14ISTdates including today for a reviewed opening at/after now, within policy
+validity. Existing special/holiday/weekend/unknown rules remain authoritative. Already-open
+session stays in current session; next preview is a later opening. Null means no reviewed
+window found within bounds, not exchange closure beyond them. Only matching checksum-
+validated official calendar identity can provide preview. Context explicitly cannot authorize
+capture or certify amendment completeness. It does not evaluate future quota/window fit.
+No blockers, session times, expiry, scope or permission checks were changed. No auto-selection,
+scheduler, timer, recording, day certification or trading introduced. Fixed actions explain
+unsupported futures/indices and do not echo unknown error strings.
+
+15new cases;40target readiness tests passed. Full disposable PostgreSQL17.11:728passed,
+0failed,0skipped;one existing nonfatal Starlette warning. Locked sync,Ruff121files lint/format
+and mypy50backendfiles passed. Temporary cluster removed. Draft line-length issues corrected
+before final lint. Tests used synthetic clocks and no operational DB/account.
+Actual host readiness preserved the holiday block and previewed11November03:45UTC/09:15IST
+from the pinned baseline. No amendment-completeness claim or future capture authorization.
+Safe ignored receipt:.local/verification/market_session_preview.json. No image deployment
+needed:host readiness combines unchanged runtime preflight with new local presentation.
+
+Files:backend/app/market_data/session_readiness.py,tests/unit/test_session_readiness.py,
+docs/MARKET_SESSION_CHECK.md,PHASE2_ACCEPTANCE.md,PROJECT_STATUS.md,VERIFICATION.md and
+all8agent_memory records. Updated stale current OAuth setup instructions to accepted status.
+No credential/.env/DB/schema/calendar manifest/source evidence, Google backup/recovery/job,
+order or capture change. OBSERVATION;live disabled. New hosted CI unverified;Phase2 remains
+partial. Next:P2-003U during an actual reviewed eligible session only,after current catalog,
+explicit supported CE/PE key and amended-calendar/readiness recheck. Genuine market-hours/
+reconnect and seven-day evidence cannot be completed tonight. Local commit only;no push.
+
 ## 2026-11-10T16:20:53.864973+00:00 — Bounded OAuth market-status acceptance passed
 
 Added backend.app.brokers.oauth_probe, an explicit local CLI with one fixed official NSE
@@ -1757,3 +1794,12 @@ encrypted OAuth storage unchanged. All17task files passed default Gitleaks with 
 and private comparison against configured.env credentials;full history passed existing exact
 historical allowances unchanged. Whitespace clean. New hosted CI unverified;local commit
 only,no push. Seven-day/market-hours and remaining Phase2 gates are not closed by this check.
+
+Final verification (2026-11-10T16:29:30.206075+00:00 UTC):728PostgreSQL tests passed,
+0failed/0skipped;40readiness cases. Locked sync,Ruff121files/format,mypy50files passed.
+One existing Starlette warning remains. Actual supported option readiness has only the
+holiday blocker;future baseline preview does not authorize capture. All14task files passed
+default Gitleaks with no allowances and private configured-credential comparison. Full Git
+history passed with unchanged exact historical allowances. Whitespace clean. No deployment,
+credential change, broker request, recording, new hosted CI or completed day claim.
+Local commit only;no push.

@@ -57,6 +57,29 @@ unrecognized upstream text is not copied into the report.
 | PREFLIGHT_CLOCK_OR_AGE_INVALID | Check clock synchronization and run a fresh diagnostic. |
 | REVIEWED_CALENDAR_MISMATCH | Review/deploy matching pinned evidence; do not bypass checksum validation. |
 | LOCAL_PREFLIGHT_NOT_READY | Resolve the accompanying original database/schema/credential/catalog blockers. |
+| UNSUPPORTED_FEED_INSTRUMENT | Use an explicit unexpired CE/PE catalog key. FUT keys usable by evidence reports are not supported by the observation feed. |
+
+## Future session preview
+
+The report adds `next_reviewed_session`, `session_preview` and fixed `next_actions` for
+planning. The preview scans at most fourteen IST calendar dates, including today, and
+returns the earliest reviewed opening at or after the check time. During an already open
+session it describes a later opening; the current session remains in `session`. Reviewed
+special sessions take precedence, and holidays, weekends and unknown hours are skipped.
+Nothing beyond the pinned policy's validity is extrapolated. No matching window returns
+null, which is not a claim that no later exchange session exists.
+
+A preview requires checksum-validated official evidence with the same calendar identity
+as preflight. Integrity failures, synthetic calendars and identity mismatches do not produce
+a preview. The extra context never removes blockers or changes capture readiness. Its
+`authorizes_capture` and `amendment_completeness_verified` fields are always false. The
+preview does not test whether your requested duration fits a future window. Recheck actual
+metadata, expiry, calendar amendments and the entire requested window immediately before
+an explicit attempt. There is no timer, scheduler or automatic recording.
+
+Actions come from fixed local messages for known blockers, never untrusted error text.
+Unsupported futures and index acceptance requests explicitly point to CE/PE catalog keys;
+no contract is automatically selected and no trade recommendation is made.
 
 ## Verified acceptance — 10 November 2026
 
@@ -85,3 +108,19 @@ NO_REVIEWED_SESSION (the reviewed holiday);the earlier catalog blocker is resolv
 that instant. Recheck freshness and session readiness before any later capture. No genuine
 market-hours observation,day certification or trading was started. Private receipts:
 .local/verification/catalog_refresh_acceptance.json and catalog_refresh_readiness.json.
+
+## Planning context acceptance — 10 November
+
+Forty readiness tests now pass, including fifteen new cases for future windows, holidays,
+special/weekend precedence, exact opening/closing boundaries, policy expiry, the fourteen-date
+bound, mismatched/synthetic/corrupt evidence, unchanged blockers and safe actions. Full
+disposable PostgreSQL suite:728passed,0failed,0skipped; one existing Starlette warning.
+
+A report-only FUT key (`NSE_FO|61471`) correctly remained blocked as unsupported. Rechecking
+the previously reviewed option key (`NSE_FO|35050`) against the actual runtime resolved all
+local prerequisites and remained BLOCKED only by NO_REVIEWED_SESSION. These are diagnostics,
+not trade selections. The pinned baseline marks10November as HOLIDAY and previews
+11November03:45UTC (09:15IST); it does not authorize an attempt or certify amendments.
+Receipt:`.local/verification/market_session_preview.json`, ignored/private. No broker request,
+DB mutation, capture, schedule, credential change or image deployment occurred. This host
+readiness path used unchanged deployed preflight; the preview is computed locally.

@@ -3,11 +3,46 @@
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from backend.app.market_data.calendar import load_calendar
+from backend.app.market_data.calendar import CalendarPolicy, load_calendar
 from backend.app.market_data.contracts import IST
 from backend.app.market_data.feed import FeedRequest
 from backend.app.market_data.preflight import ACTIONS
 from backend.app.market_data.supervision_store import CapturePolicy
+
+PREVIEW_DAYS = 14
+READINESS_ACTIONS = {
+    "NO_REVIEWED_SESSION": "Wait for a reviewed session; recheck calendar amendments first.",
+    "OUTSIDE_REVIEWED_SESSION": "Recheck during a reviewed session. Recording remains inactive.",
+    "UNSUPPORTED_FEED_INSTRUMENT": (
+        "Use an explicit current unexpired CE or PE catalog key for this acceptance. "
+        "Futures are unsupported."
+    ),
+    "DERIVATIVE_KEYS_REQUIRED_FOR_ACCEPTANCE": (
+        "Use an explicit CE or PE catalog key. Index snapshots do not satisfy this acceptance."
+    ),
+    "LOCAL_PREFLIGHT_NOT_READY": "Resolve preflight blockers and run a fresh readiness check.",
+    "PREFLIGHT_CLOCK_OR_AGE_INVALID": "Run a new preflight using the actual current clock.",
+    "REVIEWED_CALENDAR_MISMATCH": (
+        "Review calendar provenance. A mismatched calendar cannot provide a session preview."
+    ),
+    "SESSION_READINESS_INPUT_OR_EVIDENCE_INVALID": (
+        "Review local inputs and pinned calendar integrity before trying again."
+    ),
+    "REQUEST_EXCEEDS_SESSION_WINDOW": (
+        "Review the requested duration. The entire attempt must fit within the session."
+    ),
+}
+
+
+def next_reviewed_session(calendar: CalendarPolicy, now: datetime) -> dict[str, Any] | None:
+    today = now.astimezone(IST).date()
+    for offset in range(PREVIEW_DAYS):
+        if offset > (calendar.valid_through - today).days:
+            break
+        day = calendar.day(today + timedelta(days=offset))
+        if day["state"] in {"REGULAR_BASELINE", "SPECIAL_SESSION"} and day["opens_at"] >= now:
+            return day
+    return None
 
 
 def market_session_readiness(
@@ -22,6 +57,13 @@ def market_session_readiness(
         "can_attempt_market_hours_capture": False,
         "blockers": [],
         "session": None,
+        "next_reviewed_session": None,
+        "session_preview": {
+            "lookahead_calendar_days": PREVIEW_DAYS,
+            "amendment_completeness_verified": False,
+            "authorizes_capture": False,
+        },
+        "next_actions": [],
         "requested_keys": [],
         "requested_seconds": None,
         "remaining_session_seconds": None,
@@ -88,6 +130,8 @@ def market_session_readiness(
             or preflight["calendar"]["policy_id"] != calendar.identity
         ):
             blockers.append("REVIEWED_CALENDAR_MISMATCH")
+        else:
+            result["next_reviewed_session"] = next_reviewed_session(calendar, now)
         day = calendar.day(now.astimezone(IST).date())
         result["session"] = day
         if day["state"] not in {"REGULAR_BASELINE", "SPECIAL_SESSION"}:
@@ -105,6 +149,13 @@ def market_session_readiness(
         # Invalid local evidence/configuration must never turn into attempt permission.
         blockers.append("SESSION_READINESS_INPUT_OR_EVIDENCE_INVALID")
     result["blockers"] = list(dict.fromkeys(blockers))
+    result["next_actions"] = list(
+        dict.fromkeys(
+            READINESS_ACTIONS.get(code) or ACTIONS.get(code)
+            for code in result["blockers"]
+            if READINESS_ACTIONS.get(code) or ACTIONS.get(code)
+        )
+    )
     if not result["blockers"]:
         result.update(
             state="READY_FOR_REVIEWED_SESSION_ATTEMPT", can_attempt_market_hours_capture=True

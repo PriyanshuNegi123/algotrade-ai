@@ -3,7 +3,8 @@
 Baseline review 2026-11-09T14:18:10.573788+00:00 UTC;readiness update10November below.
 **Phase 2 remains PARTIAL, not complete.**
 The working read-only Analytics path is extensively verified. Completing a test suite does
-not supply genuine market-hours evidence, elapsed observation time or unconfigured OAuth.
+not supply genuine market-hours evidence or elapsed observation time. Scoped OAuth
+authentication/storage and the bounded endpoint check are complete; other gates remain.
 
 ## Requirements and evidence
 
@@ -74,10 +75,9 @@ report is not complete merely because its data-quality exporter exists.
 
 ## Next actions required for completion
 
-1. Supply only the public Upstox client ID and exact registered callback URL; configure the
-   client secret locally. Implement and verify OAuth with one-use session-bound state,
-   safe callback logging, correct cookie behavior and protected server-only token storage.
-   Never paste secrets or replace the existing Analytics credential with an order-capable one.
+1. Preserve the accepted OAuth callback, encrypted storage and quarantined endpoint-check
+   boundaries. They are complete locally; ordinary grant scope remains uncertified and
+   Analytics remains active. Never substitute the ordinary credential into Analytics.
 2. Review calendar applicability, then use a current catalog and explicit supported contract
    during an eligible market session. Verify fresh updates, reconnects and honest sampled gaps.
    No automatic recording was installed; existing CLI has finite quotas.
@@ -87,8 +87,8 @@ report is not complete merely because its data-quality exporter exists.
 4. Resolve field-unit/calendar limitations using primary evidence and record their limits.
 5. Review local changes;commit/push only when authorized,then verify CI on the new commit.
 
-OAuth settings were requested; the user's reply specified Google Drive storage rather than
-the requested OAuth settings, so those settings remain missing. No secret was requested.
+Registered OAuth fields and consent were supplied later and verified10November. Google
+Drive remains a separate storage integration; it is not a substitute for broker OAuth.
 See [STORAGE.md](STORAGE.md) for the storage decision.
 
 Primary API sources rechecked9November:
