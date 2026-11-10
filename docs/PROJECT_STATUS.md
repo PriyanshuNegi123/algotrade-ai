@@ -1,5 +1,33 @@
 # Project status and next steps
 
+## 2026-11-10T16:12:18.139456+00:00 — Operator OAuth consent and encrypted storage confirmed
+
+Operator reported the authorization popup's saved-locally confirmation. Independently
+verified authenticated local OAuth status:STORED_UNVERIFIED for state/vault_state,
+can_start=true,broker_access_verified=false,entries/live=false. Overview independently
+confirms entries/live disabled. Verification used protected local administrator login and
+CSRF logout; no token/secret/code/callback URL or provider response was printed or inspected.
+The status endpoint authenticates and validates encrypted vault metadata server-side.
+
+This confirms the local consent/storage step, not account/profile/funds/data permissions,
+read-only scope of the ordinary OAuth grant or credential activation. No additional broker
+request, authorization restart, vault reset, app restart, capture or order action performed.
+Analytics remains the active data credential. PostgreSQL, Google Drive backups/recovery
+and schedule unchanged. No real credential/.env/source/dependency/schema changes.
+
+Fresh disposable PostgreSQL17.11 regression:674passed,0failed,0skipped;one existing nonfatal
+Starlette warning. Locked sync,Ruff119files lint/format and mypy49backendfiles passed.
+Temporary cluster removed; tests used no operational DB/account. Actual local status checks
+above are separate acceptance. New hosted CI unverified;Phase2 still partial.
+
+Files:all8agent_memory records,docs/PROJECT_STATUS.md,VERIFICATION.md,UPSTOX_OAUTH.md,
+UPSTOX_OAUTH_BROWSER.md,UPSTOX_OAUTH_VAULT.md,BROKER_COMPLIANCE.md,PHASE2_ACCEPTANCE.md.
+Updated current acceptance text to reflect saved configuration,deployment and consent;
+historical timestamped evidence is retained. OBSERVATION;live disabled. Next:design/test an
+explicit bounded read-only validation path for the quarantined OAuth credential,without
+promotion to Analytics or account/funds/orders. Real market-hours/reconnect/seven-day and
+other Phase2 evidence gates remain pending. Local documentation commit only;no push.
+
 ## 2026-11-10T16:06:48.764693+00:00 — Local OAuth deployment ready; genuine consent pending
 
 Operator reported completing scripts.configure_upstox_oauth. Read-only validation confirms

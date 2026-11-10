@@ -2,9 +2,10 @@
 
 Status: opt-in storage component implemented and tested with synthetic credentials.
 It is connected to the opt-in HTTP callback flow described in UPSTOX_OAUTH_BROWSER.md;
-it is not an active broker credential or mounted in the current Compose deployment.
-No real vault/key/token has been initialized. The saved OAuth app settings remain missing
-at this iteration's local check. End-to-end OAuth and Phase2 remain incomplete.
+it remains separate from the active Analytics credential. The private Compose volume is
+deployed; operator consent and encrypted local storage were confirmed on 10 November.
+Authenticated status reports STORED_UNVERIFIED. Account/data permissions and subsequent
+use of this credential remain unverified; Phase2 remains incomplete.
 
 ## Storage boundary
 
@@ -62,7 +63,7 @@ The loaded SecretStr is server-only;never return it or the key in HTTP responses
 The backend must use a dedicated durable
 private directory/volume writable by the backend UID. An optional Compose overlay now
 provides this mount; see UPSTOX_OAUTH_BROWSER.md for lifecycle and verification. Operational
-settings, existing volumes and real browser authorization remain unchanged. The HTTP/UI flow
+database/Google settings and existing backup jobs remain unchanged. The HTTP/UI flow
 now exists as described in UPSTOX_OAUTH_BROWSER.md. Existing Strict
 administrator cookies and the Analytics-only broker adapter remain unchanged.
 

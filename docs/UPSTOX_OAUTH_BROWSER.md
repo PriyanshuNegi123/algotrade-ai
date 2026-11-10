@@ -1,8 +1,10 @@
 # Browser-bound Upstox OAuth callback
 
 Implemented and verified with synthetic HTTP/PostgreSQL tests and isolated headless Chrome.
-Real registered authorization, private runtime deployment and broker acceptance are still
-pending. Existing Analytics remains the only active market-data credential. Live stays off.
+The operator completed genuine browser consent on 10 November. Private runtime deployment
+and authenticated metadata status confirm encrypted local storage (STORED_UNVERIFIED).
+Broker account permissions and use of this credential for data remain unverified. Existing
+Analytics remains the active market-data credential. Live stays off.
 
 ## Enablement and operator flow
 

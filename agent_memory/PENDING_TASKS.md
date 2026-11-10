@@ -1,5 +1,33 @@
 # Prioritized backlog
 
+## 2026-11-10T16:12:18.139456+00:00 — Operator OAuth consent and encrypted storage confirmed
+
+Operator reported the authorization popup's saved-locally confirmation. Independently
+verified authenticated local OAuth status:STORED_UNVERIFIED for state/vault_state,
+can_start=true,broker_access_verified=false,entries/live=false. Overview independently
+confirms entries/live disabled. Verification used protected local administrator login and
+CSRF logout; no token/secret/code/callback URL or provider response was printed or inspected.
+The status endpoint authenticates and validates encrypted vault metadata server-side.
+
+This confirms the local consent/storage step, not account/profile/funds/data permissions,
+read-only scope of the ordinary OAuth grant or credential activation. No additional broker
+request, authorization restart, vault reset, app restart, capture or order action performed.
+Analytics remains the active data credential. PostgreSQL, Google Drive backups/recovery
+and schedule unchanged. No real credential/.env/source/dependency/schema changes.
+
+Fresh disposable PostgreSQL17.11 regression:674passed,0failed,0skipped;one existing nonfatal
+Starlette warning. Locked sync,Ruff119files lint/format and mypy49backendfiles passed.
+Temporary cluster removed; tests used no operational DB/account. Actual local status checks
+above are separate acceptance. New hosted CI unverified;Phase2 still partial.
+
+Files:all8agent_memory records,docs/PROJECT_STATUS.md,VERIFICATION.md,UPSTOX_OAUTH.md,
+UPSTOX_OAUTH_BROWSER.md,UPSTOX_OAUTH_VAULT.md,BROKER_COMPLIANCE.md,PHASE2_ACCEPTANCE.md.
+Updated current acceptance text to reflect saved configuration,deployment and consent;
+historical timestamped evidence is retained. OBSERVATION;live disabled. Next:design/test an
+explicit bounded read-only validation path for the quarantined OAuth credential,without
+promotion to Analytics or account/funds/orders. Real market-hours/reconnect/seven-day and
+other Phase2 evidence gates remain pending. Local documentation commit only;no push.
+
 ## 2026-11-10T16:06:48.764693+00:00 — Local OAuth deployment ready; genuine consent pending
 
 Operator reported completing scripts.configure_upstox_oauth. Read-only validation confirms
@@ -175,7 +203,7 @@ Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit aut
 | P1-UI-AUDIT | P1 | P1-004 | Keyboard, screen reader and measured contrast audit | Accessible focus/order/errors and AA contrast measured; resolve defects | Small | PARTIAL:keyboard focus/control contrast/320px reflow verified;screen-reader/dynamic errors/full audit pending |
 | P2-001 | P1 | P1-VERIFY | Official read-only Upstox API review | Sources/date/versions/credential limits and unknowns recorded | Medium | COMPLETE 2026-11-06; see BROKER_COMPLIANCE.md |
 | P2-002A | P1 | P2-001 | Server Analytics credential, restricted probe and secure local setup | Expiry/CSRF/errors/throttling/secret tests and container/browser checks pass | Medium | COMPLETE implementation; actual broker acceptance not tested without operator credential |
-| P2-002 | P1 | P2-001; appropriate operator app configuration | OAuth and protected persistent broker credentials | Exact registered callback; mandatory one-use session-bound state; no invented scope/refresh endpoint; no token exposure | High | PARTIAL:46protocol+33vault+33HTTP cases and synthetic Chrome flow pass;volume/bootstrap lifecycle Docker-verified;operator app fields validated and private runtime deployed;genuine consent/real acceptance pending;Analytics unchanged |
+| P2-002 | P1 | P2-001; appropriate operator app configuration | OAuth and protected persistent broker credentials | Exact registered callback; mandatory one-use session-bound state; no invented scope/refresh endpoint; no token exposure | High | PARTIAL:46protocol+33vault+33HTTP cases and synthetic Chrome flow pass;volume/bootstrap lifecycle Docker-verified;operator app fields validated and private runtime deployed;operator consent/encrypted store confirmed;OAuth account/data access unverified;Analytics unchanged |
 | P2-003A | P1 | P2-001 | Bounded official NSE index instrument import/versioned snapshots | Atomic archive, provenance, exact raw units, stale/invalid/duplicate/as-of tests and real public-data verification | Medium | COMPLETE 2026-11-06:113 PostgreSQL tests and real83,940/6,504 import verified |
 | P2-003B | P1 | P2-003A; P2-002A | Prior-day1/5/15minute history, immutable batches and private APIs/UI | Bounded/catalog-bound/UTC/OHLCV/order/completion/provenance/rollback tests | High | COMPLETE scoped implementation2026-11-06;152 PostgreSQL tests; actual broker acceptance unverified |
 | P2-003C | P1 | P2-003A; P2-002A | Bounded option-chain snapshots and data validation | Explicit expiry/catalog CE-PE identity; price/spread/quantity/OI/Greeks checks; freshness unknown absent source timestamp | High | COMPLETE scoped implementation2026-11-06;182 PostgreSQL tests; actual broker acceptance unverified |
@@ -1227,3 +1255,9 @@ Final documentation checks:all10 changed Markdown files passed Gitleaks without 
 and private comparison against locally configured credential values. Full history passed
 with existing exact historical allowances unchanged. Whitespace clean;.env remains ignored.
 No credential values staged. Operator consent remains pending;local commit only,no push.
+
+Final documentation checks:15changed Markdown files passed default Gitleaks with no
+allowances and private comparison against configured.env credential values. Full history
+passed with existing exact historical allowances unchanged. Whitespace clean;no sensitive
+runtime file staged. Authorization stored locally;broker permissions remain unverified.
+Local documentation commit only;no push.

@@ -1,8 +1,10 @@
 # Upstox OAuth protocol foundation
 
 Status:protocol,configuration,encrypted vault and browser HTTP/UI flow implemented and
-synthetically verified. Real registered browser authorization and private runtime deployment
-remain pending. This is separate from Google Drive OAuth and the working Analytics path.
+synthetically verified. The private runtime is deployed and the operator completed genuine
+browser consent on 10 November; authenticated status confirms encrypted local storage.
+The stored credential has no account/data access certification or activation. This is
+separate from Google Drive OAuth and the working Analytics path.
 Phase2 remains partial and live stays off. See [UPSTOX_OAUTH_BROWSER.md](UPSTOX_OAUTH_BROWSER.md).
 
 ## Local settings
@@ -109,29 +111,26 @@ flow,secret or token is written to a database or file by the protocol code. Oper
 client settings remain in the ignored local.env;OAuth access tokens are not saved by the
 protocol. An opt-in encrypted storage component is now implemented separately;see
 [UPSTOX_OAUTH_VAULT.md](UPSTOX_OAUTH_VAULT.md). Browser integration is implemented;
-real registered consent and vault initialization remain pending.
+real browser consent and encrypted storage were confirmed on 10 November.
 
 ## Remaining integration gates
 
-1. Obtain/validate the actual registered public client ID and exact callback;keep the secret
-   in protected local configuration. Latest local check in this iteration:NOT_CONFIGURED.
-2. Deploy and genuinely verify the implemented authenticated/CSRF start and browser-bound
-   one-use callback. See UPSTOX_OAUTH_BROWSER.md for the Strict-cookie popup design.
-   Preserve existing administrator SameSite=Strict cookies. Cross-site callback binding must
-   be designed and tested explicitly; do not expose a route that trusts state alone or relax
-   existing cookies. Recheck session revocation and app configuration on callback.
-3. Application/server query scrubbing and HTTP replay/browser/revocation/expiry/denial
-   tests are implemented. Review any proxy/edge logging separately before real deployment.
-4. Wire the tested encrypted server-only vault to a private backend-owned durable path,
-   lifecycle and explicit operator consent;no real store is initialized yet.
-   The normal OAuth token is not established as read-only. Never substitute it into the
-   Analytics setting or introduce order/funds/trading permissions through this foundation.
-5. Complete genuine registered browser authorization and bounded read-only acceptance.
-   No genuine browser or upstream token exchange has been performed for this foundation.
+Registered settings, private-volume deployment and genuine operator browser consent are
+complete for the local flow. Authenticated metadata reports STORED_UNVERIFIED; broker
+account/data permissions remain unverified. Keep the following boundaries for further work:
 
-Callback routes and UI are now implemented behind local configuration. No real store,
-credential rotation,account request,market capture,order adapter or live activation was used. PostgreSQL remains operational;
-Google backups and their schedule remain unchanged.
+1. Preserve Strict administrator cookies, session revocation, CSRF/origin and one-use browser
+   binding. These are implemented and tested; see UPSTOX_OAUTH_BROWSER.md.
+2. Review proxy/edge callback logging before introducing any such deployment layer.
+3. Validate any further read-only use through an explicit bounded path. The ordinary OAuth
+   credential is not established as read-only; never substitute it into the Analytics
+   setting or introduce order/funds/trading permissions through this foundation.
+4. Keep expiry/re-authorization handling explicit. Configuration/status alone does not
+   certify account ownership, data permissions or future broker acceptance.
+
+No account/profile/funds request, market capture, order adapter or live activation was used
+for the consent verification. PostgreSQL remains operational; Google backups and their
+schedule remain unchanged. No live capability is enabled by storing this authorization.
 
 ## Verification and primary sources
 

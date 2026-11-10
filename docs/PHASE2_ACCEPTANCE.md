@@ -9,8 +9,8 @@ not supply genuine market-hours evidence, elapsed observation time or unconfigur
 
 | Requirement | Verified state | Remaining acceptance |
 |---|---|---|
-| Official API/app guidance | Analytics/auth/instrument/chain primary docs rechecked9November | Registered OAuth client ID/callback and locally stored secret still needed |
-| Secure read-only authentication | Server-only Analytics token, aware cutoff, expiry/error/CSRF/origin tests; real history/chain/feed accepted | OAuth URL/state/token-exchange and optional local-configuration foundation implemented; Browser HTTP/UI flow and encrypted vault integration verified synthetically;runtime vault deployment and real registered acceptance pending |
+| Official API/app guidance | Analytics/auth/instrument/chain primary docs rechecked9November; registered OAuth settings configured locally10November | App configuration and operator consent do not certify account permissions or trading approval |
+| Secure read-only authentication | Server-only Analytics token, aware cutoff, expiry/error/CSRF/origin tests; real history/chain/feed accepted; OAuth browser flow/vault deployed and operator consent completed10November with authenticated STORED_UNVERIFIED status | OAuth account/data access and credential promotion remain unverified; Analytics stays active |
 | Instrument master | Immutable validated source/metadata; latest6,744 selected /85,462 source records,verified10November | Recheck currentness before each future capture; tick-size units unresolved |
 | Historical candles | Immutable bounded prior-day imports;75real five-minute Nifty50 bars archived | Historical point-in-time universe/session completeness remains unverified |
 | Option chain | Explicit expiry/catalog validation;135strikes/270legs accepted | No source timestamp per field; Greek units unresolved; freshness UNKNOWN |
