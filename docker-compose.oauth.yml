@@ -1,0 +1,11 @@
+# Opt in explicitly alongside docker-compose.yml. No credentials are supplied here.
+services:
+  app:
+    environment:
+      UPSTOX_OAUTH_VAULT_DIR: /var/lib/algotrade/oauth
+    volumes:
+      - type: volume
+        source: upstox_oauth
+        target: /var/lib/algotrade/oauth
+volumes:
+  upstox_oauth:

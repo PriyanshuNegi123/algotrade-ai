@@ -10,8 +10,8 @@ The optional routes fail closed unless all of these server settings are valid:
 
 - UPSTOX_CLIENT_ID,UPSTOX_CLIENT_SECRET and UPSTOX_REDIRECT_URI from the registered app.
 - UPSTOX_OAUTH_VAULT_DIR:an absolute,canonical,private local storage path controlled by the
-  service. The parent must exist and be writable by the backend UID. Current read-only
-  Compose has no OAuth vault mount;configure a dedicated durable private mount before use.
+  service. The parent must exist and be writable by the backend UID. The base Compose file
+  has no vault mount; the optional overlay described below supplies a dedicated volume.
 - The registered callback origin must be in ALLOWED_ORIGINS. Use that same origin for the
   dashboard. Callback path must be canonical ASCII segments,not root,reserved API/assets/
   health/docs paths,percent-encoded or trailing-slash paths. Exact URI is preserved upstream.
@@ -21,6 +21,51 @@ register if that is your chosen deployment. It is not a claim about your current
 registration. A container path such as `/app/.local/upstox` requires an appropriate mount;
 merely adding its name to.env does not make the read-only container writable. No deployment,
 volume ownership change,secret update or real store initialization occurred this iteration.
+
+## Optional container storage
+
+`docker-compose.oauth.yml` can be explicitly layered over `docker-compose.yml`. It mounts
+only the application's `/var/lib/algotrade/oauth` directory using a project-scoped named
+volume and sets the matching server path. The image supplies an empty directory owned by
+UID 10001 with mode 0700. Docker initializes a new volume from that directory; no runtime
+root process, ownership repair, key generation or token creation is added. Existing unsafe
+volume permissions still fail closed. The rest of the application filesystem stays read-only.
+The database and migration service receive no vault mount. Default deployment is unchanged.
+
+Verify with generated synthetic settings and a disposable project first:
+
+```sh
+uv run python -m scripts.verify_compose --oauth-vault
+```
+
+The verifier tests metadata reads without key creation, rejected CSRF, explicit start/denial,
+encrypted synthetic storage, UID/modes and decryption after forced container replacement.
+It also runs the existing auth/database outage smoke checks. No authorization page is opened
+and no provider request is made. Only its own containers and volumes are removed.
+
+For a later operator-approved deployment, use the same Compose project name and both files
+for every lifecycle command, for example:
+
+```sh
+docker compose --project-name algotrade-ai-local \
+  --file docker-compose.yml --file docker-compose.oauth.yml config --quiet
+```
+
+This validates only; it does not start or replace the running application. Do not print
+expanded Compose configuration because it contains secrets. Configure the actual registered
+OAuth app settings locally before deployment. The existing bootstrap currently uses only
+the base file; running it does not retain the optional mount on a recreated application.
+Do not use it to manage an opted-in deployment until that lifecycle is integrated explicitly.
+Never use `down --volumes` against the operational project: it destroys both database and
+OAuth storage. Retain the named volume across rebuilds; do not silently reset unsafe data.
+
+This small credential volume stays local and is excluded from PostgreSQL/Drive backups and
+the recovery kit. Loss requires fresh consent. Bulk archives/backups retain their existing
+Drive policy. Docker administrators can access the key and ciphertext; this mount is not a
+boundary against host or Docker account compromise. Proxy logging review and real consent
+remain separate acceptance gates.
+
+Volume initialization and lifecycle follow the official [Docker volume documentation](https://docs.docker.com/engine/storage/volumes/).
 
 After deployment,sign in freshly so the original dashboard has its in-memory CSRF value.
 The Broker connection card shows optional OAuth setup independently from Analytics. Click

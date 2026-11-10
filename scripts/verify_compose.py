@@ -25,6 +25,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--compose-bin", type=Path, help="Optional standalone Compose executable")
     parser.add_argument("--config-only", action="store_true")
+    parser.add_argument(
+        "--oauth-vault", action="store_true", help="Verify optional private OAuth volume"
+    )
     args = parser.parse_args()
     executable = [str(args.compose_bin.resolve())] if args.compose_bin else ["docker", "compose"]
     project = "algotrade-verify-" + secrets.token_hex(6)
@@ -52,6 +55,12 @@ def main():
             "ALLOWED_ORIGINS": json.dumps([origin]),
             "APP_BIND_PORT": str(port),
         }
+        if args.oauth_vault:
+            variables.update(
+                UPSTOX_CLIENT_ID="synthetic-compose-client",
+                UPSTOX_CLIENT_SECRET="synthetic-compose-secret",
+                UPSTOX_REDIRECT_URI=origin + "/auth/upstox/callback",
+            )
         environment_file.touch(mode=0o600)
         environment_file.write_text(
             "\n".join(f"{key}='{value}'" for key, value in variables.items())
@@ -68,6 +77,8 @@ def main():
             "--env-file",
             str(environment_file),
         ]
+        if args.oauth_vault:
+            base.extend(["--file", str(ROOT / "docker-compose.oauth.yml")])
 
         def compose(*arguments):
             result = subprocess.run(
@@ -91,6 +102,15 @@ def main():
         assert services["app"]["environment"]["DATABASE_URL"] == variables["DATABASE_URL"]
         assert services["app"]["read_only"] is True
         assert "ALL" in services["app"]["cap_drop"]
+        if args.oauth_vault:
+            assert services["app"]["environment"]["UPSTOX_OAUTH_VAULT_DIR"] == (
+                "/var/lib/algotrade/oauth"
+            )
+            mounts = services["app"]["volumes"]
+            assert len(mounts) == 1 and mounts[0]["type"] == "volume"
+            assert mounts[0]["target"] == "/var/lib/algotrade/oauth"
+            assert not services["migrate"].get("volumes")
+            assert not services["migrate"]["environment"].get("UPSTOX_OAUTH_VAULT_DIR")
         print(
             "Compose configuration verified; private DB, loopback app, literal secrets preserved.",
             flush=True,
@@ -150,6 +170,8 @@ def main():
                 assert login.status_code == 200
                 assert "HttpOnly" in login.headers["set-cookie"]
                 csrf = login.json()["csrf_token"]
+                if args.oauth_vault:
+                    verify_oauth_volume(compose, client, origin, csrf)
                 assert client.get("/api/broker/status").json()["state"] == "NOT_CONFIGURED"
                 assert (
                     client.post("/api/broker/check", headers={"Origin": origin}).status_code == 403
@@ -276,6 +298,16 @@ def main():
                 assert state.json()["balance"] is None
                 assert state.json()["entries_enabled"] is False
                 assert state.json()["live_enabled"] is False
+                if args.oauth_vault:
+                    # Container replacement, rather than restart, proves volume persistence.
+                    compose("up", "--force-recreate", "--no-deps", "--wait", "app")
+                    ready()
+                    assert client.get("/api/broker/oauth/status").json()["vault_state"] == (
+                        "STORED_UNVERIFIED"
+                    )
+                    assert compose("exec", "-T", "app", "python", "-c", VAULT_PROOF).strip() == (
+                        "PRIVATE_ENCRYPTED_ROUNDTRIP_VERIFIED"
+                    )
                 compose("stop", "db")
                 assert client.get("/health/live").status_code == 200
                 assert client.get("/health/ready").status_code == 503
@@ -316,6 +348,77 @@ def main():
                 if failure is None:
                     raise
                 print(f"Cleanup could not be confirmed for project {project}.", file=sys.stderr)
+
+
+# Only synthetic material is used in the disposable verification project's named volume.
+VAULT_PROOF = """
+import os, stat
+from pathlib import Path
+from backend.app.config import Settings
+from backend.app.brokers.oauth import configured_app
+from backend.app.brokers.oauth_store import OAuthTokenStore
+p = Path(Settings().upstox_oauth_vault_dir)
+assert os.getuid() == 10001 and p.stat().st_uid == 10001
+assert stat.S_IMODE(p.stat().st_mode) == 0o700
+for f in p.iterdir():
+    assert f.stat().st_uid == 10001 and stat.S_IMODE(f.stat().st_mode) == 0o600
+token = OAuthTokenStore(p).load(configured_app(Settings()))
+assert token.access_token.get_secret_value() == 'synthetic-compose-bearer'
+assert b'synthetic-compose-bearer' not in (p / 'token.enc').read_bytes()
+assert not os.access('/app/backend', os.W_OK)
+print('PRIVATE_ENCRYPTED_ROUNDTRIP_VERIFIED')
+"""
+
+
+def verify_oauth_volume(compose, client, origin, csrf):
+    def contents():
+        return compose(
+            "exec",
+            "-T",
+            "app",
+            "python",
+            "-c",
+            "from pathlib import Path; "
+            "print(len(list(Path('/var/lib/algotrade/oauth').iterdir())))",
+        ).strip()
+
+    assert contents() == "0"
+    status = client.get("/api/broker/oauth/status").json()
+    assert status["can_start"] and status["vault_state"] == "OAUTH_VAULT_NOT_INITIALIZED"
+    assert contents() == "0", "Status must not initialize storage"
+    assert client.post("/api/broker/oauth/start", headers={"Origin": origin}).status_code == 403
+    headers = {"Origin": origin, "X-CSRF-Token": csrf}
+    response = client.post("/api/broker/oauth/start", headers=headers)
+    assert response.status_code == 200
+    flow = response.json()
+    assert (
+        client.post(
+            "/api/broker/oauth/finish",
+            headers=headers,
+            json={"state": flow["state"], "flow_nonce": flow["flow_nonce"], "denied": True},
+        ).status_code
+        == 200
+    )
+    # A denied flow created only a key/lock; no provider request or bearer was produced.
+    assert contents() == "2"
+    compose(
+        "exec",
+        "-T",
+        "app",
+        "python",
+        "-c",
+        "from datetime import UTC,datetime; from pathlib import Path; "
+        "from pydantic import SecretStr; from backend.app.config import Settings; "
+        "from backend.app.brokers.oauth import configured_app,OAuthToken,daily_cutoff; "
+        "from backend.app.brokers.oauth_store import OAuthTokenStore; "
+        "s=Settings(); now=datetime.now(UTC); "
+        "OAuthTokenStore(Path(s.upstox_oauth_vault_dir)).save(configured_app(s), "
+        "OAuthToken(SecretStr('synthetic-compose-bearer'),now,now,daily_cutoff(now)))",
+    )
+    assert compose("exec", "-T", "app", "python", "-c", VAULT_PROOF).strip() == (
+        "PRIVATE_ENCRYPTED_ROUNDTRIP_VERIFIED"
+    )
+    print("Optional OAuth volume: private UID/modes, CSRF, denial and encrypted roundtrip passed.")
 
 
 if __name__ == "__main__":

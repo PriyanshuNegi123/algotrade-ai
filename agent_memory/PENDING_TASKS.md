@@ -1,5 +1,46 @@
 # Prioritized backlog
 
+## 2026-11-10T15:38:49.863311+00:00 — Optional private OAuth Compose storage
+
+Objective: prepare the next OAuth deployment prerequisite while real registered settings
+are absent. Added docker-compose.oauth.yml, explicitly opt-in alongside the base file.
+Only app receives a project-scoped named volume at /var/lib/algotrade/oauth and the matching
+server path. Dockerfile supplies an empty UID/GID 10001 directory with mode 0700 for new
+volume initialization. No runtime root helper, automatic ownership repair, key generation,
+reset or permission relaxation. Existing unsafe vaults still fail closed. Default Compose,
+PostgreSQL operational storage and Analytics credential selection remain unchanged.
+
+Extended scripts.verify_compose with --oauth-vault using generated synthetic settings and
+an isolated project. Actual Docker engine 29.9.2 is available. Optional config/build/migrate/
+auth/CSRF/start-denial/private file modes/encrypted roundtrip passed. Forced app replacement
+retained the volume and successfully decrypted the synthetic bearer. Existing restart,
+DB outage/recovery and unavailable execution checks passed. Disposable containers and both
+volumes removed. No real authorization link was opened and no provider request was made.
+Default configuration validation passed; full default Docker smoke result recorded below.
+
+Locked sync passed. Full disposable PostgreSQL 17.11 pytest: 615 passed, 0 failed, 0 skipped;
+one existing nonfatal Starlette deprecation warning. Ruff lint/format:117 files passed;
+mypy:49 backend files passed. Native temporary cluster stopped/removed. No pytest cases
+were added for this deployment-only change; actual Compose smoke exercises the boundary.
+
+Files: Dockerfile, docker-compose.oauth.yml, scripts/verify_compose.py, README.md,
+docs/UPSTOX_OAUTH_BROWSER.md, docs/UPSTOX_OAUTH_VAULT.md, docs/PROJECT_STATUS.md,
+docs/VERIFICATION.md and all eight agent_memory files. Guides document explicit two-file
+lifecycle, destructive volume removal, storage loss/re-authorization and Docker-admin trust.
+Vault remains excluded from PG/Drive backups; only tiny credential state is local. Existing
+cloud archive/backup/recovery-kit jobs are unchanged. Running operational containers, DB,
+.env, Google files and actual OAuth vault were not modified. No live activation or capture.
+
+Decision: opt-in named volume initialized from private image directory avoids host UID
+mismatch and root startup repair. This is verified synthetic deployment, not real OAuth
+acceptance. Current local configuration checker still NOT_CONFIGURED: three app fields
+absent, vault setting unset. Bootstrap still manages only base Compose: integrate an explicit
+opt-in lifecycle before using it with this overlay, rather than silently dropping the mount.
+Next: add explicit bootstrap lifecycle support, then validate operator-local registered
+settings and deploy/perform genuine consent only with prerequisites satisfied. Phase 2 stays
+partial; real market-hours/reconnect, seven-day evidence and other documented gates remain.
+OBSERVATION; live disabled. New hosted CI remains unverified. Local commit only; no push.
+
 Immediate status: public catalog refreshed10November2026 and CURRENT_METADATA verified;
 6,744selected/85,462source records. Market-hours readiness remains blocked only by the
 reviewed holiday/no-session state. Next functional gate is P2-003U genuine market-hours
@@ -15,7 +56,7 @@ Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit aut
 | P1-UI-AUDIT | P1 | P1-004 | Keyboard, screen reader and measured contrast audit | Accessible focus/order/errors and AA contrast measured; resolve defects | Small | PARTIAL:keyboard focus/control contrast/320px reflow verified;screen-reader/dynamic errors/full audit pending |
 | P2-001 | P1 | P1-VERIFY | Official read-only Upstox API review | Sources/date/versions/credential limits and unknowns recorded | Medium | COMPLETE 2026-11-06; see BROKER_COMPLIANCE.md |
 | P2-002A | P1 | P2-001 | Server Analytics credential, restricted probe and secure local setup | Expiry/CSRF/errors/throttling/secret tests and container/browser checks pass | Medium | COMPLETE implementation; actual broker acceptance not tested without operator credential |
-| P2-002 | P1 | P2-001; appropriate operator app configuration | OAuth and protected persistent broker credentials | Exact registered callback; mandatory one-use session-bound state; no invented scope/refresh endpoint; no token exposure | High | PARTIAL:46protocol+33vault+33HTTP cases and synthetic Chrome flow pass;vault deployment/real registered acceptance pending;Analytics unchanged |
+| P2-002 | P1 | P2-001; appropriate operator app configuration | OAuth and protected persistent broker credentials | Exact registered callback; mandatory one-use session-bound state; no invented scope/refresh endpoint; no token exposure | High | PARTIAL:46protocol+33vault+33HTTP cases and synthetic Chrome flow pass;optional volume Docker-verified;bootstrap opt-in/deployment/real registered acceptance pending;Analytics unchanged |
 | P2-003A | P1 | P2-001 | Bounded official NSE index instrument import/versioned snapshots | Atomic archive, provenance, exact raw units, stale/invalid/duplicate/as-of tests and real public-data verification | Medium | COMPLETE 2026-11-06:113 PostgreSQL tests and real83,940/6,504 import verified |
 | P2-003B | P1 | P2-003A; P2-002A | Prior-day1/5/15minute history, immutable batches and private APIs/UI | Bounded/catalog-bound/UTC/OHLCV/order/completion/provenance/rollback tests | High | COMPLETE scoped implementation2026-11-06;152 PostgreSQL tests; actual broker acceptance unverified |
 | P2-003C | P1 | P2-003A; P2-002A | Bounded option-chain snapshots and data validation | Explicit expiry/catalog CE-PE identity; price/spread/quantity/OI/Greeks checks; freshness unknown absent source timestamp | High | COMPLETE scoped implementation2026-11-06;182 PostgreSQL tests; actual broker acceptance unverified |
@@ -1031,3 +1072,15 @@ historical allowances unchanged. Scanner-triggering verification prose was rewor
 new allowances added. No operational DB, real broker credential or runtime setting changed.
 OBSERVATION; live disabled. Real registered OAuth settings, private runtime vault mount and
 genuine consent remain pending. New hosted CI is unverified. Local commit only; no push.
+
+Final checks (2026-11-10T15:39:19.828948+00:00 UTC): default Compose image/migrations,
+authentication, application restart, DB outage/recovery and execution-unavailable smoke
+passed too. Both disposable projects cleaned their own containers/volumes. All 16 changed
+files passed default Gitleaks with no allowances; full history passed using the existing
+exact historical false-positive allowances. No scanner configuration change. Full suite
+615 passed/zero failed/zero skipped; Ruff/format/mypy passed. Real runtime unchanged;
+no genuine OAuth acceptance or new hosted CI pass claimed. Local commit only, no push.
+
+Final cleanup: removed only the four image tags built by these two disposable smoke runs;
+no global prune or operational image change. Staged private comparison against configured
+credential and recovery material passed. Sixteen task files only; cached whitespace clean.

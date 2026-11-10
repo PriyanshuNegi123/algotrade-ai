@@ -221,4 +221,5 @@ Cloud-first encrypted backups run every three IST calendar days: [schedule and h
 Passphrase-encrypted Drive recovery: [RECOVERY_KIT.md](docs/RECOVERY_KIT.md).
 
 Optional Upstox browser authorization: [UPSTOX_OAUTH_BROWSER.md](docs/UPSTOX_OAUTH_BROWSER.md).
-Synthetic security/browser checks are verified;registered-app and private-volume setup remain required.
+Synthetic security/browser checks are verified. Optional private storage is available through
+`docker-compose.oauth.yml`; registered-app settings and explicit deployment remain required.

@@ -60,8 +60,9 @@ The implemented backend authorizes the administrator before storage status/start
 The callback finish also verifies revocation,CSRF/origin and browser binding before saving.
 The loaded SecretStr is server-only;never return it or the key in HTTP responses or log dumps.
 The backend must use a dedicated durable
-private directory/volume writable by the backend UID. No volume, UID ownership, settings,
-real browser authorization or production deployment is changed. The opt-in HTTP/UI flow
+private directory/volume writable by the backend UID. An optional Compose overlay now
+provides this mount; see UPSTOX_OAUTH_BROWSER.md for lifecycle and verification. Operational
+settings, existing volumes and real browser authorization remain unchanged. The HTTP/UI flow
 now exists as described in UPSTOX_OAUTH_BROWSER.md. Existing Strict
 administrator cookies and the Analytics-only broker adapter remain unchanged.
 

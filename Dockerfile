@@ -8,7 +8,8 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY backend backend
 COPY frontend frontend
 COPY alembic.ini ./
-RUN useradd --uid 10001 --create-home app
+RUN useradd --uid 10001 --create-home app \
+    && install -d -o 10001 -g 10001 -m 0700 /var/lib/algotrade/oauth
 USER 10001
 EXPOSE 8000
 CMD ["uvicorn", "backend.app.main:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--no-access-log", "--no-proxy-headers"]
