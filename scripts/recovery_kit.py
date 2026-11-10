@@ -34,10 +34,11 @@ def prompt_passphrase(*, dialog: bool, confirm: bool) -> str:
         if dialog:
             # No secret enters argv/AppleScript source. The hidden answer is captured only in RAM.
             script = (
-                "text returned of (display dialog "
+                "activate\ntext returned of (display dialog "
                 + json.dumps(message)
                 + (
-                    ' default answer "" with hidden answer buttons {"Cancel", "Continue"} '
+                    ' with title "AlgoTrade AI Recovery" default answer "" '
+                    'with hidden answer buttons {"Cancel", "Continue"} '
                     'default button "Continue")'
                 )
             )
@@ -58,10 +59,13 @@ def prompt_passphrase(*, dialog: bool, confirm: bool) -> str:
         return getpass.getpass(message + ": ")
 
     print("RECOVERY_PASSPHRASE_WAITING: enter it only in the local hidden prompt.", flush=True)
-    value = read(
-        "AlgoTrade recovery passphrase (16+ characters). "
+    message = (
+        "Create a NEW AlgoTrade recovery passphrase (16+ characters). "
         "Keep it separately; do not use your Google password."
+        if confirm
+        else "Enter the SAME recovery passphrase used when creating this kit."
     )
+    value = read(message)
     if not 16 <= len(value) <= 1024:
         raise BackupError("RECOVERY_PASSPHRASE_LENGTH_REQUIRED")
     if confirm and not secrets.compare_digest(

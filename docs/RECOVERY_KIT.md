@@ -15,8 +15,11 @@ uv run python -m scripts.recovery_kit verify-cloud
 uv run python -m scripts.backup_job status
 ```
 
-On this Mac, append `--dialog` for native hidden prompts. Creation asks twice; verification
-asks once. Use a unique, strong passphrase (at least16characters; several unrelated words
+On this Mac, append `--dialog` for foreground native hidden prompts titled
+**AlgoTrade AI Recovery**. Creation asks twice; verification
+asks once. If a dialog is unavailable, use the default hidden terminal prompt instead.
+Cancel any outstanding dialog before starting a terminal attempt to avoid duplicate creation.
+Use a unique, strong passphrase (at least16characters; several unrelated words
 are preferable). Never enter it in chat, command arguments, environment variables or source.
 The passphrase is not saved. Preserve it independently of this Mac and Google account.
 A forgotten passphrase cannot be reset to decrypt an existing kit. Do not use your Google
@@ -69,3 +72,16 @@ Production recovery/cutover and importing a recovered key are separate reviewed 
 
 API references: [Google Drive multipart uploads](https://developers.google.com/workspace/drive/api/guides/manage-uploads)
 and [cryptography Argon2id](https://cryptography.io/en/latest/hazmat/primitives/key-derivation-functions/#argon2id).
+
+Native prompt waits are bounded to300seconds and timeouts return a fixed safe code.
+A failed independent passphrase check preserves the kit, original key and latest successful
+receipt. Retry verify-cloud with the exact original passphrase; do not rotate the backup key.
+
+## Verified local acceptance
+
+On10November2026, the operator confirmed the foreground prompt was visible. A new914-byte
+kit passed upload/download/authentication and isolated PostgreSQL restore. A separately
+re-entered passphrase also passed cloud verification with reads of the original local
+recovery key explicitly blocked. All archive/event hashes passed, with zero restored login
+sessions, a non-superuser role and network isolation. Earlier kits were retained. No
+passphrase was saved and no plaintext key was uploaded. Keep the passphrase independently.

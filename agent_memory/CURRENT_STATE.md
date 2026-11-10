@@ -1,5 +1,41 @@
 # Current state
 
+## 2026-11-10T11:11:55.103958+00:00 — Visible recovery prompt and independent Drive recovery VERIFIED
+
+User could not see the earlier native prompt. Added explicit AppleScript activation and
+a clear AlgoTrade AI Recovery title. User confirmed visibility. Creation now explicitly asks
+for a NEW passphrase; verification explicitly asks for the SAME existing passphrase. Hidden
+input remains captured only in memory, never argv/chat/logs/storage. Terminal fallback and
+cancelling an outstanding dialog before switching are documented in RECOVERY_KIT.md.
+
+First kit uploaded and creation-time isolated restore passed. Two independent passphrase
+entries failed authentication; neither failure modified/deleted the kit or backup. User
+explicitly requested another kit with a new independently kept passphrase. New914-byte kit
+upload/download/decryption/isolated restore passed. A separate fresh hidden entry then
+unlocked the stored new kit and restored its backup with the original local recovery_key
+function explicitly patched to raise if read. That independent acceptance PASSED. No new
+backup key,sourceDB restore,Google permission expansion or cloud deletion. Older kit retained.
+Verified2catalogs/13314instruments,75candles,270chain legs,2captures/2sessions/9events;all
+archive hashes valid,9event hashes verified,admin sessions0,non-superuser,networknone.
+Private receipt.local/backups/recovery-kit.json0600;passphrase not saved. Local backup
+ciphertext cache0;health PASSPHRASE_PROTECTED_RESTORE_VERIFIED. Physical offline copy
+remains NOT_CONFIRMED. Three-day schedule unchanged,next due12November2026 IST.
+
+17recovery security tests passed. Latest full working suite476passed/0failed/0skipped
+on disposable PostgreSQL17.11;Ruff104files/format,mypy43backendfiles,locked sync passed.
+One earlier full run475passed/1failed in existing test_tracker_duplicate_watermarks_and_trade_freshness;
+isolated rerun and two later full runs passed. Inspection identifies a wall-clock millisecond
+race:fixture message() samples a later datetime than captured now,then the test replaces the
+generated watermark with earlier now and indexes observations after OUT_OF_ORDER. No feed
+logic/assertions changed in this task;recorded as an unresolved flaky fixture,next action
+use a deterministic synthetic clock in that test. Existing Starlette warning remains.
+
+Files:scripts/recovery_kit.py,docs/RECOVERY_KIT.md,docs/VERIFICATION.md and all8agent_memory
+files. Prior Phase2 pending changes preserved separately. OBSERVATION/live disabled;
+Upstox credentials,operational PostgreSQL and existing Drive files preserved. No push.
+Next:fix the documented feed fixture clock race,then resume Phase2 evidence gates.
+
+
 ## 2026-11-10T10:43:24.854270+00:00 — Passphrase-encrypted Drive recovery implementation
 
 User explicitly selected an encrypted recovery kit on Drive. Added bounded Argon2id
@@ -602,3 +638,7 @@ No secrets staged;no dependency,Upstox,live,production DB or schedule changes. A
 cloud-kit creation/restore still requires the operator's hidden passphrase entry.
 Exact next command: uv run python -m scripts.recovery_kit create (hidden terminal prompts),
 then uv run python -m scripts.recovery_kit verify-cloud. Never send the passphrase in chat.
+
+Final task-only staged check:11files,Gitleaks clean with no allowances,private comparison
+against configured Google credentials/tokens and backup key clean;cached whitespace check
+passed. No private recovery receipt/key/token or unrelated pending Phase2 file staged.
