@@ -10,7 +10,7 @@ not supply genuine market-hours evidence, elapsed observation time or unconfigur
 | Requirement | Verified state | Remaining acceptance |
 |---|---|---|
 | Official API/app guidance | Analytics/auth/instrument/chain primary docs rechecked9November | Registered OAuth client ID/callback and locally stored secret still needed |
-| Secure read-only authentication | Server-only Analytics token, aware cutoff, expiry/error/CSRF/origin tests; real history/chain/feed accepted | OAuth authorization/callback/token management unimplemented; no claim of completion |
+| Secure read-only authentication | Server-only Analytics token, aware cutoff, expiry/error/CSRF/origin tests; real history/chain/feed accepted | OAuth URL/state/token-exchange and optional local-configuration foundation implemented; HTTP callback,token store and real acceptance pending |
 | Instrument master | Immutable validated source/metadata; latest6,744 selected /85,462 source records,verified10November | Recheck currentness before each future capture; tick-size units unresolved |
 | Historical candles | Immutable bounded prior-day imports;75real five-minute Nifty50 bars archived | Historical point-in-time universe/session completeness remains unverified |
 | Option chain | Explicit expiry/catalog validation;135strikes/270legs accepted | No source timestamp per field; Greek units unresolved; freshness UNKNOWN |
@@ -118,3 +118,12 @@ catalog/market archives preserved by before/after hashes. Readiness now reports 
 NO_REVIEWED_SESSION (reviewed holiday),with no recording or certified day. Full disposable
 PostgreSQL503passed/0failed/0skipped;Ruff107files/format,mypy44backendfiles passed.
 Current metadata is a verification-time fact,recheck it on the next capture attempt.
+
+## OAuth foundation — 10 November
+
+See [UPSTOX_OAUTH.md](UPSTOX_OAUTH.md).46synthetic security cases verify the fixed official
+protocol,one-use session-bound state,bounded secret-safe responses and optional settings.
+No application route/browser consent/token storage or real account call is added. The
+working Analytics credential is unchanged. Latest saved project.env check:NOT_CONFIGURED;
+operator asked to save the three canonical variables locally. End-to-end OAuth remains
+incomplete;this does not close P2-002 or any market-observation gate.

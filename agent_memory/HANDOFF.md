@@ -1,5 +1,50 @@
 # Handoff
 
+## 2026-11-10T14:03:10.749548+00:00 — Upstox OAuth protocol/configuration foundation
+
+Objective:advance P2-002 without exposing credentials or replacing Analytics. Verified
+current official authorization/token contracts. Added OAuthApp validation,exact authorization
+URL construction,hashed one-use state with5minute/session-expiry bound,one flow/session,
+32flow bound and lock-protected atomic consumption. Wrong session,replay,new flow,expiry,
+app change and clock rollback fail closed. Ledger is single-process;caller must separately
+verify a real current administrator session and revocation. No HTTP routes are wired.
+
+Token exchange is one fixed official POST,burns state before validation/network,uses bounded
+time/identity JSON,refuses redirects/compression/duplicates/oversized or malformed bearer
+responses and emits fixed safe errors. No proxy-env,automatic retry,scope/PKCE/refresh
+invention. SecretStr protects URL/code/secret/token repr;profile/extended-token fields
+discarded. Expiry is conservative documented next03:30IST cutoff from local request start,
+not broker-verified issuance. Crossing cutoff/pending deadline rejects the exchange.
+No real OAuth exchange,browser consent,token file or account API request occurred.
+
+Optional Settings fields UPSTOX_CLIENT_ID,UPSTOX_CLIENT_SECRET,UPSTOX_REDIRECT_URI added
+without changing the Analytics credential,execution flags or existing partial-config startup.
+configured_app fails closed;check_upstox_oauth prints only presence/status booleans and
+never opens network/DB/browser or writes credentials. User reported editing.env;repeated
+private checks showed NOT_CONFIGURED,all3fields missing,mode0600. Direct dotenv parse and
+environment-override check agree. Saved file still9November14:13:13UTC/19:43IST. User supplied
+LGOTRADE AI/.env;that folder was not found,only the existing Desktop/ALGOTRADE AI project.
+Opened exact project.env in local TextEdit to resolve the save/path issue;no contents
+printed or credentials edited by the agent. Latest configuration acceptance remains pending.
+
+46new synthetic security cases passed;full disposable PostgreSQL17.11 suite549passed,
+0failed,0skipped. Locked sync,Ruff110files/format,mypy45backendfiles passed. Initial lint
+flagged an unused test import and lambda loop binding;corrected before final checks.
+One existing Starlette warning remains. Security/exact staged results recorded below.
+Files:backend/app/brokers/oauth.py,backend/app/config.py,scripts/check_upstox_oauth.py,
+tests/security/test_upstox_oauth.py,docs/UPSTOX_OAUTH.md,BROKER_COMPLIANCE.md,
+PHASE2_ACCEPTANCE.md,PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory files.
+
+OBSERVATION/live disabled;no migration,deployment,broker credential overwrite,market
+capture,cloud/scheduler change or push. Analytics still the sole active broker credential.
+Remaining:save/validate actual registered app settings locally;secure authenticated/CSRF
+start/callback with browser binding and existing Strict cookie protection,query-log safety,
+protected token store and genuine registered acceptance. P2-002 is PARTIAL,not complete.
+Next exact action:operator saves canonical values in project.env,then runs
+uv run python -m scripts.check_upstox_oauth;validate privately before route integration.
+Market-hours/reconnect/seven-day/calendar/unit gates and latest hosted CI remain unverified.
+
+
 ## 2026-11-10T13:40:58.086070+00:00 — Public instrument catalog refreshed and verified
 
 Objective:remove the stale-catalog blocker before the next eligible Phase2 market-hours
@@ -846,3 +891,10 @@ full Git history passed with the existing documented exact false-positive allowa
 Cached whitespace check passed. Local operational receipts remain ignored/private.
 Production source/dependencies unchanged;no additional image build or schema migration
 required. Local documentation commit only;no push.
+
+Final exact staged candidate:549PostgreSQL tests passed,0failed,0skipped;Ruff110files/format
+and mypy45backendfiles passed. All17staged files passed Gitleaks without allowances and
+a private comparison against configured local credentials/key material. Full history passed
+with existing documented exact false-positive allowances. Cached whitespace check passed.
+Final project.env checker still NOT_CONFIGURED(all3canonical OAuth fields absent);do not
+claim registration/browser/token-store acceptance. Local commit only,no push.

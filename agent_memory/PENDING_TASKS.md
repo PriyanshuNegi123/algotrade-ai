@@ -3,8 +3,8 @@
 Immediate status: public catalog refreshed10November2026 and CURRENT_METADATA verified;
 6,744selected/85,462source records. Market-hours readiness remains blocked only by the
 reviewed holiday/no-session state. Next functional gate is P2-003U genuine market-hours
-acceptance with catalog/readiness rechecked immediately before the attempt. OAuth settings
-and implementation remain separate pending work. Latest local suite503PGpassed/0skipped;
+acceptance with catalog/readiness rechecked immediately before the attempt. OAuth protocol/configuration foundation is verified;browser callback,token store and
+registered-app acceptance remain pending actual saved settings. Latest local suite549PGpassed/0skipped;
 hosted CI success on0f2df43 is historical,not proof for newer local commits.
 Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit authorization.
 
@@ -15,7 +15,7 @@ Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit aut
 | P1-UI-AUDIT | P1 | P1-004 | Keyboard, screen reader and measured contrast audit | Accessible focus/order/errors and AA contrast measured; resolve defects | Small | PARTIAL:keyboard focus/control contrast/320px reflow verified;screen-reader/dynamic errors/full audit pending |
 | P2-001 | P1 | P1-VERIFY | Official read-only Upstox API review | Sources/date/versions/credential limits and unknowns recorded | Medium | COMPLETE 2026-11-06; see BROKER_COMPLIANCE.md |
 | P2-002A | P1 | P2-001 | Server Analytics credential, restricted probe and secure local setup | Expiry/CSRF/errors/throttling/secret tests and container/browser checks pass | Medium | COMPLETE implementation; actual broker acceptance not tested without operator credential |
-| P2-002 | P1 | P2-001; appropriate operator app configuration | OAuth and protected persistent broker credentials | Exact registered callback; mandatory one-use session-bound state; no invented scope/refresh endpoint; no token exposure | High | Pending; market-data path currently uses server Analytics credential instead |
+| P2-002 | P1 | P2-001; appropriate operator app configuration | OAuth and protected persistent broker credentials | Exact registered callback; mandatory one-use session-bound state; no invented scope/refresh endpoint; no token exposure | High | PARTIAL:46synthetic protocol/configuration cases pass;secure callback/token store/registered acceptance pending;Analytics unchanged |
 | P2-003A | P1 | P2-001 | Bounded official NSE index instrument import/versioned snapshots | Atomic archive, provenance, exact raw units, stale/invalid/duplicate/as-of tests and real public-data verification | Medium | COMPLETE 2026-11-06:113 PostgreSQL tests and real83,940/6,504 import verified |
 | P2-003B | P1 | P2-003A; P2-002A | Prior-day1/5/15minute history, immutable batches and private APIs/UI | Bounded/catalog-bound/UTC/OHLCV/order/completion/provenance/rollback tests | High | COMPLETE scoped implementation2026-11-06;152 PostgreSQL tests; actual broker acceptance unverified |
 | P2-003C | P1 | P2-003A; P2-002A | Bounded option-chain snapshots and data validation | Explicit expiry/catalog CE-PE identity; price/spread/quantity/OI/Greeks checks; freshness unknown absent source timestamp | High | COMPLETE scoped implementation2026-11-06;182 PostgreSQL tests; actual broker acceptance unverified |
@@ -871,3 +871,54 @@ full Git history passed with the existing documented exact false-positive allowa
 Cached whitespace check passed. Local operational receipts remain ignored/private.
 Production source/dependencies unchanged;no additional image build or schema migration
 required. Local documentation commit only;no push.
+
+## 2026-11-10T14:03:10.749548+00:00 — Upstox OAuth protocol/configuration foundation
+
+Objective:advance P2-002 without exposing credentials or replacing Analytics. Verified
+current official authorization/token contracts. Added OAuthApp validation,exact authorization
+URL construction,hashed one-use state with5minute/session-expiry bound,one flow/session,
+32flow bound and lock-protected atomic consumption. Wrong session,replay,new flow,expiry,
+app change and clock rollback fail closed. Ledger is single-process;caller must separately
+verify a real current administrator session and revocation. No HTTP routes are wired.
+
+Token exchange is one fixed official POST,burns state before validation/network,uses bounded
+time/identity JSON,refuses redirects/compression/duplicates/oversized or malformed bearer
+responses and emits fixed safe errors. No proxy-env,automatic retry,scope/PKCE/refresh
+invention. SecretStr protects URL/code/secret/token repr;profile/extended-token fields
+discarded. Expiry is conservative documented next03:30IST cutoff from local request start,
+not broker-verified issuance. Crossing cutoff/pending deadline rejects the exchange.
+No real OAuth exchange,browser consent,token file or account API request occurred.
+
+Optional Settings fields UPSTOX_CLIENT_ID,UPSTOX_CLIENT_SECRET,UPSTOX_REDIRECT_URI added
+without changing the Analytics credential,execution flags or existing partial-config startup.
+configured_app fails closed;check_upstox_oauth prints only presence/status booleans and
+never opens network/DB/browser or writes credentials. User reported editing.env;repeated
+private checks showed NOT_CONFIGURED,all3fields missing,mode0600. Direct dotenv parse and
+environment-override check agree. Saved file still9November14:13:13UTC/19:43IST. User supplied
+LGOTRADE AI/.env;that folder was not found,only the existing Desktop/ALGOTRADE AI project.
+Opened exact project.env in local TextEdit to resolve the save/path issue;no contents
+printed or credentials edited by the agent. Latest configuration acceptance remains pending.
+
+46new synthetic security cases passed;full disposable PostgreSQL17.11 suite549passed,
+0failed,0skipped. Locked sync,Ruff110files/format,mypy45backendfiles passed. Initial lint
+flagged an unused test import and lambda loop binding;corrected before final checks.
+One existing Starlette warning remains. Security/exact staged results recorded below.
+Files:backend/app/brokers/oauth.py,backend/app/config.py,scripts/check_upstox_oauth.py,
+tests/security/test_upstox_oauth.py,docs/UPSTOX_OAUTH.md,BROKER_COMPLIANCE.md,
+PHASE2_ACCEPTANCE.md,PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory files.
+
+OBSERVATION/live disabled;no migration,deployment,broker credential overwrite,market
+capture,cloud/scheduler change or push. Analytics still the sole active broker credential.
+Remaining:save/validate actual registered app settings locally;secure authenticated/CSRF
+start/callback with browser binding and existing Strict cookie protection,query-log safety,
+protected token store and genuine registered acceptance. P2-002 is PARTIAL,not complete.
+Next exact action:operator saves canonical values in project.env,then runs
+uv run python -m scripts.check_upstox_oauth;validate privately before route integration.
+Market-hours/reconnect/seven-day/calendar/unit gates and latest hosted CI remain unverified.
+
+Final exact staged candidate:549PostgreSQL tests passed,0failed,0skipped;Ruff110files/format
+and mypy45backendfiles passed. All17staged files passed Gitleaks without allowances and
+a private comparison against configured local credentials/key material. Full history passed
+with existing documented exact false-positive allowances. Cached whitespace check passed.
+Final project.env checker still NOT_CONFIGURED(all3canonical OAuth fields absent);do not
+claim registration/browser/token-store acceptance. Local commit only,no push.

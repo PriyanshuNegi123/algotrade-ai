@@ -15,9 +15,12 @@ its type is not independently proven by inspecting local text.
 
 [OAuth](https://upstox.com/developer/api-documentation/authentication/) uses authorization code
 redirects through Upstox, exact registered redirect URI, optional echoed state, and a backend
-form-encoded token exchange. Our future flow will make state mandatory, short-lived and
-single-use, bound to an administrator session. No documented granular scope or PKCE parameter
-was established in the reviewed pages; do not invent either. OAuth is not implemented yet.
+form-encoded token exchange. The protocol foundation now makes state mandatory,short-lived
+and single-use,bound to a caller-supplied validated administrator session digest. Optional
+local configuration and mock-tested token exchange are implemented;browser routes,callback
+cookie integration,protected token storage and real acceptance remain pending. See
+[UPSTOX_OAUTH.md](UPSTOX_OAUTH.md). No documented granular scope or PKCE parameter was
+established in the reviewed pages;do not invent either. Contracts rechecked10November2026.
 
 [Get Token](https://upstox.com/developer/api-documentation/get-token/):
 `POST https://api.upstox.com/v2/login/authorization/token`; authorization codes are single-use.

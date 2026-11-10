@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     session_minutes: int = Field(default=15, ge=1, le=30)
     upstox_analytics_token: SecretStr = SecretStr("")
     upstox_analytics_expires_at: AwareDatetime | None = None
+    # Optional OAuth onboarding stays separate from the working Analytics credential.
+    upstox_client_id: str = ""
+    upstox_client_secret: SecretStr = SecretStr("")
+    upstox_redirect_uri: str = ""
 
     @field_validator("upstox_analytics_token")
     @classmethod
