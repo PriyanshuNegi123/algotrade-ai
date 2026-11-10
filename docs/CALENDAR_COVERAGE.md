@@ -7,17 +7,18 @@ Actual authenticated capture remains unverified. Synthetic records are always a 
 
 ## Verified sources and temporal limits
 
-Reviewed2026-11-06 against primary NSE sources:
+Baseline reviewed2026-11-06;bounded source/amendment follow-up2026-11-10:
 
 | Evidence | Use |
 |---|---|
 | [NSE/FAOP/71777](https://nsearchives.nseindia.com/content/circulars/FAOP71777.pdf) | Published2026 F&O holiday baseline |
 | [NSE/FAOP/72262](https://nsearchives.nseindia.com/content/circulars/FAOP72262.pdf) | Additional January15 closure |
+| [NSE/FAOP/72352](https://nsearchives.nseindia.com/content/circulars/FAOP72352.pdf) | Explicit February1 historical normal session09:15–15:30 IST |
 | [NSE/FAOP/76940](https://nsearchives.nseindia.com/content/circulars/FAOP76940.pdf) | November8 special continuous session14:20–15:40 IST |
 | [NSE market timings](https://www.nseindia.com/static/market-data/market-timings) | Current F&O normal window09:15–15:40 IST |
 
 Original downloaded bytes, URLs/retrieval instants and SHA-256 hashes are in
-backend/app/market_data/calendar_data. The policy JSON pins all five evidence/manifest hashes;
+backend/app/market_data/calendar_data. The policy JSON pins all six evidence/manifest hashes;
 loading verifies them, then caches the reviewed policy. Responses include the policy content
 identity, source references/URLs, evidence hashes, review instant and validity. These are local
 integrity/version checks, not a signed NSE calendar or proof that no other notice exists.
@@ -36,6 +37,35 @@ a special Sunday session. Times use Asia/Kolkata and convert to aware UTC. Windo
 [open,close); pre-open, trade-modification and cash closing auctions are outside this scope.
 Reports always expose amendment_completeness_verified=false and realtime_calendar=false.
 Future regular dates are baseline schedules, not a guarantee against subsequent changes.
+
+## Bounded amendment follow-up — 10 November
+
+The review found the additional dated F&O circular above and verified its original PDF
+table visually. It adds one historical Sunday exception; pre-open and trade modification
+are excluded. Regular hours/review boundary, existing holidays and the November exception
+are unchanged. Fresh downloads of the three existing circular PDFs matched pinned bytes;
+the current timing page's F&O row still agrees with the baseline. Archived HTML is preserved.
+
+The new PDF is archived and SHA-256 pinned. sources.json gains its fixed primary URL and
+retrieval time;the policy pins that manifest's new hash and records the updated review
+instant. The loader's exact evidence-file allowlist grows by that one filename;missing or
+tampered evidence still fails closed. Calendar identity changes deliberately, so host/runtime
+must be deployed together before readiness can match again. Existing observation archives
+are not rewritten or retroactively certified.
+
+Searches covered official-domain annual-holiday modifications, special F&O sessions and
+the immediate upcoming date. Wrong-segment and mock-session hits were excluded. This is
+a bounded discovery review,not an exhaustive authenticated exchange circular register scan.
+amendment_completeness_verified and realtime_calendar remain false. UNKNOWN_HOURS before
+the ordinary-hours boundary remains unchanged outside explicit dated evidence. Historical
+coverage queries can now describe the documented exception;this is a policy correction,
+not captured data or a completed observation day.
+
+Verification adds exact historical window boundaries, preservation of neighboring unknown
+hours, strict evidence-set rejection and tamper checks. Automated tests use synthetic clocks
+and disposable databases. The original PDF was retrieved over IPv4 after a direct Python
+request timed out;no mirror, broker credential or private endpoint was used. Public-source
+downloads and web review are separate from automated tests,which prohibit outbound requests.
 
 ## Report inputs, snapshot and bounds
 

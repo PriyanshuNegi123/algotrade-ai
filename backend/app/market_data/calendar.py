@@ -119,6 +119,7 @@ def load_calendar() -> CalendarPolicy:
             "sources.json",
             "FAOP71777.pdf",
             "FAOP72262.pdf",
+            "FAOP72352.pdf",
             "FAOP76940.pdf",
             "market-timings.html",
         }

@@ -104,6 +104,29 @@ def test_special_session_uses_actual_reviewed_hours():
     assert result["session"]["opens_at"].astimezone(IST).hour == 14
 
 
+@pytest.mark.parametrize(
+    ("offset", "expected"),
+    [
+        (-1, "OUTSIDE_REVIEWED_SESSION"),
+        (0, None),
+        (22480, None),
+        (22481, "REQUEST_EXCEEDS_SESSION_WINDOW"),
+        (22500, "OUTSIDE_REVIEWED_SESSION"),
+    ],
+)
+def test_dated_historical_special_session_has_its_own_boundaries(offset, expected):
+    # Synthetic injected time tests the archived exception, not genuine observation evidence.
+    now = datetime(2026, 2, 1, 3, 45, tzinfo=UTC) + timedelta(seconds=offset)
+    result = readiness.market_session_readiness(preflight(now), now=now)
+    assert result["session"]["source_ref"] == "FAOP72352.pdf"
+    assert result["session"]["opens_at"].astimezone(IST).time().isoformat() == "09:15:00"
+    assert result["session"]["closes_at"].astimezone(IST).time().isoformat() == "15:30:00"
+    assert result["can_attempt_market_hours_capture"] is (expected is None)
+    if expected:
+        assert expected in result["blockers"]
+    assert result["qualifying_observation_days"] == 0 and not result["recording_started"]
+
+
 @pytest.mark.parametrize("age", [31, -3])
 def test_stale_or_future_preflight_cannot_be_reused(age):
     result = readiness.market_session_readiness(preflight(NOW - timedelta(seconds=age)), now=NOW)

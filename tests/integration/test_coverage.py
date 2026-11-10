@@ -98,6 +98,7 @@ def recorded(engine, base=None, break_kind=None):
         ("2026-11-08", "SPECIAL_SESSION"),
         ("2026-11-10", "HOLIDAY"),
         ("2026-01-15", "HOLIDAY"),
+        ("2026-02-01", "SPECIAL_SESSION"),
         ("2026-01-16", "UNKNOWN_HOURS"),
         ("2027-01-04", "UNKNOWN_CALENDAR"),
     ],
@@ -109,19 +110,50 @@ def test_verified_calendar_evidence_and_unknowns(day, state):
         assert result["opens_at"].astimezone(IST).time() == time(9, 15)
         assert result["closes_at"].astimezone(IST).time() == time(15, 40)
     if state == "SPECIAL_SESSION":
-        assert result["opens_at"].astimezone(IST).time() == time(14, 20)
-        assert result["closes_at"].astimezone(IST).time() == time(15, 40)
+        expected = (
+            (time(9, 15), time(15, 30)) if day == "2026-02-01" else (time(14, 20), time(15, 40))
+        )
+        assert result["opens_at"].astimezone(IST).time() == expected[0]
+        assert result["closes_at"].astimezone(IST).time() == expected[1]
     assert not load_calendar().provenance()["amendment_completeness_verified"]
 
 
-def test_provenance_and_hash_rejection(tmp_path, monkeypatch):
+@pytest.mark.parametrize("tampered", ["FAOP71777.pdf", "FAOP72352.pdf"])
+def test_provenance_and_hash_rejection(tmp_path, monkeypatch, tampered):
     original = load_calendar()
-    assert len(original.evidence_sha256) == 5
+    assert len(original.evidence_sha256) == 6
     for name, digest in original.evidence_sha256.items():
         assert hashlib.sha256((calendar.DATA / name).read_bytes()).hexdigest() == digest
         (tmp_path / name).write_bytes((calendar.DATA / name).read_bytes())
     (tmp_path / "nse_fo_2026.json").write_bytes((calendar.DATA / "nse_fo_2026.json").read_bytes())
-    (tmp_path / "FAOP71777.pdf").write_bytes(b"changed")
+    (tmp_path / tampered).write_bytes(b"changed")
+    load_calendar.cache_clear()
+    monkeypatch.setattr(calendar, "DATA", tmp_path)
+    with pytest.raises(CalendarError, match="EVIDENCE_INVALID"):
+        load_calendar()
+    load_calendar.cache_clear()
+
+
+def test_historical_exception_does_not_broaden_review_boundary():
+    policy = load_calendar()
+    assert policy.regular_from == date(2026, 11, 6)
+    assert policy.regular_open == time(9, 15) and policy.regular_close == time(15, 40)
+    assert policy.day(date(2026, 1, 30))["state"] == "UNKNOWN_HOURS"
+    assert policy.day(date(2026, 1, 31))["state"] == "WEEKEND"
+    assert policy.day(date(2026, 2, 2))["state"] == "UNKNOWN_HOURS"
+    assert policy.day(date(2026, 2, 1))["source_ref"] == "FAOP72352.pdf"
+    assert not policy.provenance()["amendment_completeness_verified"]
+    assert not policy.provenance()["realtime_calendar"]
+
+
+def test_missing_new_evidence_hash_fails_closed(tmp_path, monkeypatch):
+    import json
+
+    for name in load_calendar().evidence_sha256:
+        (tmp_path / name).write_bytes((calendar.DATA / name).read_bytes())
+    data = json.loads((calendar.DATA / "nse_fo_2026.json").read_text())
+    del data["evidence_sha256"]["FAOP72352.pdf"]
+    (tmp_path / "nse_fo_2026.json").write_text(json.dumps(data))
     load_calendar.cache_clear()
     monkeypatch.setattr(calendar, "DATA", tmp_path)
     with pytest.raises(CalendarError, match="EVIDENCE_INVALID"):

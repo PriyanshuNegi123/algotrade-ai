@@ -1,5 +1,51 @@
 # Handoff
 
+## 2026-11-10T17:22:04.194501+00:00 — Bounded NSE calendar amendment review and correction
+
+Reviewed primary NSE holiday/amendment PDFs, current F&O timing row and targeted official-
+domain special-session/holiday searches. Found FAOP72352 missing from pinned evidence;
+archived its dated historical exception after inspecting the original table. Four fixed
+public PDFs downloaded; existing three matched pinned bytes exactly. Current timing row
+agrees with regular baseline. Wrong-segment/mock hits excluded; no exhaustive-register claim.
+
+Added one exact evidence filename to loader allowlist, archived PDF/source URL/retrieval
+instant/hash and updated source-manifest/policy hashes plus review instant. Six evidence
+entries now required. No hash exemption or loose source discovery. Missing/tampered new
+source fails closed. Only the explicit historical special date changes; regular window/
+review boundary, holidays and existing special window unchanged. No extrapolation of unknown
+historical hours, pre-open/trade-modification inclusion or observation-day certification.
+Amendment completeness and realtime-calendar flags remain false. No archived data rewrite.
+
+Nine added cases; target calendar/readiness76 passed. Full disposable PostgreSQL 17.11:
+744 passed / 0 failed / 0 skipped; one existing nonfatal Starlette warning. Locked sync, Ruff 122 files/
+format, mypy 50 files passed; cluster removed. Tests used synthetic clocks/disposable DB, not
+real broker/operational data. Direct Python PDF retrieval timed out; fixed official IPv4
+curl succeeded. Transparent PNG rendering needed JPEG for white PDF page background.
+Web screenshot calls also issued; retained visual inspection used the downloaded PDF.
+
+Deployed reviewed evidence through bootstrap: READY_LOCAL/login verified, OAuth volume
+retained, entries/live/recording false. Host/runtime calendar IDs match. Current served dates
+match previous committed policy windows and the new historical source is served. Existing
+2 observation sessions remain CLOSED. Initial comparison request exceeded the page limit;
+corrected request occurred after replacement, so no before/after observation equality is
+claimed. Used previous committed policy for current-window comparison instead. Actual
+readiness for the previously reviewed option has only NO_REVIEWED_SESSION; preview unchanged.
+Safe proof: .local/verification/calendar_review/runtime_acceptance.json and readiness.json.
+No broker request, capture, credential/.env/schema/backup job change. OBSERVATION; live off.
+
+Files:calendar.py, calendar_data/FAOP72352.pdf, sources.json, nse_fo_2026.json,
+tests/integration/test_coverage.py, tests/unit/test_session_readiness.py,
+docs/CALENDAR_COVERAGE.md, PROJECT_STATUS.md, VERIFICATION.md and all 8 agent_memory files.
+Scope is bounded amendment discovery, not calendar completeness certification. New hosted
+CI unverified; Phase 2 still partial. Next:recheck current catalog/calendar/readiness immediately
+before P2-003U in an eligible reviewed session; real market-hours/reconnect and seven-day
+window remain outstanding. Unit normalization stays unverified. Local commit only; no push.
+
+Security verification: all 17 task files passed default Gitleaks without allowances and
+a private comparison against configured credentials. Full Git history passed with the
+existing exact historical allowances unchanged. Whitespace check passed. Local commit
+only; no push. No secrets, live activation or recording introduced.
+
 ## 2026-11-10T17:05:40.513121+00:00 — Explicit unresolved option-chain unit context
 
 Reviewed current primary Upstox BOD JSON,option-chain V2 and feed V3 technical field
