@@ -39,10 +39,13 @@ important data. Keep Docker Desktop running while using the app.
 For the first explicit opt-in to private OAuth storage:
 
 ```sh
+uv run python -m scripts.configure_upstox_oauth
 uv run python -m scripts.bootstrap_local --oauth-vault
 ```
 
-This adds `docker-compose.oauth.yml` and the project's dedicated `upstox_oauth` named
+The setup helper saves the registered app settings through a hidden local secret prompt;
+see [OAuth configuration](UPSTOX_OAUTH.md). Bootstrap then adds `docker-compose.oauth.yml`
+and the project's dedicated `upstox_oauth` named
 volume. It does not configure the registered app or perform consent. No key is created by
 bootstrap; an authenticated authorization start prepares the vault separately. The result
 includes `oauth_vault_enabled`. On subsequent runs, bootstrap detects the exact

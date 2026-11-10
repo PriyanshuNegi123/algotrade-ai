@@ -7,24 +7,64 @@ Phase2 remains partial and live stays off. See [UPSTOX_OAUTH_BROWSER.md](UPSTOX_
 
 ## Local settings
 
-Save the following variables in the project `.env`, using values from your registered
-Upstox application. Keep the API secret local; never paste it or any token into chat:
+After the initial local bootstrap, run this in your own interactive terminal:
+
+```sh
+uv run python -m scripts.configure_upstox_oauth
+uv run python -m scripts.check_upstox_oauth
+```
+
+Enter the registered public API key, the API secret at the hidden prompt, and the exact
+registered redirect URL. These are Upstox app settings, separate from the Analytics Token
+and Google Drive credentials. Do not send secret values in chat, command arguments or logs.
+The helper refuses noninteractive input or an echo fallback. It accepts no secret arguments
+and rejects unknown arguments without echoing their values.
+
+The helper saves only these three variables in the project `.env`:
 
 ```dotenv
 UPSTOX_CLIENT_ID=YOUR_REGISTERED_PUBLIC_API_KEY
 UPSTOX_CLIENT_SECRET=YOUR_LOCAL_API_SECRET
 UPSTOX_REDIRECT_URI=YOUR_EXACT_REGISTERED_CALLBACK_URL
-UPSTOX_OAUTH_VAULT_DIR=YOUR_PRIVATE_ABSOLUTE_SERVICE_STORAGE_PATH
 ```
 
 These are placeholders, not usable credentials or a proposed callback registration.
-Keep `.env` ignored by Git and mode0600. Existing Analytics values must remain separate.
+The helper requires an existing, private mode0600 regular environment file owned by the
+current user. Symlinks, hardlinks, oversized or malformed files and duplicate keys are
+rejected. OAuth aliases differing only by case cannot create duplicate settings. It validates
+the callback against the existing allowed dashboard origins and supported callback paths;
+it does not register a URL or change origin/cookie/security settings. OBSERVATION and
+LIVE_ENABLED=false are required. No values are trimmed or normalized silently.
+
+Unrelated original text, including multiline settings and line endings, is retained. A
+shared bootstrap lock serializes cooperative writers; a detected external edit stops the
+save. Publication is atomic using a private temporary file, followed by a directory sync.
+A reported OAUTH_SETTINGS_SAVE_UNCERTAIN can occur after publication: inspect the local
+checker before retrying. Identical values cause no rewrite. Existing nonempty app settings
+require an explicit `--replace`; this preserves old settings until that deliberate command.
+Changing app settings does not delete/reset old vault contents or activate a credential.
+
+Secrets use a literal single-quoted representation. Dollar, hash and escaped quote characters
+are verified through Python and actual Compose/container loading. Backslash characters and
+`${...}` interpolation forms are refused rather than silently changing the secret between
+parsers. This helper restriction does not change the OAuth protocol's validation rules.
+See [Docker environment-file syntax](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/).
+
+Keep `.env` ignored by Git and mode0600. Analytics values remain separate and preserved.
 Configuration is optional: missing/partial OAuth settings do not break the Analytics app.
 OAuth itself rejects missing, partial or invalid settings. Check without exposing values:
 
 ```sh
 uv run python -m scripts.check_upstox_oauth
 ```
+
+The helper does not start Docker, open a browser, exchange tokens or initialize a vault.
+After successful setup, deploy private OAuth storage explicitly with
+`uv run python -m scripts.bootstrap_local --oauth-vault`, then sign in to the dashboard
+and use its OAuth control for genuine consent. The Compose overlay supplies the service
+storage path; the helper does not add UPSTOX_OAUTH_VAULT_DIR to the host `.env`.
+For a non-Compose deployment, configure that private absolute service path separately.
+See [browser flow](UPSTOX_OAUTH_BROWSER.md) and [bootstrap](LOCAL_BOOTSTRAP.md).
 
 It prints only presence/status metadata,unverified registration,false live flags and
 unknown tokens_stored=null/token_storage_checked=false. browser_flow_implemented=true
@@ -68,7 +108,8 @@ coordination is not implemented; process restart invalidates pending flows. No p
 flow,secret or token is written to a database or file by the protocol code. Operator-supplied
 client settings remain in the ignored local.env;OAuth access tokens are not saved by the
 protocol. An opt-in encrypted storage component is now implemented separately;see
-[UPSTOX_OAUTH_VAULT.md](UPSTOX_OAUTH_VAULT.md). It has not been initialized or wired.
+[UPSTOX_OAUTH_VAULT.md](UPSTOX_OAUTH_VAULT.md). Browser integration is implemented;
+real registered consent and vault initialization remain pending.
 
 ## Remaining integration gates
 

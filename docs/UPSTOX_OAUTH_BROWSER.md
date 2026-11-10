@@ -8,6 +8,9 @@ pending. Existing Analytics remains the only active market-data credential. Live
 
 The optional routes fail closed unless all of these server settings are valid:
 
+Use `uv run python -m scripts.configure_upstox_oauth` in your own terminal to save the three
+registered app fields securely; the secret prompt is hidden. See [setup](UPSTOX_OAUTH.md).
+
 - UPSTOX_CLIENT_ID,UPSTOX_CLIENT_SECRET and UPSTOX_REDIRECT_URI from the registered app.
 - UPSTOX_OAUTH_VAULT_DIR:an absolute,canonical,private local storage path controlled by the
   service. The parent must exist and be writable by the backend UID. The base Compose file

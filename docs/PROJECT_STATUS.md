@@ -1,5 +1,49 @@
 # Project status and next steps
 
+## 2026-11-10T16:01:22.904484+00:00 — Secure local registered OAuth setup helper
+
+Objective: replace ambiguous manual .env editing with a private, validated local setup path.
+Added scripts.configure_upstox_oauth: interactive terminal only, hidden API-secret entry,
+no echo fallback, no secret arguments and fixed safe argument/error output. Saves only the
+three registered OAuth app fields, not Analytics, Drive, DB, origin, cookie or mode settings.
+Uses existing protocol/callback validators and actual configured allowed origins; requires
+OBSERVATION/live false. No silent trimming or proposed registration. Existing nonempty app
+settings require --replace; identical values do not rewrite the file. No network/browser,
+Docker deployment, token exchange or vault creation is performed by this helper.
+
+Requires existing owner-only mode0600 regular .env; rejects symlinks/hardlinks, malformed,
+duplicate/case-ambiguous, oversized or unsafe files. Shares bootstrap lock and checks for
+concurrent external edits before atomic private publication and directory sync. Reports
+uncertain durability honestly after publication; no rollback promise. Preserves unrelated
+binding text, multiline values and line endings. Literal single-quoted serialization is
+verified in Python and actual Compose/container Settings; rejects backslashes and dollar-
+brace interpolation forms that differ between parsers. OAuth protocol rules are unchanged.
+
+38new security tests passed, including real isolated pseudo-terminal hidden entry, no-echo
+fallback, argument redaction, file safety, replacement/idempotence, failed atomic write,
+concurrent edits and post-publication directory-sync uncertainty. Final full disposable
+PostgreSQL17.11:674passed,0failed,0skipped; one existing nonfatal Starlette warning. Locked
+sync,Ruff119files lint/format and mypy49backendfiles passed. Native cluster removed.
+Actual --bootstrap --oauth-vault Docker smoke used this helper with synthetic punctuation,
+verified exact secret delivery, private encrypted storage, forced app replacement/retention,
+authentication and DB outage/recovery. Test containers/volumes and only its two image tags
+removed. Default and OAuth Compose configuration-only checks passed. Initial verifier draft
+placed an assertion before config parsing; failed before containers started, corrected and
+successful verification rerun. Initial style violations corrected before final checks.
+
+Files:new setup script/security tests,scripts/verify_compose.py,README.md,
+docs/UPSTOX_OAUTH.md,LOCAL_BOOTSTRAP.md,UPSTOX_OAUTH_BROWSER.md,PROJECT_STATUS.md,
+VERIFICATION.md and all8agent_memory files. Operational app/DB and real .env/credentials,
+Google files, backup schedule/recovery material and market recording unchanged.
+Current real checker still NOT_CONFIGURED;all3registered app fields absent,vault dir unset.
+Source configuration support does not prove registration, broker consent or acceptance.
+OBSERVATION; live disabled. Phase2 remains partial and hosted CI for new commits unverified.
+Exact next operator action:uv run python -m scripts.configure_upstox_oauth in a local terminal;
+enter registered public API key, API secret hidden and exact registered callback. Then run
+scripts.check_upstox_oauth, followed by explicit bootstrap --oauth-vault and genuine dashboard
+consent after setup passes. Never share the API secret/code/token in chat. Local commit only;
+no push. Remaining market-hours/reconnect/seven-day evidence and other gates stay pending.
+
 ## 2026-11-10T15:48:56.336172+00:00 — Bootstrap retains optional OAuth storage
 
 Objective: integrate the opt-in OAuth volume into the existing safe local lifecycle.

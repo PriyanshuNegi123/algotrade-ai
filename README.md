@@ -225,3 +225,5 @@ Synthetic security/browser checks are verified. Optional private storage is avai
 `docker-compose.oauth.yml`; registered-app settings and explicit deployment remain required.
 Use `uv run python -m scripts.bootstrap_local --oauth-vault` for first opt-in. Later bootstrap
 runs retain the existing project volume automatically; see [bootstrap](docs/LOCAL_BOOTSTRAP.md).
+Save registered app settings first with `uv run python -m scripts.configure_upstox_oauth`;
+enter the secret only at its hidden local prompt. This preserves the Analytics credential.

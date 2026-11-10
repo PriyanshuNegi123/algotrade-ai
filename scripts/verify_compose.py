@@ -17,10 +17,13 @@ from pathlib import Path
 
 import httpx
 from argon2 import PasswordHasher
+from pydantic import SecretStr
 
 from scripts.bootstrap_local import start_runtime
+from scripts.configure_upstox_oauth import FIELDS, save_oauth_settings
 
 ROOT = Path(__file__).resolve().parents[1]
+SYNTHETIC_APP_SECRET = "synthetic$setup#quote'and\"double=ok"
 
 
 def main():
@@ -44,7 +47,7 @@ def main():
             reservation.bind(("127.0.0.1", 0))
             port = reservation.getsockname()[1]
     with tempfile.TemporaryDirectory(prefix=project + "-") as directory:
-        environment_file = Path(directory) / "verification.env"
+        environment_file = Path(directory) / ".env"
         password = secrets.token_urlsafe(32)
         database_password = secrets.token_urlsafe(32)
         origin = f"http://127.0.0.1:{port}"
@@ -65,13 +68,26 @@ def main():
         if args.oauth_vault:
             variables.update(
                 UPSTOX_CLIENT_ID="synthetic-compose-client",
-                UPSTOX_CLIENT_SECRET="synthetic-compose-secret",
+                UPSTOX_CLIENT_SECRET=SYNTHETIC_APP_SECRET,
                 UPSTOX_REDIRECT_URI=origin + "/auth/upstox/callback",
             )
         environment_file.touch(mode=0o600)
         environment_file.write_text(
-            "\n".join(f"{key}='{value}'" for key, value in variables.items())
+            "\n".join(
+                f"{key}='{value}'"
+                for key, value in variables.items()
+                if not args.oauth_vault or key not in FIELDS
+            )
+            + "\n"
         )
+        if args.oauth_vault:
+            saved = save_oauth_settings(
+                Path(directory),
+                variables["UPSTOX_CLIENT_ID"],
+                SecretStr(variables["UPSTOX_CLIENT_SECRET"]),
+                variables["UPSTOX_REDIRECT_URI"],
+            )
+            assert saved["saved"] and not saved["registration_verified"]
         environment = {**os.environ, **variables, "APP_ENV_FILE": str(environment_file)}
         base = [
             *executable,
@@ -98,6 +114,11 @@ def main():
 
         configuration = json.loads(compose("config", "--format", "json"))
         services = configuration["services"]
+        if args.oauth_vault:
+            assert services["app"]["environment"]["UPSTOX_CLIENT_SECRET"] in (
+                SYNTHETIC_APP_SECRET,
+                SYNTHETIC_APP_SECRET.replace("$", "$$"),
+            )
         assert not services["db"].get("ports"), "Database must not publish a host port"
         assert services["app"]["ports"][0]["host_ip"] == "127.0.0.1"
         # Compose config escapes dollars to keep its serialized output round-trippable.
@@ -399,11 +420,12 @@ assert stat.S_IMODE(p.stat().st_mode) == 0o700
 for f in p.iterdir():
     assert f.stat().st_uid == 10001 and stat.S_IMODE(f.stat().st_mode) == 0o600
 token = OAuthTokenStore(p).load(configured_app(Settings()))
+assert Settings().upstox_client_secret.get_secret_value() == SYNTHETIC_APP_SECRET
 assert token.access_token.get_secret_value() == 'synthetic-compose-bearer'
 assert b'synthetic-compose-bearer' not in (p / 'token.enc').read_bytes()
 assert not os.access('/app/backend', os.W_OK)
 print('PRIVATE_ENCRYPTED_ROUNDTRIP_VERIFIED')
-"""
+""".replace("SYNTHETIC_APP_SECRET", repr(SYNTHETIC_APP_SECRET))
 
 
 def verify_oauth_volume(compose, client, origin, csrf):
