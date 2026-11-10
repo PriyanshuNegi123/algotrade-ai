@@ -1070,3 +1070,44 @@ and mypy44backendfiles passed. All15staged files passed Gitleaks with no allowan
 history passed using only existing documented exact historical allowances. Cached whitespace
 check passed. Synthetic and actual-runtime proofs are separate;no day certification or
 new hosted CI pass claimed. Local commit authorized;no push.
+
+## 2026-11-10T13:40:58.086070+00:00 — Public instrument catalog refreshed and verified
+
+Objective:remove the stale-catalog blocker before the next eligible Phase2 market-hours
+attempt. Used the existing scripts.sync_instruments source inside the uniquely verified
+private app container,under the existing bootstrap lock. Only the fixed official public
+NSE master was fetched;no Analytics token request,broker account call or recording.
+Existing bounded source/decompression/schema/expiry/underlying checks and atomic immutable
+archive logic were reused without changing production source or freshness policy.
+
+Actual import:CURRENT_METADATA,6744selected instruments from85462source records;
+new immutable snapshot,deduplicated=false. Source Last-Modified2026-11-09T23:57:32Z
+is10November05:27:32IST,so it correctly meets the existing current-IST-date rule.
+Raw gzip SHA256 verified,normalized row count matches receipt. Before/after hashes prove
+all prior raw/normalized catalogs and every existing candle import/candle,chain snapshot/
+leg,capture/session/event row unchanged. Only new catalog/supported metadata rows added.
+No plaintext download/cache file retained;PostgreSQL remains the operational store.
+
+After refresh,the read-only market-session check has only NO_REVIEWED_SESSION:the reviewed
+baseline marks10November2026 HOLIDAY. CURRENT_CATALOG_REQUIRED is resolved at this check;
+currentness must be reevaluated on the next attempt/date. No automatic recording,scheduling,
+new market/reconnect evidence,observation-day certification or Phase2 completion claimed.
+Safe receipts ignored/private at.local/verification/catalog_refresh_acceptance.json and
+catalog_refresh_readiness.json. Credentials,environment,cloud files and backup job unchanged.
+
+Checks:full disposable PostgreSQL17.11 suite503passed/0failed/0skipped;locked sync,
+Ruff107files/format and mypy44backendfiles pass. One existing Starlette warning remains.
+No new implementation/tests required for this operational use of the existing verified
+importer. Security/whitespace and local documentation commit results recorded below.
+Files:all8agent_memory records,docs/VERIFICATION.md,PHASE2_ACCEPTANCE.md,PROJECT_STATUS.md
+and MARKET_SESSION_CHECK.md. OBSERVATION/live disabled. No push.
+Next:before an eligible reviewed session,recheck catalog/readiness with an explicit supported
+option and perform bounded genuine fresh-update/reconnect acceptance. If outside a session,
+continue Upstox OAuth onboarding;public registered client ID/exact callback still required,
+secret stays local. Seven-day observation and calendar/unit gates remain incomplete.
+
+Final documentation check:12staged Markdown files passed Gitleaks without allowances;
+full Git history passed with the existing documented exact false-positive allowances.
+Cached whitespace check passed. Local operational receipts remain ignored/private.
+Production source/dependencies unchanged;no additional image build or schema migration
+required. Local documentation commit only;no push.

@@ -75,3 +75,13 @@ Pinned evidence and market timings were preserved. The NSE's current [market tim
 was rechecked;the derivatives regular-hours row agrees with the existing baseline. This
 comparison does not verify all calendar amendments or turn this tool into a live exchange
 status service. No completed observation day or Phase2 completion is claimed.
+
+## Follow-up after public catalog refresh — 10 November
+
+The existing importer refreshed the real private runtime to CURRENT_METADATA with6,744
+selected instruments from85,462source records. Prior catalogs/market archives were
+checksum-verified unchanged. A subsequent read-only readiness check reports only
+NO_REVIEWED_SESSION (the reviewed holiday);the earlier catalog blocker is resolved at
+that instant. Recheck freshness and session readiness before any later capture. No genuine
+market-hours observation,day certification or trading was started. Private receipts:
+.local/verification/catalog_refresh_acceptance.json and catalog_refresh_readiness.json.

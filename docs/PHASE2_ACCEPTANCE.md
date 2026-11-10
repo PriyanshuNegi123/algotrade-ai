@@ -11,7 +11,7 @@ not supply genuine market-hours evidence, elapsed observation time or unconfigur
 |---|---|---|
 | Official API/app guidance | Analytics/auth/instrument/chain primary docs rechecked9November | Registered OAuth client ID/callback and locally stored secret still needed |
 | Secure read-only authentication | Server-only Analytics token, aware cutoff, expiry/error/CSRF/origin tests; real history/chain/feed accepted | OAuth authorization/callback/token management unimplemented; no claim of completion |
-| Instrument master | Immutable validated source/metadata; latest6,810 selected /84,868 source records | Recheck currentness before each future capture; tick-size units unresolved |
+| Instrument master | Immutable validated source/metadata; latest6,744 selected /85,462 source records,verified10November | Recheck currentness before each future capture; tick-size units unresolved |
 | Historical candles | Immutable bounded prior-day imports;75real five-minute Nifty50 bars archived | Historical point-in-time universe/session completeness remains unverified |
 | Option chain | Explicit expiry/catalog validation;135strikes/270legs accepted | No source timestamp per field; Greek units unresolved; freshness UNKNOWN |
 | Feed and durable archive | Decoder, ordering, duplicates, timestamps, retries/heartbeat/TLS, quotas/recovery tested | Fresh market-hours updates and real reconnect acceptance pending |
@@ -108,3 +108,13 @@ Real runtime result BLOCKED due to CURRENT_CATALOG_REQUIRED and NO_REVIEWED_SESS
 (holiday in the reviewed baseline);capture/session/event counts unchanged.25new cases;
 full disposable PostgreSQL503passed/0failed/0skipped,Ruff107files/format,mypy44backend
 files passed. No new real market-hours/reconnect evidence or completed day was produced.
+
+## Catalog refresh acceptance — 10 November
+
+Existing public importer produced a new CURRENT_METADATA snapshot:6,744selected/85,462
+source records. Publication9November23:57:32UTC equals10November05:27:32IST;no timezone
+or freshness relaxation was needed. Raw checksum/normalized count verified and all prior
+catalog/market archives preserved by before/after hashes. Readiness now reports only
+NO_REVIEWED_SESSION (reviewed holiday),with no recording or certified day. Full disposable
+PostgreSQL503passed/0failed/0skipped;Ruff107files/format,mypy44backendfiles passed.
+Current metadata is a verification-time fact,recheck it on the next capture attempt.
