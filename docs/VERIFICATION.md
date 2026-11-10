@@ -1670,3 +1670,52 @@ allowances and private comparison against configured.env credential values. Full
 passed with existing exact historical allowances unchanged. Whitespace clean;no sensitive
 runtime file staged. Authorization stored locally;broker permissions remain unverified.
 Local documentation commit only;no push.
+
+## 2026-11-10T16:20:53.864973+00:00 — Bounded OAuth market-status acceptance passed
+
+Added backend.app.brokers.oauth_probe, an explicit local CLI with one fixed official NSE
+market-status GET using the quarantined encrypted OAuth token. No new HTTP route, generic
+URL/method, job, retry, proxy environment, redirect, account/profile/funds/order request or
+Analytics substitution. Requires OBSERVATION/live false, valid app/private vault and expiry.
+Five-second network/ten-second total deadline;64KiB identity-JSON/schema/duplicate-key/future
+state-time checks, bounded rate-limit hints, expiry rechecked after response. Prints only
+allowlisted metadata; failed responses/errors never echo raw bodies or secrets. Does not
+modify settings, vault or DB. Dashboard STORED_UNVERIFIED remains storage-only status.
+
+39new mocked security cases passed, including exact request/headers, unchanged Analytics/
+vault bytes, unsafe/missing/corrupt/expired storage, invalid media/lengths/JSON/timestamps,
+stream boundaries/cleanup, timeouts, redirects, proxy disabling and argument redaction.
+Initial gzip test fixture was decoded by httpx during construction; changed the fixture to
+an unread stream to exercise the actual header rejection, then all passed. Locked sync,
+Ruff121files lint/format and mypy50backendfiles passed. Full disposable PostgreSQL17.11:
+713passed,0failed,0skipped;one existing nonfatal Starlette warning. Cluster stopped/removed.
+Automated tests used no operational DB/account. Official market-status/phase docs reviewed.
+
+Deployed reviewed source through existing bootstrap with OAuth volume retained:READY_LOCAL,
+login verified, preflight LOCAL_CHECKS_PASSED/no blockers, entries/live/recording false.
+One explicit genuine probe returned CHECKED and CLOSING_END, endpoint_response_verified=true.
+Account permissions, credential promotion, recording, entries and live all false. Token
+survived actual app image recreation. No retry or additional Upstox request was made. Aggregate
+receipt ignored/private at.local/verification/oauth_market_status_probe.json. Subsequent
+local-only authenticated status checks confirmed storage and active Analytics unchanged.
+No credential/.env mutation, schema change, funds/profile request, capture or order action.
+Google Drive backup/recovery/schedule unchanged. OBSERVATION;live disabled.
+
+Files:new backend probe and security tests,docs/OAUTH_READ_ONLY_CHECK.md,README.md,
+UPSTOX_OAUTH.md,BROKER_COMPLIANCE.md,PHASE2_ACCEPTANCE.md,PROJECT_STATUS.md,VERIFICATION.md
+and all8agent_memory records. P2-002 scoped authentication/storage acceptance is complete:
+protected registered flow, durable encrypted credential and bounded endpoint acceptance.
+This does not certify account identity/grant scope, future data access or entire Phase2.
+New hosted CI remains unverified;local commit only,no push. Next functional Phase2 gate:
+P2-003U genuine market-hours acceptance only after fresh catalog/calendar/readiness checks;
+continue remaining calendar/unit/accessibility evidence if market-session gates block.
+No automatic recording or phase advancement;seven-day evidence remains outstanding.
+
+Final checks (2026-11-10T16:21:49.158213+00:00 UTC):full713PostgreSQL tests passed,
+0failed/0skipped;39new mocked probe cases. Locked sync,Ruff121files/format,mypy50files
+passed. One genuine fixed GET returned CHECKED/CLOSING_END after safe deployment;no retry,
+account/funds request, promotion or recording. Local status confirms active Analytics and
+encrypted OAuth storage unchanged. All17task files passed default Gitleaks with no allowances
+and private comparison against configured.env credentials;full history passed existing exact
+historical allowances unchanged. Whitespace clean. New hosted CI unverified;local commit
+only,no push. Seven-day/market-hours and remaining Phase2 gates are not closed by this check.

@@ -21,6 +21,9 @@ local configuration,token exchange,browser-bound HTTP callback and UI are implem
 and synthetically verified. Private vault deployment and operator browser consent completed
 10 November; authenticated status confirms STORED_UNVERIFIED. This confirms local storage,
 not account permissions, data access or trading approval. Analytics remains active.
+One subsequent fixed NSE market-status probe returned CHECKED/CLOSING_END. This verifies
+only that endpoint response; account permissions and ordinary OAuth grant scope remain
+uncertified. See [bounded check](OAUTH_READ_ONLY_CHECK.md). No credential promotion occurred.
 See [UPSTOX_OAUTH_BROWSER.md](UPSTOX_OAUTH_BROWSER.md). The encrypted
 storage component is verified separately in [UPSTOX_OAUTH_VAULT.md](UPSTOX_OAUTH_VAULT.md). See
 [UPSTOX_OAUTH.md](UPSTOX_OAUTH.md). No documented granular scope or PKCE parameter was

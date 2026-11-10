@@ -227,3 +227,6 @@ Use `uv run python -m scripts.bootstrap_local --oauth-vault` for first opt-in. L
 runs retain the existing project volume automatically; see [bootstrap](docs/LOCAL_BOOTSTRAP.md).
 Save registered app settings first with `uv run python -m scripts.configure_upstox_oauth`;
 enter the secret only at its hidden local prompt. This preserves the Analytics credential.
+
+An explicit bounded OAuth [market-status check](docs/OAUTH_READ_ONLY_CHECK.md) can validate
+one response using the quarantined credential without activating it for existing data flows.

@@ -122,7 +122,8 @@ account/data permissions remain unverified. Keep the following boundaries for fu
 1. Preserve Strict administrator cookies, session revocation, CSRF/origin and one-use browser
    binding. These are implemented and tested; see UPSTOX_OAUTH_BROWSER.md.
 2. Review proxy/edge callback logging before introducing any such deployment layer.
-3. Validate any further read-only use through an explicit bounded path. The ordinary OAuth
+3. Validate any further read-only use through an explicit bounded path; the local
+   [market-status probe](OAUTH_READ_ONLY_CHECK.md) checks one endpoint only. The ordinary OAuth
    credential is not established as read-only; never substitute it into the Analytics
    setting or introduce order/funds/trading permissions through this foundation.
 4. Keep expiry/re-authorization handling explicit. Configuration/status alone does not
