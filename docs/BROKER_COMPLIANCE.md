@@ -62,6 +62,9 @@ Source: [exchange status](https://upstox.com/developer/api-documentation/get-mar
 Instrument JSON carries contract metadata including expiry, lot and tick sizes. Preserve
 point-in-time snapshots. Confirm tick-size units before rupee calculations; do not infer a
 unit conversion from examples. Current-day BOD files are not a historical options archive.
+The10November [field-unit review](FIELD_UNIT_EVIDENCE.md) retains these unresolved limits.
+Option-chain snapshot reads now explicitly expose unresolved unit context without rewriting
+archives, converting values or granting execution eligibility.
 Historical V3 minute intervals1–300 and hour intervals1–5 have limited date windows; daily,
 weekly and monthly intervals use1. Request-window enforcement and completed-candle checks
 are enforced for the implemented prior-day minute subset; broader units remain pending.

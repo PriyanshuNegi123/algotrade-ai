@@ -24,6 +24,24 @@ from backend.app.market_data.validation import MarketDataError, quantity, strict
 MAX_STRIKES = 2_000
 
 
+def chain_unit_context() -> dict[str, Any]:
+    """Current read-time interpretation, never an archived broker-unit certification."""
+    return {
+        "review_id": "UPSTOX_V2_CHAIN_RAW_UNITS_2026_11_10",
+        "reviewed_on": "2026-11-10",
+        "scope": "CURRENT_READ_CONTEXT_NOT_CAPTURE_TIME_CERTIFICATION",
+        "source_url": "https://upstox.com/developer/api-documentation/get-pc-option-chain/",
+        "status": "UNRESOLVED",
+        "greek_units": {
+            name: "BROKER_UNVERIFIED" for name in ("delta", "gamma", "theta", "vega", "iv", "pop")
+        },
+        "units_verified": False,
+        "normalization_applied": False,
+        "contract_multiplier_applied": False,
+        "execution_eligible": False,
+    }
+
+
 class ChainError(MarketDataError):
     pass
 
@@ -321,6 +339,7 @@ def validate_chain(
 
 def snapshot_info(row: ChainSnapshot) -> dict[str, Any]:
     return {
+        "unit_context": chain_unit_context(),
         "id": row.id,
         "catalog_snapshot_id": row.catalog_snapshot_id,
         "underlying_key": row.underlying_key,

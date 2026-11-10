@@ -1862,3 +1862,51 @@ All14task files passed default Gitleaks with no allowances and private configure
 comparison;full history passed existing exact historical allowances unchanged. Whitespace
 clean. Real browser-menu zoom/physical OS palettes/VoiceOver and new hosted CI remain
 unverified. No real broker request or recording. Local commit only;no push.
+
+## 2026-11-10T17:05:40.513121+00:00 — Explicit unresolved option-chain unit context
+
+Reviewed current primary Upstox BOD JSON,option-chain V2 and feed V3 technical field
+descriptions. They define the fields but did not establish the needed tick-size scaling,
+all IV/POP scaling or theta/vega time/quantity bases within this bounded review. Educational
+intuition,third-party normalization and example magnitudes were not treated as API contracts.
+No conversion or unit certification inferred;no calendar-evidence change made.
+
+Added snapshot_info.unit_context to capture receipts,status and paginated reads. Stable
+review/date/source,UNRESOLVED status and BROKER_UNVERIFIED Greek labels;false verification,
+normalization,multiplier and execution flags. Explicitly current read-time interpretation,
+not capture-time broker certification. Fresh response object;no global mutable context.
+Canonical archives/hashes,DB schema,stored Greek strings and all existing validation rules
+unchanged. No backfill,network call,missing-value invention or per-lot/percent arithmetic.
+Tick-size raw/unverified behavior remains unchanged.
+
+Seven new integration cases verify fractional/percent-looking IV preserved exactly,signed
+Greeks,missing/empty values,independent read contexts,SELECT-only reads without deferred
+payload loading,unchanged canonical bytes/hashes and native PostgreSQL preservation.
+Existing API auth/CSRF/cooldown test strengthened for metadata. Default targeted33passed/
+1PGskipped;fresh full disposable PostgreSQL17.11:735passed/0failed/0skipped,including native
+case. One existing Starlette warning. Locked sync,Ruff122files/format,mypy50files passed;
+cluster removed. Draft import ordering/format corrected before final checks. No real account
+or operational DB was used by automated tests.
+
+Read a two-leg local archived snapshot before deployment into a protected ignored baseline;
+no broker fetch or data mutation. Reviewed local bootstrap deployment initiated,retaining
+PostgreSQL/OAuth volume;after-deployment payload comparison recorded below. Files:
+backend/app/market_data/option_chain.py,tests/integration/test_option_chain.py,
+docs/FIELD_UNIT_EVIDENCE.md,OPTION_CHAIN.md,BROKER_COMPLIANCE.md,PHASE2_ACCEPTANCE.md,
+PROJECT_STATUS.md,VERIFICATION.md and all8agent_memory records.
+No credential/.env/schema/calendar/capture/backup job changes. OBSERVATION;live disabled.
+Unit ambiguity and Phase2 remain incomplete;this closes implicit API labeling,not the broker
+clarification gate. New hosted CI unverified. Next:review current calendar amendments and
+fresh catalog/session readiness before eligible P2-003U;keep all unit normalization blocked
+until endpoint/segment-specific primary clarification. Local commit only;no push.
+
+Final verification (2026-11-10T17:07:11.512711+00:00 UTC):full735PostgreSQL tests
+passed/0failed/0skipped,including native new archive case. Default targeted33passed/1PGskip
+was followed by full native execution. Locked sync,Ruff122files/format,mypy50files passed;
+one existing Starlette warning. Deployment READY_LOCAL/login verified,OAuth volume retained.
+Actual existing status/two-leg response unchanged except added unit_context;raw values and
+canonical digest preserved. Context stays UNRESOLVED/no normalization;entries/live false.
+No broker fetch or archived-data mutation. All16task files passed default Gitleaks without
+allowances and private configured-credential comparison;full history passed existing exact
+historical allowances unchanged. Whitespace clean;new CI and physical unit conventions
+remain unverified. Local commit only,no push.

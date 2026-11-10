@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
@@ -91,6 +92,97 @@ def test_identity_exact_greeks_and_unknown_freshness(client):
     assert Decimal(page["legs"][0]["greeks"]["gamma"]) == Decimal("0.0000000001")
     assert page["legs"][0]["spread"] == "1.00000000"
     assert result["flagged_legs"] == 0
+
+
+@pytest.mark.parametrize("iv", [0.127716064453125, 26.31, 262.31])
+def test_unit_context_preserves_raw_values_and_canonical_bytes(client, iv):
+    engine = client.app.state.engine
+    request, context = seed(engine)
+    rows = chain_rows(request)
+    rows[0]["call_options"]["option_greeks"].update(iv=iv, theta=-2.5, vega=1.5, pop=45)
+    prepared = validate_chain(request, chain_payload(request, rows), context)
+    result = archive_chain(engine, request, prepared, context)
+    statements = []
+
+    def observe(_connection, _cursor, statement, *_):
+        statements.append(statement)
+
+    event.listen(engine, "before_cursor_execute", observe)
+    try:
+        page = read_chain(engine, result["id"], 200, None)
+        status = chain_status(engine)
+    finally:
+        event.remove(engine, "before_cursor_execute", observe)
+    unit_context = page["snapshot"]["unit_context"]
+    assert unit_context == status["latest_snapshot"]["unit_context"] == result["unit_context"]
+    assert unit_context["status"] == "UNRESOLVED" and not unit_context["units_verified"]
+    assert not unit_context["normalization_applied"]
+    assert not unit_context["contract_multiplier_applied"]
+    assert not unit_context["execution_eligible"]
+    assert all(value == "BROKER_UNVERIFIED" for value in unit_context["greek_units"].values())
+    assert unit_context["scope"] == "CURRENT_READ_CONTEXT_NOT_CAPTURE_TIME_CERTIFICATION"
+    greeks = page["legs"][0]["greeks"]
+    assert Decimal(greeks["iv"]) == Decimal(str(iv))
+    assert greeks["theta"] == "-2.5" and greeks["vega"] == "1.5" and greeks["pop"] == "45"
+    assert all(statement.lstrip().upper().startswith("SELECT") for statement in statements)
+    assert not any("canonical_payload" in statement.lower() for statement in statements)
+    with Session(engine) as db:
+        archived = db.get(ChainSnapshot, result["id"])
+        assert archived.canonical_payload == prepared.canonical
+        assert hashlib.sha256(archived.canonical_payload).hexdigest() == result["canonical_sha256"]
+        assert b"unit_context" not in archived.canonical_payload
+
+
+@pytest.mark.parametrize("kind", ["missing-greeks", "empty"])
+def test_unit_context_never_invents_missing_greeks(client, kind):
+    engine = client.app.state.engine
+    request, context = seed(engine)
+    rows = chain_rows(request)
+    if kind == "empty":
+        rows = []
+    else:
+        rows[0]["call_options"].pop("option_greeks")
+    prepared = validate_chain(request, chain_payload(request, rows), context)
+    archived = archive_chain(engine, request, prepared, context)
+    page = read_chain(engine, archived["id"], 200, None)
+    assert page["snapshot"]["unit_context"]["status"] == "UNRESOLVED"
+    if rows:
+        assert all(value is None for value in page["legs"][0]["greeks"].values())
+    else:
+        assert page["legs"] == [] and page["snapshot"]["state"] == "EMPTY"
+
+
+def test_response_context_cannot_mutate_later_reads(client):
+    engine = client.app.state.engine
+    request, context = seed(engine)
+    archived = archive_chain(
+        engine, request, validate_chain(request, chain_payload(request), context), context
+    )
+    page = read_chain(engine, archived["id"], 200, None)
+    page["snapshot"]["unit_context"]["greek_units"]["iv"] = "synthetic-unapproved-unit"
+    assert (
+        read_chain(engine, archived["id"], 200, None)["snapshot"]["unit_context"]["greek_units"][
+            "iv"
+        ]
+        == "BROKER_UNVERIFIED"
+    )
+
+
+def test_unit_context_postgres_preserves_archival_bytes(postgres_config):
+    from fastapi.testclient import TestClient
+
+    from backend.app.main import create_app
+
+    with TestClient(create_app(postgres_config)) as client:
+        engine = client.app.state.engine
+        request, context = seed(engine)
+        prepared = validate_chain(request, chain_payload(request), context)
+        result = archive_chain(engine, request, prepared, context)
+        page = read_chain(engine, result["id"], 200, None)
+        assert page["snapshot"]["unit_context"]["normalization_applied"] is False
+        assert page["legs"][0]["greeks"]["iv"] == "20"
+        with Session(engine) as db:
+            assert db.get(ChainSnapshot, result["id"]).canonical_payload == prepared.canonical
 
 
 def test_missing_and_zero_fields_are_not_invented_or_selected(client):
@@ -254,6 +346,7 @@ def test_private_capture_csrf_cooldown_and_pagination(client):
     headers = {**ORIGIN, "X-CSRF-Token": login.json()["csrf_token"]}
     result = client.post("/api/option-chain/capture", json=body, headers=headers)
     assert result.status_code == 200 and result.json()["snapshot"]["freshness"] == "UNKNOWN"
+    assert result.json()["snapshot"]["unit_context"]["status"] == "UNRESOLVED"
     identity = result.json()["snapshot"]["id"]
     page = client.get(f"/api/option-chain/snapshots/{identity}", params={"limit": 1}).json()
     assert len(page["legs"]) == 1 and page["next_after"]

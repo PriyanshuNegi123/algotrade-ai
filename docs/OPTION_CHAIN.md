@@ -30,6 +30,10 @@ A returned subset of catalog strikes is allowed; no completeness of the full cha
 - Exact decimal prices, positive catalog strikes/lots and signed Greeks are retained. Delta is
   constrained to CE [0,1] or PE [-1,0]; gamma/vega/IV/POP are nonnegative. Theta may be signed.
   IV/POP/Greek units are preserved as supplied; no unverified percent conversion is performed.
+  Snapshot metadata exposes an additive `unit_context` with unresolved Greek units and
+  false normalization/verification flags. This is current read-time context, not historical
+  broker certification; canonical archives and stored values remain unchanged. See
+  [field-unit evidence](FIELD_UNIT_EVIDENCE.md).
 - Missing optional fields remain null; zero quotes and quantities remain zero. Diagnostic flags
   identify missing/zero quotes, liquidity, volume, OI, Greeks and underlying price. Positive
   spread/ask above 20% is a research diagnostic, not a trading risk threshold or permission.
