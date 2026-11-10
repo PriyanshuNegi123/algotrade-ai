@@ -1,6 +1,7 @@
 # Phase 2 acceptance and remaining gates
 
-Reviewed 2026-11-09T14:18:10.573788+00:00 UTC. **Phase 2 remains PARTIAL, not complete.**
+Baseline review 2026-11-09T14:18:10.573788+00:00 UTC;readiness update10November below.
+**Phase 2 remains PARTIAL, not complete.**
 The working read-only Analytics path is extensively verified. Completing a test suite does
 not supply genuine market-hours evidence, elapsed observation time or unconfigured OAuth.
 
@@ -18,10 +19,10 @@ not supply genuine market-hours evidence, elapsed observation time or unconfigur
 | Calendar and sampled coverage | Pinned source integrity, holidays/special sessions, unknown states, conservative spans tested | Amendment completeness unverified; evidence-only, no day certifier implemented |
 | Initial report | New bounded hash-validated report/CLI; actual report generated | It is an interim evidence report, not a completed seven-day analysis |
 | Seven-calendar-day observation | No qualifying interval/day claimed; genuine captures are closed-market stale snapshots | Actual available trading-session evidence and full window remain outstanding |
-| Hosted CI | foundation/verify passed on0f2df43 | New uncommitted report code has local checks only; needs approved publication and a new CI run |
-| Storage | PostgreSQL remains working transactional store; user selected Google Drive for backup/archive target | Desktop OAuth/synthetic round trip verified separately; manual encrypted backup/isolated restore verified; scheduling/key escrow pending |
+| Hosted CI | foundation/verify passed on0f2df43 | Report/storage/test work is committed locally; latest hosted CI for these additions remains unverified |
+| Storage | PostgreSQL remains working transactional store; user selected Google Drive for backup/archive target | Desktop OAuth,encrypted backup and isolated restore verified; three-day schedule installed; passphrase-encrypted kit independently verified10November; operational DB remains PostgreSQL |
 
-## Checks executed this iteration
+## Historical checks — 9 November
 
 - Locked offline uv sync: passed with workspace cache.
 - Full disposable PostgreSQL17.11 suite: **385 passed,0failed,0skipped**;cluster removed.
@@ -97,3 +98,13 @@ Primary API sources rechecked9November:
 [option chain](https://upstox.com/developer/api-documentation/get-pc-option-chain/).
 The instrument field descriptions inspected do not establish a currency unit conversion;
 no conversion was inferred from numeric examples.
+
+## Market-hours readiness update — 10 November
+
+Added [MARKET_SESSION_CHECK.md](MARKET_SESSION_CHECK.md):a read-only,fail-closed check
+that requires an eligible reviewed derivative session,whole requested window fit,current
+local prerequisites and matching pinned calendar evidence. It never records or certifies.
+Real runtime result BLOCKED due to CURRENT_CATALOG_REQUIRED and NO_REVIEWED_SESSION
+(holiday in the reviewed baseline);capture/session/event counts unchanged.25new cases;
+full disposable PostgreSQL503passed/0failed/0skipped,Ruff107files/format,mypy44backend
+files passed. No new real market-hours/reconnect evidence or completed day was produced.

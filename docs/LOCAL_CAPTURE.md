@@ -139,3 +139,10 @@ Read-only evidence export is now available through `scripts.initial_observation 
 It shares existing coverage bounds and does not record data or contact Upstox. See
 [PHASE2_ACCEPTANCE.md](PHASE2_ACCEPTANCE.md) for the command, actual results and unfinished
 gates. A seven-date request does not certify seven days; synthetic data stays separate.
+
+## Derivative market-hours acceptance readiness
+
+Use the read-only `python -m scripts.market_session_check` with an explicit supported
+catalog option before a market-hours acceptance attempt. It checks the existing private
+preflight plus reviewed session/window fit and never starts recording. See
+[MARKET_SESSION_CHECK.md](MARKET_SESSION_CHECK.md). Existing recording behavior is unchanged.

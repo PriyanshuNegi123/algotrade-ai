@@ -1,5 +1,46 @@
 # Handoff
 
+## 2026-11-10T12:01:47.260483+00:00 — Read-only market-session acceptance readiness
+
+Objective:prepare P2-003U genuine market-hours acceptance without relabeling an ordinary
+configuration preflight as market-session evidence. Added session_readiness and the host
+market_session_check CLI. It calls the verified local wrapper only with preflight_only=True,
+preserves known original blockers and requires current PostgreSQL/schema/catalog/grants,
+no unsafe flags,a fresh aware preflight(max30sec age/2sec future skew),derivative keys,
+matching checksum-validated official calendar fingerprints,an eligible IST session and
+whole requested-duration fit. Special-session windows honored;unknown/holiday/weekend,
+index/mixed requests,stale clocks,corrupt/mismatched/synthetic evidence fail closed.
+Existing feed resolution still enforces CE/PE/expiry;FUT is unsupported for capture.
+
+No recording,broker call,DB mutation,new HTTP route,job or permission is added. Existing
+preflight/capture behavior and all calendar/timing files preserved. Output always keeps
+broker proof,recording,Phase2 completion,qualifying days and all trading permissions false/0.
+It is readiness for an explicit bounded attempt,not a certificate or future time guarantee.
+
+25new synthetic cases pass;full working disposable PostgreSQL17.11 suite503passed/0failed/
+0skipped. Locked sync,Ruff107files/format,mypy44backendfiles pass. One existing upstream
+Starlette warning remains. Two initial boundary cases assumed an incorrect fixture duration;
+changed them to derive exact boundaries from pinned evidence,which was not modified.
+Current official NSE derivatives-hours row rechecked and agrees with the pinned baseline;
+calendar amendment completeness remains unverified. Exact staged/security results below.
+
+Actual private-runtime check selected one arbitrary catalog CE for diagnostics only:
+BLOCKED with CURRENT_CATALOG_REQUIRED,LOCAL_PREFLIGHT_NOT_READY,NO_REVIEWED_SESSION.
+The reviewed baseline marks10November2026 HOLIDAY. Read-only before/after capture,session
+and event counts identical;recording_started/live false. Safe proof ignored at
+.local/verification/session_readiness_acceptance.json;no credential/raw errors logged.
+No catalog refresh or real capture attempted. No fresh market/reconnect or completed day
+claimed. Google/Upstox secrets,cloud files,backup schedule and operational data preserved.
+
+Files:backend/app/market_data/session_readiness.py,scripts/market_session_check.py,
+tests/unit/test_session_readiness.py,docs/MARKET_SESSION_CHECK.md,LOCAL_CAPTURE.md,
+PHASE2_ACCEPTANCE.md,VERIFICATION.md and all8agent_memory files. OBSERVATION/live disabled.
+Next:refresh/validate metadata before the next reviewed eligible session,run this check
+with an explicit current supported option,then perform bounded genuine fresh-update and
+reconnect acceptance. OAuth setup,seven-day evidence,unit/calendar review remain separate
+Phase2 gates. Phase2 still PARTIAL;latest hosted CI unverified. Local commit only,no push.
+
+
 ## 2026-11-10T11:49:46.891948+00:00 — Feed fixture clock race fixed locally
 
 Objective:resolve the intermittent duplicate/watermark/trade-freshness unit test failure.
@@ -757,3 +798,9 @@ as a8dd32f during this iteration and is preserved;both working tree and candidat
 include it. Task diff remains only the fixture file and nine documentation files. All10
 staged file contents passed Gitleaks without allowances;full history passed with existing
 exact historical false-positive allowances. git diff --cached --check passed. No push.
+
+Final exact staged candidate:503PostgreSQL tests passed,0failed,0skipped;Ruff107files/format
+and mypy44backendfiles passed. All15staged files passed Gitleaks with no allowances;full
+history passed using only existing documented exact historical allowances. Cached whitespace
+check passed. Synthetic and actual-runtime proofs are separate;no day certification or
+new hosted CI pass claimed. Local commit authorized;no push.
