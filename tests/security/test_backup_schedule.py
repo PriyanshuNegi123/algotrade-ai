@@ -333,3 +333,38 @@ def test_prune_preserves_unverified_cache_and_symlink(workspace):
     with pytest.raises(OSError):
         backup.prune_verified_cache(path, drive, KEY)
     assert target.is_symlink() and (path / "recovery.key").exists()
+
+
+@pytest.mark.parametrize("variant", ["valid", "wrong-key", "future", "malformed"])
+def test_cloud_recovery_status_requires_matching_verified_key(workspace, variant):
+    import hashlib
+
+    from backend.app.database import SCHEMA_REVISION
+
+    path = workspace / ".local/backups"
+    kit = {
+        "state": "RECOVERY_VERIFIED",
+        "protected_key_sha256": hashlib.sha256(backup.recovery_key(path)).hexdigest(),
+        "schema_revision": SCHEMA_REVISION,
+        "original_key_required_for_verification": False,
+        "verified_at": NOW.isoformat(),
+        "restore": {
+            "restore_verified": True,
+            "superuser": False,
+            "admin_sessions": 0,
+            "network": "none",
+        },
+    }
+    if variant == "wrong-key":
+        kit["protected_key_sha256"] = "0" * 64
+    if variant == "future":
+        kit["verified_at"] = (NOW + timedelta(days=1)).isoformat()
+    if variant == "malformed":
+        kit["restore"] = None
+    private_write(path / "recovery-kit.json", json.dumps(kit))
+    state = job.health(workspace)
+    assert state["state"] == "LOCAL_CHECKS_PASSED"
+    assert state["offline_recovery_copy"] == "NOT_CONFIRMED"
+    assert not state["remote_access_checked"]
+    assert (state["cloud_recovery_kit"] != "NOT_CONFIRMED") is (variant == "valid")
+    assert ("OFF_DEVICE_RECOVERY_COPY_NOT_CONFIRMED" in state["warnings"]) is (variant != "valid")

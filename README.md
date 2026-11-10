@@ -213,3 +213,5 @@ Google Drive OAuth and synthetic cloud storage are verified: [setup and security
 Manual encrypted PostgreSQL Drive backups and isolated cloud restore are verified: [backup/recovery guide](docs/BACKUPS.md). Recovery keys stay off Drive.
 
 Cloud-first encrypted backups run every three IST calendar days: [schedule and health](docs/BACKUP_SCHEDULE.md). Local backup caches do not accumulate.
+
+Passphrase-encrypted Drive recovery: [RECOVERY_KIT.md](docs/RECOVERY_KIT.md).

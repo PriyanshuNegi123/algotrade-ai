@@ -2,6 +2,7 @@
 
 import argparse
 import fcntl
+import hashlib
 import json
 import os
 import signal
@@ -12,6 +13,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from backend.app.database import SCHEMA_REVISION
 from backend.app.storage.backup_crypto import BackupError
 from scripts.backup_postgres import backup_directory, recovery_key
 from scripts.bootstrap_local import ROOT, private_write
@@ -42,8 +44,9 @@ def health(root: Path, *, now: datetime | None = None) -> dict:
     if (root / ".local").is_symlink() or path.is_symlink():
         raise BackupError("BACKUP_UNSAFE_DIRECTORY")
     key_ready = False
+    key_digest = None
     try:
-        recovery_key(path)  # Never creates or repairs a missing key.
+        key_digest = hashlib.sha256(recovery_key(path)).hexdigest()
         key_ready = True
     except Exception:
         pass
@@ -60,8 +63,29 @@ def health(root: Path, *, now: datetime | None = None) -> dict:
         "recovery_key_ready": key_ready,
         "remote_access_checked": False,
         "offline_recovery_copy": "NOT_CONFIRMED",
+        "cloud_recovery_kit": "NOT_CONFIRMED",
         "warnings": ["OFF_DEVICE_RECOVERY_COPY_NOT_CONFIRMED"],
     }
+    try:
+        kit = secure_json(path / "recovery-kit.json")
+        if kit:
+            restored = kit.get("restore", {})
+            if (
+                kit.get("state") == "RECOVERY_VERIFIED"
+                and key_digest is not None
+                and kit.get("protected_key_sha256") == key_digest
+                and kit.get("schema_revision") == SCHEMA_REVISION
+                and kit.get("original_key_required_for_verification") is False
+                and restored.get("restore_verified") is True
+                and restored.get("superuser") is False
+                and restored.get("admin_sessions") == 0
+                and restored.get("network") == "none"
+                and timestamp(kit.get("verified_at")) <= now + timedelta(minutes=5)
+            ):
+                result["cloud_recovery_kit"] = "PASSPHRASE_PROTECTED_RESTORE_VERIFIED"
+                result["warnings"] = []
+    except Exception:
+        pass  # An invalid optional kit receipt must not stop scheduled backups.
     if receipt:
         restore = receipt.get("restore")
         if (

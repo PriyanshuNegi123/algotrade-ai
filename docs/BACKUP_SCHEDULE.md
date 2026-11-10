@@ -70,3 +70,7 @@ is still outstanding and is not replaced by scheduling. No keys were uploaded to
 Live trading remains disabled;no market recording or order execution was added.
 
 Apple reference:[calendar-based LaunchAgents](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html).
+
+Optional passphrase-encrypted off-device recovery kits are documented in
+[RECOVERY_KIT.md](RECOVERY_KIT.md). Health distinguishes verified cloud kits from physical
+offline copies; neither a local receipt nor scheduling proves present Drive availability.

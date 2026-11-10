@@ -28,7 +28,9 @@ an unrelated key chain. `verify-latest` requires the existing key and never crea
 is uploaded by this workflow. Losing the only key makes the encrypted archives unrecoverable.
 Also preserve access to the original Google OAuth project/account and its local configuration.
 Do not paste keys into chat or put plaintext recovery material in Drive. File permissions
-are a local boundary; encrypted key escrow/OS keychain integration is future work.
+are a local boundary. The separately authorized passphrase-encrypted recovery kit is
+implemented in [RECOVERY_KIT.md](RECOVERY_KIT.md); the backup workflow itself never uploads
+the plaintext key. OS keychain integration remains future work.
 
 ## Encryption and cloud transfer
 
@@ -79,7 +81,8 @@ in-memory authenticated encryption and a single data PUT within a resumable sess
 It fails rather than silently truncating larger data. Export/network/restore have timeouts.
 Future large archives require separately reviewed streaming/chunking and resource policies.
 The three-day schedule is documented separately. No cloud retention deletion,incremental
-backup,key rotation,off-device key escrow or complete disaster cutover is implemented.
+backup,key rotation or complete disaster cutover is implemented. Optional passphrase-wrapped
+off-device recovery material is documented in RECOVERY_KIT.md.
 Existing Drive files are retained. `prune-local` removes only matching app-owned local
 ciphertext after a fresh successful cloud download/decryption/hash comparison;unknown,
 unverified or changed files are kept. Keys and receipts are never pruned. Scope/authentication

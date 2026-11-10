@@ -14,5 +14,6 @@
 
 Manual encrypted PostgreSQL backup and network-isolated cloud restore checks are now
 implemented and actually verified; see [BACKUPS.md](BACKUPS.md). The requested three-day cloud schedule is installed; see BACKUP_SCHEDULE.md.
-Cloud retention deletion, off-device key escrow and production cutover remain pending. MFA and incident
+Optional passphrase-protected recovery kits are implemented; see [RECOVERY_KIT.md](RECOVERY_KIT.md).
+Cloud retention deletion and production cutover remain pending. MFA and incident
 alerts remain mandatory later gates before production.

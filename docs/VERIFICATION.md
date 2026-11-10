@@ -984,3 +984,43 @@ BACKUP_SCHEDULE/BACKUPS/RECOVERY/GOOGLE_DRIVE docs,README and all8agent_memory r
 No push.
 
 Final checks:exact schedule commit444PGpassed/0failed/0skipped;fullworking tree455passed. Candidate Ruff97files/mypy40backendfiles pass. All19staged files passed default-rule Gitleaks without ignores;actual OAuth values and raw/encoded recovery key absent. Background due-check exit0 verified;local ciphertext cache0. Whitespace checks pass;no push.
+
+## 2026-11-10T10:43:24.854270+00:00 — Passphrase-encrypted Drive recovery implementation
+
+User explicitly selected an encrypted recovery kit on Drive. Added bounded Argon2id
+(64MiB/3iterations/4lanes) and AES256GCM wrapping of the existing backup key plus a
+projected verified backup receipt. Random salt/nonce; no Google/broker credentials bundled.
+Create-only drive.file upload/download with metadata and SHA256 checks; original key remains
+unchanged. Passphrase only in hidden local TTY/native prompts, never stored or passed in argv.
+Cloud verification unwraps the downloaded kit and restores the downloaded backup into the
+existing isolated, non-superuser, network-none disposable target. recover-local accepts
+manually downloaded ciphertext without original key or Google credentials; no source restore.
+Health distinguishes locally verified matching cloud kit from unconfirmed physical offline
+copy; invalid optional receipts do not interrupt backup scheduling. No ciphertext cache.
+
+21new synthetic cases;48combined recovery/schedule tests pass. Full working suite476passed,
+0failed,0skipped with disposable PostgreSQL17.11. Ruff104files,format,strictmypy43backend
+files and locked sync pass. One existing non-fatal Starlette warning remains. An initial
+new test misused encrypt_dump return type; corrected the test and reran successfully.
+Actual hidden-prompt attempt ended without creating a pending/verified receipt or uploading
+a kit. Cloud acceptance remains pending operator passphrase entry; no verification claimed.
+Prompt timeouts now return a fixed safe code, covered by a regression test. Exact staged checks/security/commit recorded separately.
+
+Files:storage/recovery_kit.py,drive_recovery.py;scripts/recovery_kit.py,backup_job.py;
+security/test_recovery_kit.py,test_backup_schedule.py;RECOVERY_KIT/BACKUPS/BACKUP_SCHEDULE/
+GOOGLE_DRIVE/RECOVERY docs,README,verification/project status and all8agent_memory records.
+Prior Phase2 changes remain separate. PostgreSQL stays operational,OBSERVATION/live disabled;
+no Upstox change,new market capture,push,cloud deletion or production cutover.
+Next:complete hidden prompts,verify actual Drive recovery,then resume eligible genuine
+market-hours observation;Upstox OAuth/calendar/seven-day evidence gates remain incomplete.
+
+Verification of the exact task-only staged snapshot:465PostgreSQL tests passed,0failed,
+0skipped;Ruff101files/format and strictmypy42backendfiles passed. Working tree476passed
+includes11earlier pending Phase2 tests excluded from this commit. One upstream warning
+remains. All22staged files passed Gitleaks with no allowances and a private comparison
+against locally configured credential/key values;full history passed with only the existing
+two documented exact false-positive fingerprints. git diff --cached --check passed.
+No secrets staged;no dependency,Upstox,live,production DB or schedule changes. Actual
+cloud-kit creation/restore still requires the operator's hidden passphrase entry.
+Exact next command: uv run python -m scripts.recovery_kit create (hidden terminal prompts),
+then uv run python -m scripts.recovery_kit verify-cloud. Never send the passphrase in chat.
