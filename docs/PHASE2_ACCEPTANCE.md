@@ -16,11 +16,11 @@ authentication/storage and the bounded endpoint check are complete; other gates 
 | Instrument master | Immutable validated source/metadata; latest 6,744 selected / 85,180 source records, verified 11 November | Recheck currentness before each future capture; tick-size units unresolved |
 | Historical candles | Immutable bounded prior-day imports;75real five-minute Nifty50 bars archived | Historical point-in-time universe/session completeness remains unverified |
 | Option chain | Explicit expiry/catalog validation;135strikes/270legs accepted; unresolved unit context exposed on reads | No source timestamp per field; primary unit review remains inconclusive; no scaling inferred; freshness UNKNOWN |
-| Feed and durable archive | Decoder, ordering, duplicates, timestamps, retries/heartbeat/TLS, quotas/recovery tested | Bounded genuine market-hours acceptance passed 11 November: 27 recent-trade updates and 1,946 sampled ms; real reconnect remains pending |
+| Feed and durable archive | Decoder, ordering, duplicates, timestamps, retries/heartbeat/TLS, quotas/recovery tested; 11 November controlled reconnect archived and gap verified | Bounded genuine market-hours acceptance passed 11 November: 27 recent-trade updates and 1,946 sampled ms; controlled genuine reconnect passed with two attempts and unchanged backoff; natural outages remain unverified |
 | Cooperative stop | Genuine snapshot then exact-parent stop; parent/child CLOSED; socket1→0; archive hashes checked | Complete for the bounded9November acceptance |
 | Calendar and sampled coverage | Pinned source integrity, holidays/special sessions, unknown states, conservative spans tested | Amendment completeness unverified; evidence-only, no day certifier implemented |
 | Initial report | New bounded hash-validated report/CLI; actual report generated | It is an interim evidence report, not a completed seven-day analysis |
-| Seven-calendar-day observation | One sampled market-hours date (11 November), five accepted samples / 1,946 ms; zero qualifying days | Actual available trading-session evidence and full window remain outstanding |
+| Seven-calendar-day observation | One sampled market-hours date (11 November), 18 accepted samples / 2,253 ms across two Nifty captures; zero qualifying days | Actual available trading-session evidence and full window remain outstanding |
 | Hosted CI | foundation/verify passed on0f2df43 | Report/storage/test work is committed locally; latest hosted CI for these additions remains unverified |
 | Storage | PostgreSQL remains working transactional store; user selected Google Drive for backup/archive target | Desktop OAuth,encrypted backup and isolated restore verified; three-day schedule installed; passphrase-encrypted kit independently verified10November; operational DB remains PostgreSQL |
 
@@ -192,3 +192,45 @@ Phase 2 remains partial. Next: read-only host/container time-offset diagnostics,
 and verify a bounded genuine reconnect in a fresh reviewed session with catalog/readiness
 rechecked. Keep freshness gates unchanged. Seven-day evidence, calendar completeness and
 physical unit clarification remain outstanding. No unattended recording authorized here.
+
+## 2026-11-11T06:19:55.417924+00:00 — P2-003W controlled genuine reconnect and read-only time diagnostics
+
+Read-only macOS SNTP probes: Apple offset +85.321 ms with +/-93.765 ms uncertainty;
+Cloudflare +66.557 ms with +/-87.767 ms uncertainty (one address timed out before a
+successful response). Neither estimate establishes a root cause. Five bracketed Docker
+clock reads overlap host time; no demonstrated independent container drift. No clock,
+NTP settings, timestamp values or acceptance thresholds changed. See CLOCK_DIAGNOSTICS.md.
+
+One explicit genuine NSE_FO|45406 research capture: 80-second total/session caps, one child,
+two maximum attempts, 250 events / 262,144 bytes. The private acceptance connector used
+existing open_feed; its event sink scheduled one orderly close of only its owned first
+socket after a stored recent-trade update. No fake frames/exceptions, network-wide fault,
+container restart or reduced backoff. The ordinary runner emitted FEED_DISCONNECTED/BACKOFF,
+waited 31.184 seconds, obtained a new authorization and restored market-info/snapshot/update.
+This is controlled disconnect acceptance, not evidence of a natural broker outage.
+
+Parent fc1f3773acc04976be6b6346f39ab45f and child 940242fc67cb4efd9d05d4468dc90bce
+closed with SESSION_LIMIT / DURATION_LIMIT. Stored 82 events / 78,177 bytes; attempts had
+1 and 68 RECENT_TRADE updates. API pagination verified hashes, sequences, quotas and both
+current-catalog bindings. Anonymous access denied; CSRF logout passed. A 31.488-second
+snapshot gap was not bridged by coverage; 13 accepted samples / 307 sampled ms, 58 unusable
+frames. All active rows and established app HTTPS sockets returned to zero. Prior catalog,
+candle/chain archives and protected configuration fingerprints remained unchanged.
+
+Fresh sync, Ruff lint/format (122 files), mypy (50 source files), full disposable PostgreSQL
+17.11 regression: 744 passed, zero failed/skipped, one existing Starlette warning. Cluster
+removed; automated tests used no real account/operational DB. Operational acceptance was
+separate and explicitly read-only. Seven-date report now has three sessions / 119 events,
+six duplicates, zero out-of-order and one controlled disconnect; zero qualifying days,
+NOT_CERTIFIED. Phase 2 stays partial; latest hosted CI, absolute clock cause, natural outage,
+seven-day evidence, calendar completeness and physical unit conventions remain unverified.
+
+No application source, schema, credentials, .env, OAuth/Google settings, scheduler or security
+controls changed. OBSERVATION; entries/live/execution disabled. Local documentation commit
+only, no push. All 14 changed Markdown files passed default Gitleaks without allowances
+and configured-credential comparison; full history passed unchanged exact historical
+allowances, and whitespace check passed. Private ignored receipts: clock_diagnostics_20261111.json, reconnect_20261111.json,
+reconnect_api_20261111.json and reconnect_final_20261111.json under .local/verification/.
+Next: prepare a bounded multi-day observation collection plan with storage budgets and
+operator-invoked commands; continue independent time checks before longer collection.
+Do not enable automatic recording, infer elapsed coverage or certify days from short runs.
