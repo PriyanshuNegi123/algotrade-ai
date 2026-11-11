@@ -1,5 +1,53 @@
 # Project status and next steps
 
+## 2026-11-11T06:09:56.516396+00:00 — P2-003U bounded genuine market-hours acceptance
+
+Completed the scoped market-hours transport/archive acceptance on 11 November. Initial
+readiness correctly blocked yesterday's catalog. Refreshed the fixed official public NSE
+master: 6,744 selected / 85,180 source records; publication 10 November 23:54:36 UTC.
+Old catalog hashes and existing candle/chain archives matched before/after. Fresh readiness
+passed; official NSE timing row was rechecked and targeted amendment search found no
+contradictory notice, without claiming exhaustive amendment completeness.
+
+Two explicit sequential research-only captures, each capped at 20 seconds, one session,
+200 events and 262,144 canonical bytes. No automatic loop or recording schedule. FINNIFTY
+key NSE_FO|35050: 7 events / 4,107 bytes, STALE_TRADE, zero accepted coverage. One validated
+read-only Nifty chain request for explicit 17 November expiry identified a reference near
+reported spot; response not archived and receipt time not treated as quote certification.
+Nifty key NSE_FO|45406: 30 events / 29,597 bytes, 27 RECENT_TRADE updates, five coverage-
+accepted samples and 1,946 sampled milliseconds. These are diagnostic contracts, not signals.
+Both broker market-info frames reported NSE_FO NORMAL_OPEN. Parent SESSION_LIMIT and child
+DURATION_LIMIT; all closed with no active parent/child left. One attempt per run, no real
+reconnect. Event hashes, sequences, quotas and current catalog lineage verified, including
+paginated authenticated API reads; anonymous denied and CSRF logout succeeded.
+
+Broker frame generation was sometimes ahead of local receipt by roughly 0.1 seconds.
+Cause is unverified; no clock fault attributed to either side. Strict nonnegative frame/
+trade age checks preserved. Coverage reports 24 unusable frames; no offset adjustment or
+stored timestamp rewrite. Seven-date report (5–11 November): 37 events, one duplicate,
+zero out-of-order/disconnect events, one sampled date, assessment NOT_CERTIFIED and zero
+qualifying days. Short-run evidence is not continuous-session/seven-day certification.
+
+Fresh locked sync, Ruff lint/format (122 files), mypy (50 source files) and full disposable
+PostgreSQL 17.11 suite passed: 744 passed, zero failed/skipped, one existing nonfatal
+Starlette warning. Temporary test cluster removed; automated tests did not use a real
+account or the operational database. Acceptance used the existing operational read-only
+broker path explicitly, separately from regression tests. No source/schema/configuration/
+credential/security/scheduler changes. Protected .env/admin password fingerprints unchanged.
+OBSERVATION, entries/live/execution disabled; Google backup and OAuth configuration untouched.
+
+Private ignored receipts: .local/verification/catalog_refresh_20261111.json,
+market_hours_20261111.json, market_hours_nifty_20261111.json, market_hours_api_20261111.json
+and market_hours_week_report_20261111.json. Files changed: all eight agent-memory documents,
+LOCAL_CAPTURE.md, MARKET_SESSION_CHECK.md, PHASE2_ACCEPTANCE.md, PROJECT_STATUS.md and
+VERIFICATION.md. All 13 changed Markdown files passed default Gitleaks without allowances and private
+configured-credential comparison; full history passed unchanged exact historical allowances.
+Whitespace check passed. Local documentation commit only; no push. Latest hosted CI unverified.
+Phase 2 remains partial. Next: read-only host/container time-offset diagnostics, then plan
+and verify a bounded genuine reconnect in a fresh reviewed session with catalog/readiness
+rechecked. Keep freshness gates unchanged. Seven-day evidence, calendar completeness and
+physical unit clarification remain outstanding. No unattended recording authorized here.
+
 ## 2026-11-10T17:22:04.194501+00:00 — Bounded NSE calendar amendment review and correction
 
 Reviewed primary NSE holiday/amendment PDFs, current F&O timing row and targeted official-

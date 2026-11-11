@@ -3,7 +3,8 @@
 Baseline review 2026-11-09T14:18:10.573788+00:00 UTC;readiness update10November below.
 **Phase 2 remains PARTIAL, not complete.**
 The working read-only Analytics path is extensively verified. Completing a test suite does
-not supply genuine market-hours evidence or elapsed observation time. Scoped OAuth
+not supply elapsed observation time. Bounded genuine market-hours evidence was verified
+on 11 November; it does not establish continuous or seven-day coverage. Scoped OAuth
 authentication/storage and the bounded endpoint check are complete; other gates remain.
 
 ## Requirements and evidence
@@ -12,14 +13,14 @@ authentication/storage and the bounded endpoint check are complete; other gates 
 |---|---|---|
 | Official API/app guidance | Analytics/auth/instrument/chain primary docs rechecked9November; registered OAuth settings configured locally10November | App configuration and operator consent do not certify account permissions or trading approval |
 | Secure read-only authentication | Analytics history/chain/feed accepted; OAuth browser flow/vault deployed, genuine consent/storage accepted and one bounded NSE market-status check passed10November | Scoped OAuth authentication/storage acceptance complete; account permissions and grant scope are not certified; Analytics stays active and OAuth is not promoted |
-| Instrument master | Immutable validated source/metadata; latest6,744 selected /85,462 source records,verified10November | Recheck currentness before each future capture; tick-size units unresolved |
+| Instrument master | Immutable validated source/metadata; latest 6,744 selected / 85,180 source records, verified 11 November | Recheck currentness before each future capture; tick-size units unresolved |
 | Historical candles | Immutable bounded prior-day imports;75real five-minute Nifty50 bars archived | Historical point-in-time universe/session completeness remains unverified |
 | Option chain | Explicit expiry/catalog validation;135strikes/270legs accepted; unresolved unit context exposed on reads | No source timestamp per field; primary unit review remains inconclusive; no scaling inferred; freshness UNKNOWN |
-| Feed and durable archive | Decoder, ordering, duplicates, timestamps, retries/heartbeat/TLS, quotas/recovery tested | Fresh market-hours updates and real reconnect acceptance pending |
+| Feed and durable archive | Decoder, ordering, duplicates, timestamps, retries/heartbeat/TLS, quotas/recovery tested | Bounded genuine market-hours acceptance passed 11 November: 27 recent-trade updates and 1,946 sampled ms; real reconnect remains pending |
 | Cooperative stop | Genuine snapshot then exact-parent stop; parent/child CLOSED; socket1→0; archive hashes checked | Complete for the bounded9November acceptance |
 | Calendar and sampled coverage | Pinned source integrity, holidays/special sessions, unknown states, conservative spans tested | Amendment completeness unverified; evidence-only, no day certifier implemented |
 | Initial report | New bounded hash-validated report/CLI; actual report generated | It is an interim evidence report, not a completed seven-day analysis |
-| Seven-calendar-day observation | No qualifying interval/day claimed; genuine captures are closed-market stale snapshots | Actual available trading-session evidence and full window remain outstanding |
+| Seven-calendar-day observation | One sampled market-hours date (11 November), five accepted samples / 1,946 ms; zero qualifying days | Actual available trading-session evidence and full window remain outstanding |
 | Hosted CI | foundation/verify passed on0f2df43 | Report/storage/test work is committed locally; latest hosted CI for these additions remains unverified |
 | Storage | PostgreSQL remains working transactional store; user selected Google Drive for backup/archive target | Desktop OAuth,encrypted backup and isolated restore verified; three-day schedule installed; passphrase-encrypted kit independently verified10November; operational DB remains PostgreSQL |
 
@@ -143,3 +144,51 @@ scrubbing,session revocation checks and encrypted storage.33new pytest cases (in
 2disposable PostgreSQL) plus fresh-profile Chrome synthetic cross-site proof. No real broker,
 operator credential or operational DB used in tests. Default missing settings keep it disabled;
 current private deployment/registered consent still pending. This does not close P2-002.
+
+## 2026-11-11T06:09:56.516396+00:00 — P2-003U bounded genuine market-hours acceptance
+
+Completed the scoped market-hours transport/archive acceptance on 11 November. Initial
+readiness correctly blocked yesterday's catalog. Refreshed the fixed official public NSE
+master: 6,744 selected / 85,180 source records; publication 10 November 23:54:36 UTC.
+Old catalog hashes and existing candle/chain archives matched before/after. Fresh readiness
+passed; official NSE timing row was rechecked and targeted amendment search found no
+contradictory notice, without claiming exhaustive amendment completeness.
+
+Two explicit sequential research-only captures, each capped at 20 seconds, one session,
+200 events and 262,144 canonical bytes. No automatic loop or recording schedule. FINNIFTY
+key NSE_FO|35050: 7 events / 4,107 bytes, STALE_TRADE, zero accepted coverage. One validated
+read-only Nifty chain request for explicit 17 November expiry identified a reference near
+reported spot; response not archived and receipt time not treated as quote certification.
+Nifty key NSE_FO|45406: 30 events / 29,597 bytes, 27 RECENT_TRADE updates, five coverage-
+accepted samples and 1,946 sampled milliseconds. These are diagnostic contracts, not signals.
+Both broker market-info frames reported NSE_FO NORMAL_OPEN. Parent SESSION_LIMIT and child
+DURATION_LIMIT; all closed with no active parent/child left. One attempt per run, no real
+reconnect. Event hashes, sequences, quotas and current catalog lineage verified, including
+paginated authenticated API reads; anonymous denied and CSRF logout succeeded.
+
+Broker frame generation was sometimes ahead of local receipt by roughly 0.1 seconds.
+Cause is unverified; no clock fault attributed to either side. Strict nonnegative frame/
+trade age checks preserved. Coverage reports 24 unusable frames; no offset adjustment or
+stored timestamp rewrite. Seven-date report (5–11 November): 37 events, one duplicate,
+zero out-of-order/disconnect events, one sampled date, assessment NOT_CERTIFIED and zero
+qualifying days. Short-run evidence is not continuous-session/seven-day certification.
+
+Fresh locked sync, Ruff lint/format (122 files), mypy (50 source files) and full disposable
+PostgreSQL 17.11 suite passed: 744 passed, zero failed/skipped, one existing nonfatal
+Starlette warning. Temporary test cluster removed; automated tests did not use a real
+account or the operational database. Acceptance used the existing operational read-only
+broker path explicitly, separately from regression tests. No source/schema/configuration/
+credential/security/scheduler changes. Protected .env/admin password fingerprints unchanged.
+OBSERVATION, entries/live/execution disabled; Google backup and OAuth configuration untouched.
+
+Private ignored receipts: .local/verification/catalog_refresh_20261111.json,
+market_hours_20261111.json, market_hours_nifty_20261111.json, market_hours_api_20261111.json
+and market_hours_week_report_20261111.json. Files changed: all eight agent-memory documents,
+LOCAL_CAPTURE.md, MARKET_SESSION_CHECK.md, PHASE2_ACCEPTANCE.md, PROJECT_STATUS.md and
+VERIFICATION.md. All 13 changed Markdown files passed default Gitleaks without allowances and private
+configured-credential comparison; full history passed unchanged exact historical allowances.
+Whitespace check passed. Local documentation commit only; no push. Latest hosted CI unverified.
+Phase 2 remains partial. Next: read-only host/container time-offset diagnostics, then plan
+and verify a bounded genuine reconnect in a fresh reviewed session with catalog/readiness
+rechecked. Keep freshness gates unchanged. Seven-day evidence, calendar completeness and
+physical unit clarification remain outstanding. No unattended recording authorized here.

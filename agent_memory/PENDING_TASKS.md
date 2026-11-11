@@ -1,5 +1,53 @@
 # Prioritized backlog
 
+## 2026-11-11T06:09:56.516396+00:00 — P2-003U bounded genuine market-hours acceptance
+
+Completed the scoped market-hours transport/archive acceptance on 11 November. Initial
+readiness correctly blocked yesterday's catalog. Refreshed the fixed official public NSE
+master: 6,744 selected / 85,180 source records; publication 10 November 23:54:36 UTC.
+Old catalog hashes and existing candle/chain archives matched before/after. Fresh readiness
+passed; official NSE timing row was rechecked and targeted amendment search found no
+contradictory notice, without claiming exhaustive amendment completeness.
+
+Two explicit sequential research-only captures, each capped at 20 seconds, one session,
+200 events and 262,144 canonical bytes. No automatic loop or recording schedule. FINNIFTY
+key NSE_FO|35050: 7 events / 4,107 bytes, STALE_TRADE, zero accepted coverage. One validated
+read-only Nifty chain request for explicit 17 November expiry identified a reference near
+reported spot; response not archived and receipt time not treated as quote certification.
+Nifty key NSE_FO|45406: 30 events / 29,597 bytes, 27 RECENT_TRADE updates, five coverage-
+accepted samples and 1,946 sampled milliseconds. These are diagnostic contracts, not signals.
+Both broker market-info frames reported NSE_FO NORMAL_OPEN. Parent SESSION_LIMIT and child
+DURATION_LIMIT; all closed with no active parent/child left. One attempt per run, no real
+reconnect. Event hashes, sequences, quotas and current catalog lineage verified, including
+paginated authenticated API reads; anonymous denied and CSRF logout succeeded.
+
+Broker frame generation was sometimes ahead of local receipt by roughly 0.1 seconds.
+Cause is unverified; no clock fault attributed to either side. Strict nonnegative frame/
+trade age checks preserved. Coverage reports 24 unusable frames; no offset adjustment or
+stored timestamp rewrite. Seven-date report (5–11 November): 37 events, one duplicate,
+zero out-of-order/disconnect events, one sampled date, assessment NOT_CERTIFIED and zero
+qualifying days. Short-run evidence is not continuous-session/seven-day certification.
+
+Fresh locked sync, Ruff lint/format (122 files), mypy (50 source files) and full disposable
+PostgreSQL 17.11 suite passed: 744 passed, zero failed/skipped, one existing nonfatal
+Starlette warning. Temporary test cluster removed; automated tests did not use a real
+account or the operational database. Acceptance used the existing operational read-only
+broker path explicitly, separately from regression tests. No source/schema/configuration/
+credential/security/scheduler changes. Protected .env/admin password fingerprints unchanged.
+OBSERVATION, entries/live/execution disabled; Google backup and OAuth configuration untouched.
+
+Private ignored receipts: .local/verification/catalog_refresh_20261111.json,
+market_hours_20261111.json, market_hours_nifty_20261111.json, market_hours_api_20261111.json
+and market_hours_week_report_20261111.json. Files changed: all eight agent-memory documents,
+LOCAL_CAPTURE.md, MARKET_SESSION_CHECK.md, PHASE2_ACCEPTANCE.md, PROJECT_STATUS.md and
+VERIFICATION.md. All 13 changed Markdown files passed default Gitleaks without allowances and private
+configured-credential comparison; full history passed unchanged exact historical allowances.
+Whitespace check passed. Local documentation commit only; no push. Latest hosted CI unverified.
+Phase 2 remains partial. Next: read-only host/container time-offset diagnostics, then plan
+and verify a bounded genuine reconnect in a fresh reviewed session with catalog/readiness
+rechecked. Keep freshness gates unchanged. Seven-day evidence, calendar completeness and
+physical unit clarification remain outstanding. No unattended recording authorized here.
+
 ## 2026-11-10T17:22:04.194501+00:00 — Bounded NSE calendar amendment review and correction
 
 Reviewed primary NSE holiday/amendment PDFs, current F&O timing row and targeted official-
@@ -461,8 +509,9 @@ Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit aut
 | P2-003R-A | P1 | P2-003R;fresh catalog | Genuine active-broker stop acceptance | Explicit short bounded run,request one parent stop,verify connection/child/parent finalization;no day certification | Small | COMPLETE 2026-11-09: genuine snapshot then exact-parent stop; parent/child closed; transport cleanup and archive verified |
 | P2-003S | P1 | P2-003R | Deterministic synthetic coverage fixture clocks around IST midnight | Preserve coverage assertions/policy;reproduce boundary case without real account/network and remove wall-clock dependence | Small | COMPLETE:fixed synthetic clock;4boundary regressions;371PGpass/0skip |
 | P2-003T | P1 | P2-003S | Read-only catalog freshness diagnostics | Safe publication/retrieval/ISTdate context,same transaction,unchanged blockers/no raw archive;native+security tests | Small | COMPLETE:374PGpass;actual stale-date explanation verified |
-| P2-003U | P1 NEXT | P2-003R-A; current catalog and verified session | Bounded genuine market-hours observation acceptance | Supported explicit catalog contract; fresh update/sample lineage and honest coverage; no automated recording or day certification from a short sample | Medium | Pending: next reviewed eligible market session |
+| P2-003U | P1 | P2-003R-A; current catalog and verified session | Bounded genuine market-hours observation acceptance | Supported explicit catalog contract; fresh update/sample lineage and honest coverage; no automated recording or day certification from a short sample | Medium | COMPLETE scoped acceptance 2026-11-11: 27 recent-trade updates, five accepted samples / 1,946 ms; both bounded captures closed; zero qualifying days |
 | P2-003V | P1 | P2-003G | Initial observation evidence report and closure audit | Bounded read-only archive report, source separation, no fake days or later-phase results; full verification packet | Medium | COMPLETE implementation:11new cases;385PGpass;Phase2 overall still partial |
+| P2-003W | P1 NEXT | P2-003U; current metadata/session/readiness | Investigate relative timestamp offsets, then genuine bounded reconnect acceptance | Read-only time diagnostics first; verify new authorization, lineage, gap handling and closure; no weakened freshness rules or synthetic relabeling | Medium | Pending; one attempt per actual run so far, real reconnect unverified |
 | P2-003 | P1 | P2-003A; P2-002A; optional operator credential for actual data | Candles, chain, approved feed and observation | Real UTC data; freshness/duplicates/gaps/reconnect/session checks; reports only from captured sessions | High | Partial: metadata/history/chain/auth-decoder implemented; bounded socket lifecycle implemented; durable research archive implemented; reviewed calendar/sampled coverage implemented; bounded multi-session supervisor implemented; safe preflight implemented; persistent local bootstrap verified; real acceptance/completed-day certification pending |
 | P3-001 | P2 | P2-003 | Knowledge provenance, indicators, controlled research | Licensed sources, completed candles, research cannot alter permissions | High | Not started |
 | P4-001 | P2 | P3-001 | Deterministic strategy and affordability interfaces | Whole-lot, spread, stale-data and insufficient-budget tests | High | Not started |
