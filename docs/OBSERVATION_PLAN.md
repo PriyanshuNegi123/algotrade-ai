@@ -45,6 +45,9 @@ not inject further disconnects for this pilot; controlled reconnect acceptance i
 Per-run quotas are enforced by the existing recorder. The daily/window ceilings are
 **manual operator limits**, not new backend enforcement. Count every created genuine parent,
 including failed, interrupted and ad hoc acceptance runs; do not retry beyond the daily cap.
+The [read-only budget checker](OBSERVATION_BUDGET.md) reports current ledger consumption
+and conservative report headroom. A blocked budget result is a stop for this operator plan;
+it does not add an enforced recorder gate or reserve capacity.
 A preflight-only check creates no capture. Check persisted records before repeating after
 an interrupted client; the bounded remote process may still be running.
 
@@ -85,6 +88,8 @@ Never automatically roll an expired/missing contract or infer a tradable expiry 
 ```sh
 observation_key='NSE_FO|45406'
 uv run python -m scripts.capture_local --status
+uv run python -m scripts.observation_budget --local \
+  --from-date 2026-11-11 --to-date 2026-11-17
 uv run python -m scripts.market_session_check --instrument-key "$observation_key" \
   --total-seconds 120 --session-seconds 120 --max-sessions 1 \
   --max-events 300 --max-payload-bytes 262144

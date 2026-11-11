@@ -222,3 +222,14 @@ Targeted24passed; fresh full disposable PostgreSQL17.11:758passed,0failed,0skipp
 Starlette warning. Ruff123files/format, mypy50files and locked sync passed. Actual deployed
 stored-data report remains IN_PROGRESS/NOT_CERTIFIED; archive hashes unchanged. Operational
 acceptance was separate from tests and made no real broker/Drive call or new recording.
+
+## Read-only pilot budget — 11 November 2026
+
+25 new fixture/security/CLI cases and one native PostgreSQL case verify count/byte/event/
+child headroom, standalone and failed parents, synthetic separation, global active-state
+review, IST buckets, overlapping/mismatched ledgers, bounded reads/ranges, safe response
+validation and no raw payload/key/policy reads or DB writes. Actual private CLI exit2 correctly
+reports exhausted daily budget without capture. Full disposable PostgreSQL17.11:784passed,
+0failed/0skipped, one existing Starlette warning. Locked sync, Ruff126files/format and
+mypy51source files passed. Automated fixtures used no real account/operational DB; actual
+read-only acceptance was separate and verified unchanged archives/configuration.

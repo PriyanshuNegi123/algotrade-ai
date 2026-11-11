@@ -84,7 +84,9 @@ report is not complete merely because its data-quality exporter exists.
    No automatic recording was installed; existing CLI has finite quotas.
 3. Accumulate the required seven-calendar-day window using actual available sessions.
    Follow [OBSERVATION_PLAN.md](OBSERVATION_PLAN.md) for the sparse pilot, manual budgets and
-   explicit commands. This does not establish full-session or completed seven-day coverage.
+   explicit commands. The [read-only budget diagnostic](OBSERVATION_BUDGET.md) now exposes
+   ledger usage and conservative headroom without enforcing a daily recorder gate.
+   This does not establish full-session or completed seven-day coverage.
    [Window-progress review](OBSERVATION_REVIEW.md) now distinguishes date filters, elapsed
    dates and actual samples, while leaving criteria review unresolved.
    Define/review any completion criteria before adding a certifier; current coverage always

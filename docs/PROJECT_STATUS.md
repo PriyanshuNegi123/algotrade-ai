@@ -1,5 +1,51 @@
 # Project status and next steps
 
+## 2026-11-11T07:00:31.926671+00:00 — P2-003X-A read-only pilot budget diagnostic
+
+Today's three-run allowance remains exhausted; completed a collection prerequisite without
+another recording. Added backend observation_budget and scripts.observation_budget --local
+with explicit max-seven-date inputs, the existing 120-second/300-event/256-KiB profile and
+three-run baseline-date plan. Read-only summaries count all genuine parents across keys,
+including interrupted/failed runs, plus standalone genuine sessions. Synthetic history is
+excluded from genuine use; any RUNNING parent/child anywhere blocks pending local review.
+Parent/child count/byte/event mismatches and externally overlapping sessions require review.
+
+One repeatable-read, read-only PostgreSQL transaction: two ledger reads capped at 100 rows
+plus overflow probes and aggregate active counts; no event payloads/keys/policies loaded.
+Bounds refuse truncation. Daily/window capacity includes child/event/byte dimensions and
+conservative all-key coverage headroom under unchanged 100-session/20,000-event/8-MiB limits.
+This is a snapshot diagnostic, not a reservation, recorder gate, disk/account coordinator,
+session readiness or capture authorization. All permission/live/recording/certification flags
+remain false. No HTTP route, schema, deletion, scheduler, new broker call or credential change.
+
+25 new targeted cases passed; one native PostgreSQL case added. Tests cover IST buckets,
+standalone/synthetic/active/large/overlapping/inconsistent ledgers, row/range bounds, fixed
+read-only query columns and invalid/mismatched local responses. Fresh disposable PostgreSQL
+17.11 full suite: 784 passed, zero failed/skipped; one existing Starlette warning; cluster
+removed. Locked sync, Ruff lint/format (126 files) and mypy (51 source files) passed. No real account
+or operational database used by automated tests; operational diagnostics were separate.
+
+Deployed through protected bootstrap with OAuth volume: READY_LOCAL/login verified, live/
+recording false. Actual CLI exit 2 is a valid BUDGET_BLOCKED report, only blocker
+DAILY_PILOT_BUDGET_EXHAUSTED. Usage: 3 parents / 3 children / 119 events / 111,881 canonical bytes;
+remaining today 0, baseline-window capacity 12 before future checks. All prior catalog and
+market/capture/session/event archive hashes, and protected .env/admin-password fingerprints,
+matched baseline. No active records or new capture. Private ignored proof:
+.local/verification/pilot_budget_before_20261111.json and pilot_budget_acceptance_20261111.json.
+
+Files: backend/app/market_data/observation_budget.py, scripts/observation_budget.py,
+tests/integration/test_observation_budget.py and test_postgres.py; docs/OBSERVATION_BUDGET.md,
+OBSERVATION_PLAN.md, PHASE2_ACCEPTANCE.md, PROJECT_STATUS.md, VERIFICATION.md, TEST_PLAN.md;
+all eight agent-memory documents. OBSERVATION; entries/live disabled. Local verified commit
+only; no push. Phase 2 and latest hosted CI remain unverified. Ordinary OAuth expiry,
+clock/unit/calendar limitations and genuine multi-day evidence/criteria remain outstanding.
+Next: P2-003Y at 12 November 09:45 IST after fresh budget/catalog/contract/calendar/time/storage/
+readiness checks; verify due backup at its existing evening check. No auto recording.
+
+Final security verification: all 18 task files passed default Gitleaks without allowances
+and private configured-credential comparison. Full history passed unchanged exact historical
+allowances. Whitespace clean; no secrets, recording, live activation or push introduced.
+
 ## 2026-11-11T06:43:29.968075+00:00 — P2-003Z evidence-only observation-window progress
 
 Today's three-run pilot allowance is consumed, so completed independent report work without

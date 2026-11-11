@@ -22,6 +22,33 @@ def sign_in(client):
     return response.json()["csrf_token"]
 
 
+def test_postgres_observation_budget_is_read_only_and_counts_daily_slots(postgres_config):
+    from sqlalchemy import event
+
+    from backend.app.market_data.observation_budget import pilot_budget
+    from tests.integration.test_observation_budget import NOW, REQUEST, seed
+
+    with TestClient(create_app(postgres_config)) as client:
+        engine = client.app.state.engine
+        seed(engine, count=3)
+        statements = []
+
+        def observed(connection, cursor, statement, parameters, context, executemany):
+            statements.append(statement.strip().split()[0].upper())
+
+        event.listen(engine, "before_cursor_execute", observed)
+        try:
+            result = pilot_budget(engine, REQUEST, now=NOW)
+        finally:
+            event.remove(engine, "before_cursor_execute", observed)
+        assert result["remaining_standard_runs_today"] == 0
+        assert result["remaining_window_run_slots_before_session_checks"] == 12
+        assert result["window_usage"]["runs"] == 3
+        assert "DAILY_PILOT_BUDGET_EXHAUSTED" in result["blockers"]
+        assert not result["authorizes_capture"] and not result["live_enabled"]
+        assert "SET" in statements and set(statements) <= {"SET", "SELECT"}
+
+
 def test_postgres_initial_observation_report(postgres_config, coverage_clock):
     from backend.app.market_data.initial_report import initial_observation_report
     from tests.integration.test_coverage import recorded, report_request
