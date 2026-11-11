@@ -83,6 +83,8 @@ report is not complete merely because its data-quality exporter exists.
    during an eligible market session. Verify fresh updates, reconnects and honest sampled gaps.
    No automatic recording was installed; existing CLI has finite quotas.
 3. Accumulate the required seven-calendar-day window using actual available sessions.
+   Follow [OBSERVATION_PLAN.md](OBSERVATION_PLAN.md) for the sparse pilot, manual budgets and
+   explicit commands. This does not establish full-session or completed seven-day coverage.
    Define/review any completion criteria before adding a certifier; current coverage always
    reports zero qualifying days. Time passing alone does not complete this requirement.
 4. Resolve field-unit/calendar limitations using primary evidence and record their limits.

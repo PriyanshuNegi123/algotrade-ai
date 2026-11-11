@@ -1,5 +1,46 @@
 # Prioritized backlog
 
+## 2026-11-11T06:31:07.741099+00:00 — P2-003X bounded observation/storage plan verified
+
+Added docs/OBSERVATION_PLAN.md: candidate 11–17 November IST sparse pilot, three optional
+operator checkpoints per eligible date, each capped at 120 seconds / one child / 300 events /
+256 KiB. No scheduler or capture started. Daily/window limits are manual policies, not new
+backend guards. Existing three actual captures consume today's allowance; no fourth run.
+Pinned baseline has five eligible dates, twelve possible remaining runs. Recheck metadata,
+explicit CE/PE key/expiry, calendar amendments, clock, account coordination and readiness
+before each later run; missed windows remain missing. No automated contract roll/catch-up.
+
+Validated both documented command profiles against CapturePolicy, seven-date CoverageRequest,
+calendar identity and report bounds. Conservative 21-run ceiling: 6,300 events / 5.25 MiB,
+below existing 20,000-event / 8 MiB / 100-session limits. Existing 119 events / 111,881 bytes
+count toward the plan. Interim stored-data report still has three sessions and zero qualifying
+days. Fresh 120-second readiness passed, but the manual daily cap prevented recording.
+
+Read-only inventory: operational DB 28,191,891 bytes; local encrypted cache zero. Read-only
+bounded pg_dump measured 9,732,125 bytes in RAM against the unchanged 32 MiB export limit;
+no local archive, upload or new restore. Table/index/catalog/WAL overhead excluded from
+canonical quotas; conservative manual disk/DB/dump pause thresholds documented. Existing
+three-day Drive backup unchanged, next due 12 November; local receipt is not current remote
+availability. No deletion/offload of operational PostgreSQL or expansion of Google scope.
+
+Fresh locked sync, Ruff lint/format (122 files), mypy (50 source files) and disposable
+PostgreSQL 17.11 regression passed: 744 passed, zero failed/skipped, one existing Starlette
+warning; cluster removed. Automated tests used no operational DB/real account. Operational
+size/report diagnostics were read-only and separate; no broker or Drive requests. No source,
+schema, credentials, settings, scheduler, timestamps or security checks changed. OBSERVATION;
+entries/live disabled. Files: docs/OBSERVATION_PLAN.md, LOCAL_CAPTURE.md, BACKUP_SCHEDULE.md,
+PHASE2_ACCEPTANCE.md, PROJECT_STATUS.md, VERIFICATION.md and all eight agent-memory files.
+All 14 changed Markdown files passed default Gitleaks without allowances and configured-
+credential comparison; full history passed unchanged exact allowances. Whitespace clean.
+Local commit only; no push. Hosted CI and Phase 2 completion remain unverified; clock/unit/calendar and
+seven-day acceptance criteria/evidence remain open. Planning does not certify elapsed days.
+
+Private ignored receipts: observation_plan_inventory_20261111.json,
+observation_plan_dump_size_20261111.json and observation_plan_validation_20261111.json under
+.local/verification/. Next operational action: 12 November 09:45 IST checkpoint only after
+fresh catalog/contract/calendar/time/storage/budget/readiness checks; verify due backup at
+its existing 21:30 IST check. Collection and reviewed completion criteria remain pending.
+
 ## 2026-11-11T06:19:55.417924+00:00 — P2-003W controlled genuine reconnect and read-only time diagnostics
 
 Read-only macOS SNTP probes: Apple offset +85.321 ms with +/-93.765 ms uncertainty;
@@ -554,7 +595,8 @@ Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit aut
 | P2-003U | P1 | P2-003R-A; current catalog and verified session | Bounded genuine market-hours observation acceptance | Supported explicit catalog contract; fresh update/sample lineage and honest coverage; no automated recording or day certification from a short sample | Medium | COMPLETE scoped acceptance 2026-11-11: 27 recent-trade updates, five accepted samples / 1,946 ms; both bounded captures closed; zero qualifying days |
 | P2-003V | P1 | P2-003G | Initial observation evidence report and closure audit | Bounded read-only archive report, source separation, no fake days or later-phase results; full verification packet | Medium | COMPLETE implementation:11new cases;385PGpass;Phase2 overall still partial |
 | P2-003W | P1 | P2-003U; current metadata/session/readiness | Investigate relative timestamp offsets, then genuine bounded reconnect acceptance | Read-only time diagnostics first; verify new authorization, lineage, gap handling and closure; no weakened freshness rules or synthetic relabeling | Medium | COMPLETE scoped controlled reconnect 2026-11-11: two genuine attempts, unchanged backoff, verified gap/closure; absolute clock cause and natural outages unverified |
-| P2-003X | P1 NEXT | P2-003U; P2-003W | Bounded multi-day observation collection plan and genuine evidence | Explicit operator runs, current calendar/catalog, finite storage budgets, conservative gaps and no short-run/day certification | Medium | Pending; no automatic capture schedule authorized |
+| P2-003X | P1 | P2-003U; P2-003W | Bounded multi-day observation collection plan | Explicit operator runs, current calendar/catalog, finite storage budgets, conservative gaps and no short-run/day certification | Medium | COMPLETE scoped plan 2026-11-11: validated quotas/report/disk budgets and explicit commands; actual collection remains pending |
+| P2-003Y | P1 NEXT | P2-003X; current calendar/catalog/readiness | Collect and review genuine multi-day pilot evidence | Explicit operator checkpoints, daily/storage budgets, honest gaps; separately review completion criteria; no automatic recording or day certification | Medium | Pending; 11 November allowance consumed; next candidate 12 November after fresh checks |
 | P2-003 | P1 | P2-003A; P2-002A; optional operator credential for actual data | Candles, chain, approved feed and observation | Real UTC data; freshness/duplicates/gaps/reconnect/session checks; reports only from captured sessions | High | Partial: metadata/history/chain/auth-decoder implemented; bounded socket lifecycle implemented; durable research archive implemented; reviewed calendar/sampled coverage implemented; bounded multi-session supervisor implemented; safe preflight implemented; persistent local bootstrap verified; real acceptance/completed-day certification pending |
 | P3-001 | P2 | P2-003 | Knowledge provenance, indicators, controlled research | Licensed sources, completed candles, research cannot alter permissions | High | Not started |
 | P4-001 | P2 | P3-001 | Deterministic strategy and affordability interfaces | Whole-lot, spread, stale-data and insufficient-budget tests | High | Not started |

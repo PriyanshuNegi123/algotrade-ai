@@ -74,3 +74,12 @@ Apple reference:[calendar-based LaunchAgents](https://developer.apple.com/librar
 Optional passphrase-encrypted off-device recovery kits are documented in
 [RECOVERY_KIT.md](RECOVERY_KIT.md). Health distinguishes verified cloud kits from physical
 offline copies; neither a local receipt nor scheduling proves present Drive availability.
+
+## Observation-pilot storage review — 11 November 2026
+
+[OBSERVATION_PLAN.md](OBSERVATION_PLAN.md) adds conservative manual collection/storage pause
+thresholds without changing this schedule. Read-only pg_dump measured 9,732,125 bytes in
+RAM, within the existing 32-MiB export limit; no archive was written/uploaded and no new
+restore was verified. Local cache is empty. PostgreSQL still consumes local disk; payload
+quotas do not cap tables/indexes/WAL or source catalogs. Next due local date is 12 November;
+local health does not prove current Drive access or protection of newly collected evidence.

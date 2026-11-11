@@ -236,3 +236,11 @@ reconnect_api_20261111.json and reconnect_final_20261111.json under .local/verif
 Next: prepare a bounded multi-day observation collection plan with storage budgets and
 operator-invoked commands; continue independent time checks before longer collection.
 Do not enable automatic recording, infer elapsed coverage or certify days from short runs.
+
+## Multi-day operator plan — 11 November 2026
+
+[OBSERVATION_PLAN.md](OBSERVATION_PLAN.md) defines a sparse 11–17 November pilot with
+120-second / 300-event / 256-KiB per-run quotas and manual daily/report/storage ceilings.
+It adds no scheduler or recorder behavior. Today's three actual captures consume the daily
+allowance. Recheck all conditions before a later explicit run; seven-day evidence and
+completion criteria remain unverified. PostgreSQL stays local; cloud backup is separate.
