@@ -245,3 +245,14 @@ a hosted workflow must still pass after an approved push. One Starlette warning 
 Current dependency audit: 73 packages / 0 findings / 0 skips, real loopback TLS/supervision and isolated
 OAuth/bootstrap/auth/restart/outage smoke passed. Test containers/volumes and clusters removed;
 operator container, settings and archived market data unchanged. No genuine recording.
+
+## Coverage frame exclusions — 11 November 2026
+
+25 new validated synthetic-frame cases test six exclusive reasons, the original admission
+predicate across sixteen boundary/age combinations, immutable payloads, isolated counters,
+empty frames and no bridging across exclusions. Existing report/coverage/native PostgreSQL
+checks assert counter sums and rendering. Targeted 80 passed; full disposable PostgreSQL 17.11:
+809 passed / 0 failed / 0 skipped, one existing Starlette warning. Ruff 127 files/format, mypy 51 files
+and locked sync passed. Actual private reports preserved the old 82-frame aggregate and all accepted
+spans/archive hashes; no broker request, new capture or clock adjustment. Details:
+[FRAME_EXCLUSIONS.md](FRAME_EXCLUSIONS.md). Prior Docker 17.6 evidence was for 784 tests.

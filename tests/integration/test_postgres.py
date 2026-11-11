@@ -68,6 +68,10 @@ def test_postgres_initial_observation_report(postgres_config, coverage_clock):
         assert not synthetic["window_progress"]["phase2_complete"]
         assert "SYNTHETIC_SOURCE" in synthetic["window_progress"]["review_blockers"]
         assert "SYNTHETIC_SOURCE" not in genuine["window_progress"]["review_blockers"]
+        assert (
+            sum(synthetic["unusable_frame_reasons"].values())
+            == synthetic["outside_or_unusable_frames"]
+        )
 
 
 def test_postgres_migration_auth_and_restart(postgres_config):

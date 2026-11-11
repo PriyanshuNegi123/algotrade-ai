@@ -1,5 +1,51 @@
 # Prioritized backlog
 
+## 2026-11-11T07:56:33.025979+00:00 — P2-DQ-01 frame-exclusion reason diagnostics
+
+Added fixed unusable_frame_reasons counts to existing coverage JSON and initial-report JSON/
+Markdown. Six ordered primary reasons split the existing outside/unusable aggregate: requested
+date, missing calendar window, outside session, receipt at/after as-of, generation after
+receipt and generation older than 10 seconds. Counts are per-report isolated and sum to the
+legacy aggregate. Rejection clears continuity. No age tolerance, acceptance predicate,
+per-key trade filter, source separation, archive/hash/schema or permission change. Empty/
+non-data frames retain existing counting behavior; corruption/resource failures still stop.
+
+25 new synthetic validated-frame cases cover each reason, old-predicate equivalence across
+16 boundary/age combinations, state isolation, empty frames and non-bridging rejection.
+Existing SQLite/read-only/Markdown and native PostgreSQL assertions strengthened. Targeted
+80 passed. Fresh disposable PostgreSQL 17.11 suite 809 passed / 0 failed / 0 skipped; one existing
+Starlette warning; cluster removed. Locked sync, Ruff 127 files/format and mypy 51 files passed.
+Draft imports/formatting corrected first. No automated test used a real account or operator DB.
+
+Before/after actual deployment proof passed. Bootstrap READY_LOCAL, login verified, private
+DB/OAuth volume retained, live/recording false. Stored three-session report: 119 events still
+has 82 excluded frames, now all GENERATION_AFTER_RECEIPT; other five reason counts zero.
+CLI and authenticated GET coverage API agree; anonymous denied, CSRF logout passed. Accepted
+sample counts and measured spans, all previous catalog/candle/chain/capture/session/event
+hashes and protected .env/admin-password fingerprints unchanged. No active capture/child.
+OAuth status remains encrypted stored token expired; no renewal or promotion. No broker/
+Drive call, new genuine recording, timestamp adjustment, clock setting or live activation.
+
+The new counts identify a timestamp relation, not the guilty clock or a verified root cause.
+No completed day or quality certification added. Existing per-key rejects/missing ticks and
+protocol failures are not exhaustively enumerated by this legacy-frame aggregate. Current
+read-time diagnostics never rewrite capture-time evidence. See docs/FRAME_EXCLUSIONS.md.
+Private ignored baseline/API/CLI/Markdown proof: .local/verification/frame_diagnostics_*_20261111.*.
+
+Files: coverage.py, initial_report.py; tests/unit/test_coverage_diagnostics.py and
+test_observation_progress.py; tests/integration/test_coverage.py, test_initial_report.py,
+test_postgres.py; docs/FRAME_EXCLUSIONS.md, CLOCK_DIAGNOSTICS.md, OBSERVATION_REVIEW.md,
+PHASE2_ACCEPTANCE.md, TEST_PLAN.md, PROJECT_STATUS.md, VERIFICATION.md; all eight agent-memory
+files. OBSERVATION; entries/live disabled. Local verified commit only; no push. Latest hosted
+CI, genuine multi-day evidence/criteria, clock cause and calendar/unit clarification remain
+unresolved. Last Docker 17.6 packet (784 passes) predates this change; current native 809-pass result is
+not a hosted-CI claim. Next: P2-003Y 12 November 09:45 IST after fresh plan checks, including budget;
+verify existing due backup that evening. No automatic recording.
+
+Final checks: all 22 task files passed default Gitleaks without allowances and private
+configured-credential comparison. Full history passed unchanged exact historical allowances.
+Whitespace clean. No secret, new recording, timestamp adjustment, live activation or push.
+
 ## 2026-11-11T07:39:20.844780+00:00 — P2-UNIT-01 pinned primary examples and unsent clarification draft
 
 Continued the existing field-unit evidence gate while the collection plan has no additional
@@ -778,6 +824,7 @@ Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit aut
 | P2-003Z | P1 | P2-003V; P2-003X | Evidence-only observation-window progress and review reasons | Exact IST range boundaries, sampled/elapsed distinction, source/calendar separation and permanent non-certification; no invented minimum threshold | Medium | COMPLETE scoped report 2026-11-11: 14 new cases, 758 PostgreSQL passes; criteria/collection still pending |
 | P2-VERIFY-01 | P1 | P2-003X-A; P2-003Z | Consolidated current local verification packet | Full suite on native/CI-version PostgreSQL, dependency/TLS/supervision/isolated bootstrap-outage checks; operator preservation; no hosted-CI inference | Medium | COMPLETE 2026-11-11: 784 passes on each PG version, 73 dependency audits/0 findings and isolated smoke passed |
 | P2-UNIT-01 | P1 | P2-003A; P2-003O | Follow-up primary unit evidence and provider clarification draft | Pin official examples, distinguish implicit display choices from contracts, preserve raw values and prepare unsent endpoint-specific questions | Medium | COMPLETE bounded review 2026-11-11; provider answer/normalization gate unresolved, no request sent |
+| P2-DQ-01 | P1 | P2-003G; P2-003Z | Read-only primary frame-exclusion reason counts | Preserve admission/aggregate/archives and explain fixed primary reasons with boundaries, isolated counters and private deployed proof | Medium | COMPLETE 2026-11-11: 25 new cases, 809 PostgreSQL passes; clock root cause remains unresolved |
 | P2-003 | P1 | P2-003A; P2-002A; optional operator credential for actual data | Candles, chain, approved feed and observation | Real UTC data; freshness/duplicates/gaps/reconnect/session checks; reports only from captured sessions | High | Partial: metadata/history/chain/auth-decoder implemented; bounded socket lifecycle implemented; durable research archive implemented; reviewed calendar/sampled coverage implemented; bounded multi-session supervisor implemented; safe preflight implemented; persistent local bootstrap verified; real acceptance/completed-day certification pending |
 | P3-001 | P2 | P2-003 | Knowledge provenance, indicators, controlled research | Licensed sources, completed candles, research cannot alter permissions | High | Not started |
 | P4-001 | P2 | P3-001 | Deterministic strategy and affordability interfaces | Whole-lot, spread, stale-data and insufficient-budget tests | High | Not started |

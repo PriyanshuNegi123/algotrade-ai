@@ -47,3 +47,13 @@ a full session, seven observation days, strategy readiness or trading permission
 Private receipts live under ignored `.local/verification/`; suspected secrets and OAuth
 material are never part of these reports. PostgreSQL remains the operational store.
 OBSERVATION mode and disabled live execution remain mandatory.
+
+## Follow-up: frame exclusion counts — 11 November
+
+The existing coverage/report now adds [primary frame-exclusion counters](FRAME_EXCLUSIONS.md).
+Across the three stored genuine derivative sessions (119 events), the unchanged legacy
+aggregate is 82 excluded frames; all 82 classify as GENERATION_AFTER_RECEIPT. This aggregate
+includes the earlier individual captures; it does not replace their scoped historical counts.
+The other five primary counters are zero. Authenticated API and CLI reports agree; accepted
+samples/spans and archive hashes are unchanged. No extra market capture was started.
+These diagnostics establish the timestamp relation only; no clock was adjusted or blamed.

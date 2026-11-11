@@ -86,6 +86,7 @@ def initial_observation_report(engine: Engine, request: CoverageRequest) -> dict
         "days": coverage["days"],
         "calendar": coverage["calendar"],
         "outside_or_unusable_frames": coverage["outside_or_unusable_frames"],
+        "unusable_frame_reasons": dict(coverage["unusable_frame_reasons"]),
         "sampled_dates": sampled_dates,
         "window_progress": _window_progress(coverage, request, sampled_dates),
         "coverage_kind": coverage["coverage_kind"],
@@ -146,6 +147,21 @@ def render_initial_observation(report: dict[str, Any]) -> str:
         "Sampled spans are conservative evidence, not complete exchange tick coverage.",
         "Calendar amendment completeness is unverified; unknown windows remain unknown.",
         "Qualifying observation days: 0. No completed-day certification is implemented.",
+        "",
+        "## Frame exclusion diagnostics",
+        "",
+        "| Primary reason | Frames |",
+        "|---|---:|",
+    ]
+    lines.extend(
+        f"| {_text(reason)} | {count} |"
+        for reason, count in report["unusable_frame_reasons"].items()
+    )
+    lines += [
+        "",
+        "One primary reason is counted per frame in the outside/unusable aggregate.",
+        "These counts do not enumerate all per-key trade exclusions, missing ticks or root causes.",
+        "Generation after receipt does not identify which clock or timestamp source is incorrect.",
         "",
         "## Indicators evaluated",
         "",

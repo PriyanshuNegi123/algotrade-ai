@@ -19,6 +19,14 @@ from backend.app.market_data.observation_schema import CapturedEvent
 MAX_SESSIONS = 100
 MAX_EVENTS = 20_000
 MAX_BYTES = 8 * 1024 * 1024
+UNUSABLE_FRAME_REASONS = (
+    "OUTSIDE_REQUESTED_DATES",
+    "NO_REVIEWED_SESSION_WINDOW",
+    "OUTSIDE_REVIEWED_SESSION_WINDOW",
+    "RECEIPT_AT_OR_AFTER_REPORT_TIME",
+    "GENERATION_AFTER_RECEIPT",
+    "GENERATION_TOO_OLD",
+)
 
 
 class CoverageError(Exception):
@@ -76,6 +84,9 @@ class Samples:
     intervals: dict[tuple[date, str], list[tuple[datetime, datetime]]] = field(default_factory=dict)
     counts: dict[tuple[date, str], int] = field(default_factory=dict)
     outside: int = 0
+    unusable_reasons: dict[str, int] = field(
+        default_factory=lambda: dict.fromkeys(UNUSABLE_FRAME_REASONS, 0)
+    )
 
     def accept(
         self, event: CapturedEvent, request: CoverageRequest, policy: CalendarPolicy, now: datetime
@@ -88,15 +99,23 @@ class Samples:
         day = received.astimezone(IST).date()
         window = policy.day(day)
         opened, closed = window["opens_at"], window["closes_at"]
-        if (
-            not request.from_date <= day <= request.to_date
-            or not opened
-            or not closed
-            or not opened <= received < min(closed, now)
-            or not 0 <= (received - frame.generated_at).total_seconds() <= 10
-        ):
+        reason = None
+        if not request.from_date <= day <= request.to_date:
+            reason = "OUTSIDE_REQUESTED_DATES"
+        elif not opened or not closed:
+            reason = "NO_REVIEWED_SESSION_WINDOW"
+        elif not opened <= received < closed:
+            reason = "OUTSIDE_REVIEWED_SESSION_WINDOW"
+        elif received >= now:
+            reason = "RECEIPT_AT_OR_AFTER_REPORT_TIME"
+        elif (received - frame.generated_at).total_seconds() < 0:
+            reason = "GENERATION_AFTER_RECEIPT"
+        elif (received - frame.generated_at).total_seconds() > 10:
+            reason = "GENERATION_TOO_OLD"
+        if reason:
             self.previous.clear()
             self.outside += 1
+            self.unusable_reasons[reason] += 1
             return
         accepted = set()
         for observation in event.observations:
@@ -240,6 +259,7 @@ def coverage_report(
         "session_ids": session_ids,
         "counts": counters,
         "outside_or_unusable_frames": samples.outside,
+        "unusable_frame_reasons": dict(samples.unusable_reasons),
         "days": days,
         "coverage_kind": "CONSERVATIVE_SAMPLED_SPANS",
         "calendar_verified": False,

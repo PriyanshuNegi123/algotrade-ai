@@ -273,6 +273,8 @@ def test_outside_windows_and_missing_keys(client):
     result = coverage_report(engine, report_request(keys=(KEY, "NSE_FO|missing")), policy=policy)
     assert all(item["sampled_interval_ms"] == 0 for item in result["days"][0]["keys"])
     assert result["outside_or_unusable_frames"] == 2
+    assert result["unusable_frame_reasons"]["OUTSIDE_REVIEWED_SESSION_WINDOW"] == 2
+    assert sum(result["unusable_frame_reasons"].values()) == 2
 
 
 def test_digest_and_resource_caps_fail_without_partial_report(client, monkeypatch):

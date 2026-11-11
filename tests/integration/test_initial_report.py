@@ -29,6 +29,8 @@ def test_empty_seven_dates_never_certifies_observation(client):
     assert "ACCEPTANCE_CRITERIA_REVIEW_REQUIRED" in report["window_progress"]["review_blockers"]
     markdown = render_initial_observation(report)
     assert "## Observation-window progress" in markdown
+    assert "## Frame exclusion diagnostics" in markdown
+    assert sum(report["unusable_frame_reasons"].values()) == report["outside_or_unusable_frames"]
     assert "not a verified observation start" in markdown
     for heading in (
         "Data availability",

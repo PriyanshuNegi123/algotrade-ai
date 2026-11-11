@@ -8,7 +8,7 @@ import pytest
 
 from backend.app.market_data import initial_report
 from backend.app.market_data.contracts import IST
-from backend.app.market_data.coverage import CoverageRequest
+from backend.app.market_data.coverage import UNUSABLE_FRAME_REASONS, CoverageRequest
 
 START = date(2026, 11, 11)
 END = date(2026, 11, 17)
@@ -39,6 +39,7 @@ def reader_output(as_of):
         "days": days,
         "calendar": {"kind": "OFFICIAL_BASELINE", "amendment_completeness_verified": False},
         "outside_or_unusable_frames": 0,
+        "unusable_frame_reasons": dict.fromkeys(UNUSABLE_FRAME_REASONS, 0),
         "coverage_kind": "CONSERVATIVE_SAMPLED_SPANS",
         "qualifying_observation_days": 0,
     }

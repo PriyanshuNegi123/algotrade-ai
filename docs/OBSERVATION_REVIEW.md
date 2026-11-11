@@ -69,3 +69,11 @@ missing-data handling, calendar applicability, timestamp uncertainty and report 
 before considering a separate certifier. Later-phase indicators, patterns, paper signals
 and performance analysis remain explicitly unimplemented in this Phase 2 evidence report.
 No report or date arithmetic grants phase advancement or trading permission.
+
+## Primary frame-exclusion diagnostics
+
+JSON also includes `unusable_frame_reasons`, with a matching Markdown table. The six fixed
+counts sum to the existing outside/unusable-frame aggregate and use one ordered primary
+reason per rejected data frame. This is read-time explanation, not a new eligibility rule,
+root-cause diagnosis, complete missing-data taxonomy or completed-day policy. See
+[FRAME_EXCLUSIONS.md](FRAME_EXCLUSIONS.md). Existing per-key filters and flags are unchanged.
