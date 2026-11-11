@@ -1,5 +1,12 @@
 # Security review — Phase1 foundation and initial Phase2 read-only slice
 
+Latest bounded local verification: [11 November packet](VERIFICATION_PACKET.md). Both full
+PostgreSQL suites passed 784 tests with 0 skips; 73 installed Python packages audited with 0 known
+findings / 0 skips; isolated TLS/supervision and Docker auth/OAuth/bootstrap/outage checks passed.
+No production approval, container-image CVE scan or new hosted CI success is implied.
+The operator runtime/credentials/archives were unchanged; live trading remains disabled.
+The dated 6 November source-review notes below remain historical evidence.
+
 Reviewed 2026-11-06 UTC. Scope: foundation source, isolated tests, dependency environment,
 unauthenticated browser shell and local Docker smoke checks. **Not a production approval or penetration test.**
 

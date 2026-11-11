@@ -21,8 +21,12 @@ authentication/storage and the bounded endpoint check are complete; other gates 
 | Calendar and sampled coverage | Pinned source integrity, holidays/special sessions, unknown states, conservative spans tested | Amendment completeness unverified; evidence-only, no day certifier implemented |
 | Initial report | Bounded hash-validated report/CLI; evidence-only IST window progress and review reasons deployed 11 November | It is an interim evidence report, not a completed seven-day analysis |
 | Seven-calendar-day observation | One sampled market-hours date (11 November), 18 accepted samples / 2,253 ms across two Nifty captures; zero qualifying days | Actual available trading-session evidence and full window remain outstanding |
-| Hosted CI | foundation/verify passed on0f2df43 | Report/storage/test work is committed locally; latest hosted CI for these additions remains unverified |
+| Hosted CI | foundation/verify passed on0f2df43 | Local suites pass on PostgreSQL 17.11 and CI-image 17.6 (784 each); newer hosted CI remains unverified |
 | Storage | PostgreSQL remains working transactional store; user selected Google Drive for backup/archive target | Desktop OAuth,encrypted backup and isolated restore verified; three-day schedule installed; passphrase-encrypted kit independently verified10November; operational DB remains PostgreSQL |
+
+See [the 11 November local verification packet](VERIFICATION_PACKET.md) for fresh dependency,
+TLS/supervision, disposable Docker and both PostgreSQL-version results. It does not close
+the hosted CI or genuine multi-day evidence gates.
 
 ## Historical checks — 9 November
 

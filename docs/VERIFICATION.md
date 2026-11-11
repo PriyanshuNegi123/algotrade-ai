@@ -2179,3 +2179,44 @@ readiness checks; verify due backup at its existing evening check. No auto recor
 Final security verification: all 18 task files passed default Gitleaks without allowances
 and private configured-credential comparison. Full history passed unchanged exact historical
 allowances. Whitespace clean; no secrets, recording, live activation or push introduced.
+
+## 2026-11-11T07:28:34.488310+00:00 — P2-VERIFY-01 consolidated local verification packet
+
+Verified application source 64c35bc without adding features, changing dependencies or making
+a source/CI fix. Fresh native PostgreSQL 17.11 full suite:784 passed / 0 failed / 0 skipped. Additional
+full suite on disposable postgres:17.6-bookworm (same image/version as CI):784 passed / 0 failed /
+0 skipped. Native setup non-superuser; CI-style setup superuser only in that disposable DB;
+restricted privilege fixture remains non-owner/non-superuser. Existing privilege test passed
+in both. This is local database-version parity, not a hosted GitHub Actions pass.
+
+Locked sync, Ruff 126 files/format and mypy 51 source files passed. uv 0.12.19 matches workflow;
+Python 3.12.14, Compose 5.6.1 locally. One existing nonfatal Starlette warning per full suite.
+pip-audit: 73 installed dependencies, 0 known findings, 0 skipped; no upgrades/ignore-vuln changes.
+This audit excludes container/OS CVEs and is not a penetration test or production approval.
+
+Real loopback TLS/Protobuf/binary subscription/ping-pong/redirect refusal and two durable
+synthetic supervised sessions passed. Isolated Compose --config-only --oauth-vault and
+--bootstrap --oauth-vault passed: private DB/loopback app, UID 10001/private modes, synthetic
+OAuth denial/CSRF/encrypted roundtrip, exact-project volume retention after recreation,
+login/session restart persistence, DB-outage readiness failure/recovery, logout/revocation
+and absent execution routes. No real broker/provider request or actual OAuth renewal.
+
+Temporary Compose containers/volumes, CI-version container/tmpfs and native cluster removed;
+normal Docker images/build cache not pruned. Operator container ID/image/start instant,
+protected .env/admin-password fingerprints and all prior catalog/market/capture/session/
+event hashes matched before/after. Operator app not restarted; active capture/child counts 0.
+No new genuine recording, cloud mutation, scheduler, credential/security/ownership change.
+OBSERVATION; entries/live disabled. Daily allowance unchanged. Private ignored proof:
+.local/verification/verification_packet_20261111.json, dependency_audit_20261111.json,
+ci_postgres_20261111.json plus baseline/redacted test output. Local docs commit only; no push.
+
+Files: docs/VERIFICATION_PACKET.md, TEST_PLAN.md, SECURITY_AUDIT.md, PHASE2_ACCEPTANCE.md,
+PROJECT_STATUS.md, VERIFICATION.md and all 8 agent-memory Markdown. Phase 2 remains partial;
+ordinary OAuth expiry, timestamp/calendar/unit limitations, reviewed coverage criteria and
+multi-day evidence remain open. Hosted CI remains unverified for these local commits.
+Next: P2-003Y 12 November 09:45 IST after fresh budget/catalog/contract/calendar/time/storage/
+readiness checks; verify existing due backup that evening. No automatic recording.
+
+Final checks: all 14 changed Markdown files passed default Gitleaks without allowances
+and private configured-credential comparison. Full history passed unchanged exact historical
+allowances. Whitespace clean. No source/credential change, capture, live activation or push.

@@ -233,3 +233,15 @@ reports exhausted daily budget without capture. Full disposable PostgreSQL17.11:
 0failed/0skipped, one existing Starlette warning. Locked sync, Ruff126files/format and
 mypy51source files passed. Automated fixtures used no real account/operational DB; actual
 read-only acceptance was separate and verified unchanged archives/configuration.
+
+## Consolidated verification — 11 November 2026
+
+[VERIFICATION_PACKET.md](VERIFICATION_PACKET.md) records source `64c35bc`: full 784 passed /
+0 failed / 0 skipped on both native PostgreSQL 17.11 and disposable CI-image 17.6. The former used
+a non-superuser setup login; the latter matched CI's setup-superuser behavior while the
+actual restricted execution fixture remained non-owner/non-superuser. Existing privilege
+test passed in both. No test/assertion was disabled or weakened. This is local evidence;
+a hosted workflow must still pass after an approved push. One Starlette warning remains.
+Current dependency audit: 73 packages / 0 findings / 0 skips, real loopback TLS/supervision and isolated
+OAuth/bootstrap/auth/restart/outage smoke passed. Test containers/volumes and clusters removed;
+operator container, settings and archived market data unchanged. No genuine recording.
