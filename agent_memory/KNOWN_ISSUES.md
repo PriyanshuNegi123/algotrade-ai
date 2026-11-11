@@ -1,5 +1,49 @@
 # Known issues
 
+## 2026-11-11T07:39:20.844780+00:00 — P2-UNIT-01 pinned primary examples and unsent clarification draft
+
+Continued the existing field-unit evidence gate while the collection plan has no additional
+today allowance. Rechecked public Upstox instrument JSON, V2 chain and V3 REST Greek pages;
+inspected two official SDK examples at commit 28655475bcaac5e47bbf7202ad1d55027cbe4d4e
+(9 November). Public unauthenticated GitHub metadata/raw retrieval verified exact revision,
+file hashes and line references. Sources retained privately; downloaded code never executed.
+Browser raw/API retrieval failed, so fixed unauthenticated HTTP retrieval was used; initial
+private evidence write lacked its directory, corrected before the successful archive.
+
+New primary cues: chain example calls the documented method, extracts IV and multiplies by
+100 for percent display. A distinct V3 REST example has percent formatting and daily-theta
+wording. These are example assumptions, not a universal unit contract, proof of a provider
+bug, or V3-to-V2 equivalence. API descriptions/example magnitudes still do not supply all
+needed explicit scale/time/quantity rules. Legacy NEST/other-broker/third-party conventions
+were not promoted into JSON normalization evidence. No conversion or rounding authorized.
+
+Added BROKER_UNIT_CLARIFICATION.md with bounded cited comparison and six precise provider
+questions: selected index CE/PE BOD JSON tick encoding, V2 IV/POP scales, theta time/day count,
+vega volatility step, Greek currency/quantity/multipliers and endpoint/version differences.
+Draft is prepared, NOT SENT. No forum post, message, issue, support ticket, broker account
+call, live market capture or provider consent was initiated. No account/private response
+material included. Response/version/date evidence is required before a separate conversion
+proposal and tests. The unresolved unit gate remains open; read-time policy ID unchanged.
+
+Fresh locked sync, Ruff 126 files/format, mypy 51 source files and full disposable PostgreSQL 17.11:
+784 passed / 0 failed / 0 skipped; existing Starlette warning remains, cluster removed. Existing raw
+preservation/canonical-hash and unit-context regressions pass. No tests added for this docs-
+only task. No application/dependency/schema/credential/environment/calendar/security change,
+operational DB operation, runtime restart, Google/backup mutation or live activation.
+OBSERVATION; entries/live disabled. Public web/SDK reads only, separate from regression tests.
+
+Files: docs/BROKER_UNIT_CLARIFICATION.md, FIELD_UNIT_EVIDENCE.md, BROKER_COMPLIANCE.md,
+PHASE2_ACCEPTANCE.md, PROJECT_STATUS.md, VERIFICATION.md and all eight agent-memory files.
+Private ignored evidence: .local/verification/unit_review_20261111/sources.json plus two
+public source copies (protected modes). Local verified documentation commit only; no push.
+Phase 2, multi-day coverage/criteria, timestamp/calendar/unit clarification, ordinary OAuth
+expiry and latest hosted CI remain unresolved. Next operational action: P2-003Y on 12 November
+09:45 IST after fresh plan checks; provider clarification still needed before normalization.
+
+Final checks: pinned public copies match recorded hashes. All 14 changed Markdown files
+passed default Gitleaks without allowances and private configured-credential comparison.
+Full history passed unchanged exact historical allowances; whitespace clean. No push.
+
 ## 2026-11-11T07:28:34.488310+00:00 — P2-VERIFY-01 consolidated local verification packet
 
 Verified application source 64c35bc without adding features, changing dependencies or making

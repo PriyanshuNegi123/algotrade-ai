@@ -169,3 +169,11 @@ VERIFICATION.md, BROKER_COMPLIANCE.md and all eight agent_memory records.
 Next:P2-003P bounded real streaming authorization/decoder acceptance:explicit short-lived
 index-only subscription, finite runtime and safe diagnostics; no orders, automatic restart,
 full-day claim or strategy phase promotion. Broker closed-market outcomes must remain honest.
+
+## 11 November 2026 — unit clarification preparation
+
+[BROKER_UNIT_CLARIFICATION.md](BROKER_UNIT_CLARIFICATION.md) records a bounded primary-source
+follow-up and an unsent request for endpoint/segment-specific unit definitions. Two official
+SDK examples are pinned to an exact revision; implicit percent/daily display conventions are
+not treated as a universal contract. No provider message, account request, conversion, broker
+permission claim or execution change occurred. Existing raw values and unresolved labels stay.

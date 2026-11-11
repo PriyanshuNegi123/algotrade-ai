@@ -68,3 +68,18 @@ for BOD JSON tick_size scaling; V2 chain IV/POP scale; theta time basis; vega vo
 step; per-unit versus per-contract quantities; and whether any V3 convention differs.
 Record source/version/date and retain original raw values before proposing normalization.
 No request to the broker has been sent by this review.
+
+## Follow-up primary-source review — 11 November 2026
+
+Inspected the provider's official SDK examples at commit
+`28655475bcaac5e47bbf7202ad1d55027cbe4d4e` (9 November). The chain example reads IV from
+its response and scales it for percentage display. The separate V3 REST Greek example has
+its own percentage formatter and daily-theta display wording. These are new primary-source
+implementation cues, not a fully specified V2 or BOD JSON unit contract. No V3-to-V2 mapping
+or normalization was inferred; reviewed API descriptions still omit the required unit bases.
+
+[The bounded evidence comparison and unsent provider questions](BROKER_UNIT_CLARIFICATION.md)
+identify the exact endpoints, selected JSON segments, scale/time/quantity issues and required
+versioned answer. This is a prepared clarification artifact, not an assertion that any message
+was sent or provider confirmation obtained. All raw-value labels and preservation behavior
+remain unchanged; current API context still describes the existing 10 November policy.
