@@ -1,5 +1,47 @@
 # Known issues
 
+## 2026-11-11T08:31:37.672908+00:00 — P2-AUTO-01 finite read-only pilot and verification
+
+OBSERVATION; entries/live/execution disabled. No push, broker support message, credential
+rotation/promotion, contract roll, archive deletion or new genuine recording this iteration.
+The user authorized routine remaining work without repeated minor approvals. This supersedes
+the agent's earlier manual-only collection choice only for the reviewed finite pilot.
+Resolved locally: Starlette TestClient deprecation warning using dev-only httpx2, without
+warning filters. New transport retains outbound network prohibition. Initial draft import typo
+was caught and corrected by focused tests/lint; a verification-harness import path was corrected
+before successful isolated DB runs. Final checks supersede those draft failures.
+
+Final source: native disposable PostgreSQL 17.11 and Docker CI-image postgres:17.6-bookworm
+full suites each 856 passed / 0 failed / 0 skipped / 0 warnings. 47 new synthetic security/job
+cases included. Locked uv sync, Ruff lint/format (131 files), strict mypy (51 sources) passed.
+pip-audit:76 installed packages,0 known vulnerabilities,0 skipped. Real loopback TLS and durable
+synthetic supervision passed. Isolated Compose --bootstrap --oauth-vault passed migration,
+non-root/modes, encrypted roundtrip, CSRF, restart, outage/recovery and absent execution routes;
+only verification resources removed. Local parity is not a hosted-CI result.
+
+Phase2 remains PARTIAL/NOT_CERTIFIED, qualifyingdays0. The11–17November sparse window,
+independent completion criteria, clock cause (82 previously excluded GENERATION_AFTER_RECEIPT
+frames), calendar-amendment completeness and field-unit clarification remain open. Provider
+question draft is not sent; current hostedCI is unverified. Storage/backup/clock guards can
+stop the pilot before all checkpoints. No timer can complete those evidence gates.
+
+Installed macOS user LaunchAgent com.algotrade-ai.observation-pilot:12 remaining checkpoints,
+12/13/16/17 November at09:45/12:15/14:45 IST, plus18November09:45 review. No RunAtLoad/KeepAlive,
+catch-up, automatic Docker startup or automatic roll. Launchd has no year selector; exact
+application year/date guards prevent captures in later years and end-report generation is
+once-only. Local notification submission is best-effort, not proof of display/read or a future
+chat message. It can request review, never certify Phase2. Mac/user/Docker/network availability
+is required. The 3-day21:30IST Drive backup schedule is unchanged. Next due12November.
+
+Next: keep this Mac/user session, Docker/private app and network available for12November
+09:45IST. Inspect private job status if notified; investigate rather than clear a paused ledger.
+Verify due backup/restore12November evening; review end-window report18November. Completion
+requires evidence review; no new phase/live activation or push is authorized. Commands and
+limits:docs/OBSERVATION_AUTOMATION.md. Local verified commit only after final secret/whitespace checks.
+
+Final verification: all22changed files passed default Gitleaks with no allowances and private configured-secret comparison. Full Git history passed the unchanged exact historical false-positive allowances. Installed plist/private modes and armed source fingerprints match the reviewed job. Whitespace corrected before staging; no push.
+
+
 ## 2026-11-11T07:56:33.025979+00:00 — P2-DQ-01 frame-exclusion reason diagnostics
 
 Added fixed unusable_frame_reasons counts to existing coverage JSON and initial-report JSON/

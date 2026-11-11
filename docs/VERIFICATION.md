@@ -1,5 +1,57 @@
 # Phase 1 verification evidence
 
+## 2026-11-11T08:31:37.672908+00:00 — P2-AUTO-01 finite read-only pilot and verification
+
+OBSERVATION; entries/live/execution disabled. No push, broker support message, credential
+rotation/promotion, contract roll, archive deletion or new genuine recording this iteration.
+The user authorized routine remaining work without repeated minor approvals. This supersedes
+the agent's earlier manual-only collection choice only for the reviewed finite pilot.
+Added scripts/observation_job.py and observation_schedule.py, tests/security/
+test_observation_job.py and test_http_transport_guard.py. Dev-only httpx2>=2.16,<3 plus locked
+transitives enables Starlette's supported TestClient transport, removing the warning without
+suppression. tests/conftest.py blocks real sync/async transports for both HTTP libraries.
+Runtime broker httpx unchanged. New job uses fixed reviewed 120s/1child/300events/262144byte
+policy for NSE_FO|45406, once-only durable claims, source/timezone/rollback guards, budget and
+fresh preflight checks, one metadata attempt/date, RAM-only dump-size check, conservative
+host/Docker/DB/dump guards, backup receipt checks and private fixed-size status/report files.
+Unknown remote result, post-capture report failure or increased future/old-frame counts pauses
+further collection. Existing timestamp acceptance and raw archives remain unchanged.
+
+Final source: native disposable PostgreSQL 17.11 and Docker CI-image postgres:17.6-bookworm
+full suites each 856 passed / 0 failed / 0 skipped / 0 warnings. 47 new synthetic security/job
+cases included. Locked uv sync, Ruff lint/format (131 files), strict mypy (51 sources) passed.
+pip-audit:76 installed packages,0 known vulnerabilities,0 skipped. Real loopback TLS and durable
+synthetic supervision passed. Isolated Compose --bootstrap --oauth-vault passed migration,
+non-root/modes, encrypted roundtrip, CSRF, restart, outage/recovery and absent execution routes;
+only verification resources removed. Local parity is not a hosted-CI result.
+
+Installed macOS user LaunchAgent com.algotrade-ai.observation-pilot:12 remaining checkpoints,
+12/13/16/17 November at09:45/12:15/14:45 IST, plus18November09:45 review. No RunAtLoad/KeepAlive,
+catch-up, automatic Docker startup or automatic roll. Launchd has no year selector; exact
+application year/date guards prevent captures in later years and end-report generation is
+once-only. Local notification submission is best-effort, not proof of display/read or a future
+chat message. It can request review, never certify Phase2. Mac/user/Docker/network availability
+is required. The 3-day21:30IST Drive backup schedule is unchanged. Next due12November.
+
+Actual local arming/no-capture proof passed:SKIPPED_NOT_CHECKPOINT on11November; current
+metadata, database28208275bytes, no active parent/child. All prior catalog/candle/chain/capture/
+session/event hashes and protected .env/admin-password fingerprints unchanged. Today's daily
+budget remains consumed. Private receipts/reports under .local/observation-job/; verification
+under .local/verification/autonomy_*. Ordinary OAuth expiry remains unresolved and separate
+from the active Analytics credential. No real account was used by automated tests.
+
+Phase2 remains PARTIAL/NOT_CERTIFIED, qualifyingdays0. The11–17November sparse window,
+independent completion criteria, clock cause (82 previously excluded GENERATION_AFTER_RECEIPT
+frames), calendar-amendment completeness and field-unit clarification remain open. Provider
+question draft is not sent; current hostedCI is unverified. Storage/backup/clock guards can
+stop the pilot before all checkpoints. No timer can complete those evidence gates.
+
+Next: keep this Mac/user session, Docker/private app and network available for12November
+09:45IST. Inspect private job status if notified; investigate rather than clear a paused ledger.
+Verify due backup/restore12November evening; review end-window report18November. Completion
+requires evidence review; no new phase/live activation or push is authorized. Commands and
+limits:docs/OBSERVATION_AUTOMATION.md. Local verified commit only after final secret/whitespace checks.
+
 Session: Codex / root. Date: 2026-11-06 UTC. No broker credentials, market data or orders used.
 
 ## Verified native PostgreSQL

@@ -6,6 +6,14 @@ complete the seven-calendar-day requirement by itself. All reports remain NOT_CE
 qualifying days remain zero until separately reviewed criteria and evidence support them.
 PostgreSQL remains the operational database. Live trading stays disabled.
 
+## 11 November authorization update
+
+The user now authorizes routine work without repeated minor approvals. The finite
+[observation job](OBSERVATION_AUTOMATION.md) implements the remaining checkpoints with
+once-only attempts, fresh readiness, disk/backup/budget guards and local review alerts.
+It supersedes this document's original manual-only execution choice, not its limits or
+acceptance requirements. No extra capture is permitted today; missing checkpoints remain gaps.
+
 ## Dates and optional checkpoints
 
 | IST date | Pinned baseline | Plan |
@@ -19,7 +27,8 @@ PostgreSQL remains the operational database. Live trading stays disabled.
 | 17 November | Regular baseline | Up to three explicit runs; recheck expiry and supported contract before every attempt |
 
 Optional checkpoints on eligible regular dates are **09:45, 12:15 and 14:45 IST**. These
-are operator reminders, not timers or scheduled commands. Skip missed checkpoints; do not
+were originally operator reminders. The finite job now implements the remaining dates.
+Skip missed checkpoints; do not
 backfill timestamps or run catch-up loops. Unexpected closures, changed sessions and failed
 checks override this table. Recheck the whole requested window before each actual run.
 
@@ -43,7 +52,7 @@ The default lifecycle permits at most three attempts within the finite child win
 not inject further disconnects for this pilot; controlled reconnect acceptance is separate.
 
 Per-run quotas are enforced by the existing recorder. The daily/window ceilings are
-**manual operator limits**, not new backend enforcement. Count every created genuine parent,
+**operator limits** checked by the finite scheduled wrapper, not new backend enforcement. Count every created genuine parent,
 including failed, interrupted and ad hoc acceptance runs; do not retry beyond the daily cap.
 The [read-only budget checker](OBSERVATION_BUDGET.md) reports current ledger consumption
 and conservative report headroom. A blocked budget result is a stop for this operator plan;
@@ -103,8 +112,9 @@ uv run python -m scripts.capture_local --instrument-key "$observation_key" \
   --max-events 300 --max-payload-bytes 262144
 ```
 
-No capture scheduler, shell loop, cron job, LaunchAgent or automatic startup is installed by
-this plan. The three-run daily limit is already consumed on 11 November.
+The separately documented finite user LaunchAgent implements only the remaining checkpoints.
+It never starts Docker or the app and never catches up missed slots. The three-run daily limit
+is already consumed on 11 November. Manual runs also consume that same reviewed budget.
 
 ## After each run and at window review
 
@@ -149,8 +159,8 @@ container memory limit. These limits are unchanged; current fit does not prove f
 Operator pause rules for this pilot: host free space below 2 GiB; database at/above 64 MiB
 or growth of 32 MiB from the measured baseline; measured custom dump at/above 24 MiB;
 a backup failure, unsafe active state, exhausted report/daily budget or unresolved readiness
-blocker. These are conservative review thresholds, not implemented disk guards or storage
-predictions. Re-measure actual sizes before extending collection; do not increase resource
+blocker. The finite scheduled wrapper now implements these conservative guards; they are
+not storage predictions or new backend recorder enforcement. Re-measure actual sizes before extending collection; do not increase resource
 limits or delete existing data as a workaround. Recheck Docker's available allocation too;
 host free space alone does not establish container-volume capacity.
 

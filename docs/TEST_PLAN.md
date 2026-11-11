@@ -1,5 +1,19 @@
 # Test plan
 
+## Current routine-autonomy verification
+
+The finite observation job is covered with synthetic clock/runtime/backup/Docker responses;
+no unit test contacts a broker or the operational DB. Tests cover finite dates and grace
+windows, once-only persisted claims, quotas, backup/disk/dump gates, fresh readiness after
+long checks, source/timezone changes, unknown remote state, clock-anomaly pauses, private
+files, conflicting jobs and exact inactive-agent disable behavior. Both httpx and httpx2
+sync/async default transports are explicitly tested as blocked by the autouse HTTP guard.
+
+TestClient uses the dev-only httpx2 dependency, as recommended by
+[Starlette's official TestClient documentation](https://www.starlette.io/testclient/).
+Production broker HTTPX and its guards are unchanged; warning suppression was not added.
+The latest verified results are recorded in agent_memory/CURRENT_STATE.md.
+
 Default pytest suite uses isolated migrated SQLite databases. Tests cover defaults and
 unsafe configuration, authentication, hashed session storage, expiry, CSRF, origin checks,
 revocation, rate limiting, input secrecy, security headers, host checks, absent live routes,

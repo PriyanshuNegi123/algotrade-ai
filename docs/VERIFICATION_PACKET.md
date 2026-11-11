@@ -1,5 +1,17 @@
 # Phase 2 local verification packet — 11 November 2026
 
+## Latest follow-up — finite pilot and TestClient transport
+
+The original packet below describes64c35bc. The11November P2-AUTO-01 follow-up verifies the
+new host job and dev transport:856 passed,0failed,0skipped,0warnings on both native17.11 and
+disposable Docker17.6; Ruff131files/mypy51sources passed; dependency audit76packages/0findings/
+0skips; loopback TLS/supervision and isolated Compose bootstrap/OAuth/restart/outage passed.
+Protected operator settings and every pre-existing archive hash remain unchanged; no new
+genuine capture. The finite user agent is installed for the remaining reviewed checkpoints.
+See [OBSERVATION_AUTOMATION.md](OBSERVATION_AUTOMATION.md) for safeguards and availability
+limits. This removes the earlier TestClient warning locally, not the remaining acceptance
+gates or hostedCI requirement. Earlier results below remain historical evidence.
+
 Tested application source: `64c35bc`. This packet consolidates local evidence after the
 observation progress and budget additions. No application, dependency, credential or CI
 configuration fix was needed. It is not production approval, a penetration test, or a

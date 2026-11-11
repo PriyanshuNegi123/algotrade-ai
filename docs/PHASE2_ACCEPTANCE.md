@@ -21,7 +21,7 @@ authentication/storage and the bounded endpoint check are complete; other gates 
 | Calendar and sampled coverage | Pinned source integrity, holidays/special sessions, unknown states, conservative spans and primary frame-exclusion diagnostics tested | Amendment completeness unverified; evidence-only, no day certifier implemented |
 | Initial report | Bounded hash-validated report/CLI; evidence-only IST window progress and review reasons deployed 11 November | It is an interim evidence report, not a completed seven-day analysis |
 | Seven-calendar-day observation | One sampled market-hours date (11 November), 18 accepted samples / 2,253 ms across two Nifty captures; zero qualifying days | Actual available trading-session evidence and full window remain outstanding |
-| Hosted CI | foundation/verify passed on0f2df43 | Current native PostgreSQL suite: 809 passes; prior CI-image 17.6 packet: 784 at 64c35bc; newer hosted CI remains unverified |
+| Hosted CI | foundation/verify passed on0f2df43 | Current native 17.11 and disposable CI-image 17.6 suites: 856 passes each; newer hosted CI remains unverified |
 | Storage | PostgreSQL remains working transactional store; user selected Google Drive for backup/archive target | Desktop OAuth,encrypted backup and isolated restore verified; three-day schedule installed; passphrase-encrypted kit independently verified10November; operational DB remains PostgreSQL |
 
 See [the 11 November local verification packet](VERIFICATION_PACKET.md) for fresh dependency,
@@ -85,9 +85,10 @@ report is not complete merely because its data-quality exporter exists.
    Analytics remains active. Never substitute the ordinary credential into Analytics.
 2. Review calendar applicability, then use a current catalog and explicit supported contract
    during an eligible market session. Verify fresh updates, reconnects and honest sampled gaps.
-   No automatic recording was installed; existing CLI has finite quotas.
+   The finite read-only pilot job now checks remaining November checkpoints; see
+   [OBSERVATION_AUTOMATION.md](OBSERVATION_AUTOMATION.md). It cannot certify completion.
 3. Accumulate the required seven-calendar-day window using actual available sessions.
-   Follow [OBSERVATION_PLAN.md](OBSERVATION_PLAN.md) for the sparse pilot, manual budgets and
+   Follow [OBSERVATION_PLAN.md](OBSERVATION_PLAN.md) for the sparse pilot, shared budgets and
    explicit commands. The [read-only budget diagnostic](OBSERVATION_BUDGET.md) now exposes
    ledger usage and conservative headroom without enforcing a daily recorder gate.
    This does not establish full-session or completed seven-day coverage.

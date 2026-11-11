@@ -74,6 +74,7 @@ def client(tmp_path, monkeypatch, password_hash):
 def prohibit_outbound_http(monkeypatch):
     """All real HTTP transports are forbidden in pytest; injected mocks remain usable."""
     import httpx
+    import httpx2
     from websockets.asyncio.client import connect
 
     def blocked(*args, **kwargs):
@@ -84,6 +85,8 @@ def prohibit_outbound_http(monkeypatch):
 
     monkeypatch.setattr(httpx.HTTPTransport, "handle_request", blocked)
     monkeypatch.setattr(httpx.AsyncHTTPTransport, "handle_async_request", async_blocked)
+    monkeypatch.setattr(httpx2.HTTPTransport, "handle_request", blocked)
+    monkeypatch.setattr(httpx2.AsyncHTTPTransport, "handle_async_request", async_blocked)
     monkeypatch.setattr(connect, "create_connection", async_blocked)
 
 

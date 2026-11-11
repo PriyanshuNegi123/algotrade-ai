@@ -1,5 +1,34 @@
 # Prioritized backlog
 
+## 2026-11-11T08:31:37.672908+00:00 — P2-AUTO-01 finite read-only pilot and verification
+
+OBSERVATION; entries/live/execution disabled. No push, broker support message, credential
+rotation/promotion, contract roll, archive deletion or new genuine recording this iteration.
+The user authorized routine remaining work without repeated minor approvals. This supersedes
+the agent's earlier manual-only collection choice only for the reviewed finite pilot.
+Phase2 remains PARTIAL/NOT_CERTIFIED, qualifyingdays0. The11–17November sparse window,
+independent completion criteria, clock cause (82 previously excluded GENERATION_AFTER_RECEIPT
+frames), calendar-amendment completeness and field-unit clarification remain open. Provider
+question draft is not sent; current hostedCI is unverified. Storage/backup/clock guards can
+stop the pilot before all checkpoints. No timer can complete those evidence gates.
+
+Next: keep this Mac/user session, Docker/private app and network available for12November
+09:45IST. Inspect private job status if notified; investigate rather than clear a paused ledger.
+Verify due backup/restore12November evening; review end-window report18November. Completion
+requires evidence review; no new phase/live activation or push is authorized. Commands and
+limits:docs/OBSERVATION_AUTOMATION.md. Local verified commit only after final secret/whitespace checks.
+
+Final source: native disposable PostgreSQL 17.11 and Docker CI-image postgres:17.6-bookworm
+full suites each 856 passed / 0 failed / 0 skipped / 0 warnings. 47 new synthetic security/job
+cases included. Locked uv sync, Ruff lint/format (131 files), strict mypy (51 sources) passed.
+pip-audit:76 installed packages,0 known vulnerabilities,0 skipped. Real loopback TLS and durable
+synthetic supervision passed. Isolated Compose --bootstrap --oauth-vault passed migration,
+non-root/modes, encrypted roundtrip, CSRF, restart, outage/recovery and absent execution routes;
+only verification resources removed. Local parity is not a hosted-CI result.
+
+Final verification: all22changed files passed default Gitleaks with no allowances and private configured-secret comparison. Full Git history passed the unchanged exact historical false-positive allowances. Installed plist/private modes and armed source fingerprints match the reviewed job. Whitespace corrected before staging; no push.
+
+
 ## 2026-11-11T07:56:33.025979+00:00 — P2-DQ-01 frame-exclusion reason diagnostics
 
 Added fixed unusable_frame_reasons counts to existing coverage JSON and initial-report JSON/
