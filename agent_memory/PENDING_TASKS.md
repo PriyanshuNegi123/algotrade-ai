@@ -1,5 +1,51 @@
 # Prioritized backlog
 
+## 2026-11-11T06:43:29.968075+00:00 — P2-003Z evidence-only observation-window progress
+
+Today's three-run pilot allowance is consumed, so completed independent report work without
+another capture. Added window_progress to initial-report JSON and a Markdown progress section:
+requested range FUTURE/IN_PROGRESS/ELAPSED, fully elapsed IST dates, explicit end-exclusive
+midnight, calendar windows that have closed, missing positive sampled spans and unknown dates.
+Fixed review reasons distinguish synthetic source/calendar, incomplete ranges, unknown/
+unverified calendar and unresolved acceptance criteria. No threshold, verified recording start,
+completed day, review completion or Phase 2 authorization is invented. Elapsed seven-date
+filters and samples on all baseline dates still remain NOT_CERTIFIED / zero qualifying days.
+
+One existing bounded coverage read supplies all facts; no extra DB query, broker request,
+archive mutation, HTTP route, scheduler or permission change. Existing per-key coverage and
+ten brief-required report sections remain. Fourteen synthetic unit cases cover exact IST/UTC
+boundaries, open/closed/special/holiday windows, empty/short/future/elapsed ranges, partial
+samples, synthetic/unknown evidence and independent state. Existing read-only/escaping and
+native PostgreSQL tests strengthened. Targeted 24 passed; fresh disposable PostgreSQL 17.11:
+758 passed / 0 failed / 0 skipped, one existing Starlette warning; cluster removed. Locked sync,
+Ruff 123 files/format and mypy 50 files passed. Draft long-line formatting corrected first.
+
+Deployed through credential-preserving bootstrap with OAuth volume: READY_LOCAL, verified
+login, no capture/live activation. Actual 11–17 November report IN_PROGRESS, zero fully
+elapsed dates, seven remaining; review reasons are range not elapsed, calendar amendments
+unverified and acceptance criteria review required. Three sessions  / 119 events unchanged.
+All prior catalog/candle/chain/capture/session/event hashes and protected .env/admin-password
+fingerprints matched baseline. Report JSON/Markdown and proof retained privately under
+.local/verification/window_progress_*_20261111.*. No broker/Drive call or clock change.
+
+A separate OAuth status verification initially asserted the previous stored status and failed.
+Corrected read-only check returned READY_FOR_AUTHORIZATION / OAUTH_VAULT_TOKEN_EXPIRED;
+this identifies expired ordinary OAuth material, not a claim of lost vault data. No token
+renewal, replacement, promotion or consent attempt. Analytics remains separate; storage
+mount retained. Phase 2 is partial; ordinary OAuth expiry, minimum coverage criteria,
+clock cause, calendar/unit clarification, genuine multi-day evidence and latest hosted CI
+remain unresolved. OBSERVATION; entries/live disabled. Next: P2-003Y at 12 November 09:45 IST
+only after all fresh plan checks, plus existing due backup verification; no auto recording.
+
+Files: backend/app/market_data/initial_report.py; tests/unit/test_observation_progress.py;
+tests/integration/test_initial_report.py and test_postgres.py; docs/OBSERVATION_REVIEW.md,
+OBSERVATION_PLAN.md, PHASE2_ACCEPTANCE.md, PROJECT_STATUS.md, VERIFICATION.md, TEST_PLAN.md;
+all eight agent-memory Markdown files. Local verified commit only; no push.
+
+Final security checks: all 18 task files passed default Gitleaks without allowances and
+configured-credential comparison. Full history passed unchanged exact historical allowances.
+Whitespace clean; no secrets, capture, live activation or push introduced.
+
 ## 2026-11-11T06:31:07.741099+00:00 — P2-003X bounded observation/storage plan verified
 
 Added docs/OBSERVATION_PLAN.md: candidate 11–17 November IST sparse pilot, three optional
@@ -597,6 +643,7 @@ Phase2 remains partial;see docs/PHASE2_ACCEPTANCE.md. Push requires explicit aut
 | P2-003W | P1 | P2-003U; current metadata/session/readiness | Investigate relative timestamp offsets, then genuine bounded reconnect acceptance | Read-only time diagnostics first; verify new authorization, lineage, gap handling and closure; no weakened freshness rules or synthetic relabeling | Medium | COMPLETE scoped controlled reconnect 2026-11-11: two genuine attempts, unchanged backoff, verified gap/closure; absolute clock cause and natural outages unverified |
 | P2-003X | P1 | P2-003U; P2-003W | Bounded multi-day observation collection plan | Explicit operator runs, current calendar/catalog, finite storage budgets, conservative gaps and no short-run/day certification | Medium | COMPLETE scoped plan 2026-11-11: validated quotas/report/disk budgets and explicit commands; actual collection remains pending |
 | P2-003Y | P1 NEXT | P2-003X; current calendar/catalog/readiness | Collect and review genuine multi-day pilot evidence | Explicit operator checkpoints, daily/storage budgets, honest gaps; separately review completion criteria; no automatic recording or day certification | Medium | Pending; 11 November allowance consumed; next candidate 12 November after fresh checks |
+| P2-003Z | P1 | P2-003V; P2-003X | Evidence-only observation-window progress and review reasons | Exact IST range boundaries, sampled/elapsed distinction, source/calendar separation and permanent non-certification; no invented minimum threshold | Medium | COMPLETE scoped report 2026-11-11: 14 new cases, 758 PostgreSQL passes; criteria/collection still pending |
 | P2-003 | P1 | P2-003A; P2-002A; optional operator credential for actual data | Candles, chain, approved feed and observation | Real UTC data; freshness/duplicates/gaps/reconnect/session checks; reports only from captured sessions | High | Partial: metadata/history/chain/auth-decoder implemented; bounded socket lifecycle implemented; durable research archive implemented; reviewed calendar/sampled coverage implemented; bounded multi-session supervisor implemented; safe preflight implemented; persistent local bootstrap verified; real acceptance/completed-day certification pending |
 | P3-001 | P2 | P2-003 | Knowledge provenance, indicators, controlled research | Licensed sources, completed candles, research cannot alter permissions | High | Not started |
 | P4-001 | P2 | P3-001 | Deterministic strategy and affordability interfaces | Whole-lot, spread, stale-data and insufficient-budget tests | High | Not started |

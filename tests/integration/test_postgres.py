@@ -37,6 +37,10 @@ def test_postgres_initial_observation_report(postgres_config, coverage_clock):
         assert genuine["qualifying_observation_days"] == 0
         assert synthetic["assessment"] == "NOT_CERTIFIED"
         assert not synthetic["live_enabled"]
+        assert not genuine["window_progress"]["review_complete"]
+        assert not synthetic["window_progress"]["phase2_complete"]
+        assert "SYNTHETIC_SOURCE" in synthetic["window_progress"]["review_blockers"]
+        assert "SYNTHETIC_SOURCE" not in genuine["window_progress"]["review_blockers"]
 
 
 def test_postgres_migration_auth_and_restart(postgres_config):

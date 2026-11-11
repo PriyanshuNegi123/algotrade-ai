@@ -25,7 +25,11 @@ def test_empty_seven_dates_never_certifies_observation(client):
     assert report["assessment"] == "NOT_CERTIFIED" and report["qualifying_observation_days"] == 0
     assert not report["signal_eligible"] and not report["execution_eligible"]
     assert not report["live_enabled"]
+    assert not report["window_progress"]["review_complete"]
+    assert "ACCEPTANCE_CRITERIA_REVIEW_REQUIRED" in report["window_progress"]["review_blockers"]
     markdown = render_initial_observation(report)
+    assert "## Observation-window progress" in markdown
+    assert "not a verified observation start" in markdown
     for heading in (
         "Data availability",
         "Trading sessions observed",

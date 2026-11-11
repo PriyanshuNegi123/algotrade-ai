@@ -210,3 +210,15 @@ forwarding. Latest full disposablePG suite385passed/0skips;default361passed/24PG
 Ruff89files,mypy37files,TLS/supervision,pip-audit and isolated Docker smoke pass. One upstream
 warning remains. Hosted foundation run42630898094 passes on0f2df43; these new tests are local
 until a new approved commit/push. See PHASE2_ACCEPTANCE.md; overall Phase2 remains partial.
+
+## Evidence-only window progress — 11 November 2026
+
+Fourteen new synthetic cases verify exact IST midnight/UTC boundaries, clamped elapsed date
+counts, short/future/elapsed filters, open and special/holiday windows, missing and partial
+samples, source/calendar separation and state isolation. Even fully elapsed dates with
+samples on all baseline sessions do not certify observation or imply a threshold. Existing
+read-only SQL, escaping and native PostgreSQL report assertions remain and were strengthened.
+Targeted24passed; fresh full disposable PostgreSQL17.11:758passed,0failed,0skipped, one existing
+Starlette warning. Ruff123files/format, mypy50files and locked sync passed. Actual deployed
+stored-data report remains IN_PROGRESS/NOT_CERTIFIED; archive hashes unchanged. Operational
+acceptance was separate from tests and made no real broker/Drive call or new recording.

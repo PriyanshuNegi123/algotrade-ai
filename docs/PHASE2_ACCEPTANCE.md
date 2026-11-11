@@ -12,14 +12,14 @@ authentication/storage and the bounded endpoint check are complete; other gates 
 | Requirement | Verified state | Remaining acceptance |
 |---|---|---|
 | Official API/app guidance | Analytics/auth/instrument/chain primary docs rechecked9November; registered OAuth settings configured locally10November | App configuration and operator consent do not certify account permissions or trading approval |
-| Secure read-only authentication | Analytics history/chain/feed accepted; OAuth browser flow/vault deployed, genuine consent/storage accepted and one bounded NSE market-status check passed10November | Scoped OAuth authentication/storage acceptance complete; account permissions and grant scope are not certified; Analytics stays active and OAuth is not promoted |
+| Secure read-only authentication | Analytics history/chain/feed accepted; OAuth browser flow/vault deployed, genuine consent/storage accepted and one bounded NSE market-status check passed10November | Scoped OAuth authentication/storage acceptance complete; ordinary OAuth token reported expired 11 November; account permissions/grant scope uncertified; Analytics stays active and OAuth is not promoted |
 | Instrument master | Immutable validated source/metadata; latest 6,744 selected / 85,180 source records, verified 11 November | Recheck currentness before each future capture; tick-size units unresolved |
 | Historical candles | Immutable bounded prior-day imports;75real five-minute Nifty50 bars archived | Historical point-in-time universe/session completeness remains unverified |
 | Option chain | Explicit expiry/catalog validation;135strikes/270legs accepted; unresolved unit context exposed on reads | No source timestamp per field; primary unit review remains inconclusive; no scaling inferred; freshness UNKNOWN |
 | Feed and durable archive | Decoder, ordering, duplicates, timestamps, retries/heartbeat/TLS, quotas/recovery tested; 11 November controlled reconnect archived and gap verified | Bounded genuine market-hours acceptance passed 11 November: 27 recent-trade updates and 1,946 sampled ms; controlled genuine reconnect passed with two attempts and unchanged backoff; natural outages remain unverified |
 | Cooperative stop | Genuine snapshot then exact-parent stop; parent/child CLOSED; socket1→0; archive hashes checked | Complete for the bounded9November acceptance |
 | Calendar and sampled coverage | Pinned source integrity, holidays/special sessions, unknown states, conservative spans tested | Amendment completeness unverified; evidence-only, no day certifier implemented |
-| Initial report | New bounded hash-validated report/CLI; actual report generated | It is an interim evidence report, not a completed seven-day analysis |
+| Initial report | Bounded hash-validated report/CLI; evidence-only IST window progress and review reasons deployed 11 November | It is an interim evidence report, not a completed seven-day analysis |
 | Seven-calendar-day observation | One sampled market-hours date (11 November), 18 accepted samples / 2,253 ms across two Nifty captures; zero qualifying days | Actual available trading-session evidence and full window remain outstanding |
 | Hosted CI | foundation/verify passed on0f2df43 | Report/storage/test work is committed locally; latest hosted CI for these additions remains unverified |
 | Storage | PostgreSQL remains working transactional store; user selected Google Drive for backup/archive target | Desktop OAuth,encrypted backup and isolated restore verified; three-day schedule installed; passphrase-encrypted kit independently verified10November; operational DB remains PostgreSQL |
@@ -85,6 +85,8 @@ report is not complete merely because its data-quality exporter exists.
 3. Accumulate the required seven-calendar-day window using actual available sessions.
    Follow [OBSERVATION_PLAN.md](OBSERVATION_PLAN.md) for the sparse pilot, manual budgets and
    explicit commands. This does not establish full-session or completed seven-day coverage.
+   [Window-progress review](OBSERVATION_REVIEW.md) now distinguishes date filters, elapsed
+   dates and actual samples, while leaving criteria review unresolved.
    Define/review any completion criteria before adding a certifier; current coverage always
    reports zero qualifying days. Time passing alone does not complete this requirement.
 4. Resolve field-unit/calendar limitations using primary evidence and record their limits.

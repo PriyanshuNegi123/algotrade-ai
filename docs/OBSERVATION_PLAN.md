@@ -118,6 +118,8 @@ uv run python -m scripts.initial_observation --local \
   --instrument-key 'NSE_FO|35050' --instrument-key 'NSE_FO|45406'
 ```
 
+The report now exposes [window progress and review reasons](OBSERVATION_REVIEW.md).
+Its date filter is not a verified recording start, and elapsed dates never certify days.
 Before the window ends this is an interim report; future dates and unsampled periods are
 not evidence. Store only small protected reports locally; the operational archive remains
 in PostgreSQL and is backed up through the existing encrypted Drive workflow. At review,
